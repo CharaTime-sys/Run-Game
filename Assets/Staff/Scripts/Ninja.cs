@@ -21,10 +21,22 @@ public class Ninja : MonoBehaviour
     int dir_component;
     //正在移动的状态
     bool is_moving;
+    //是否有持续buff
+    [SerializeField] bool is_buffing;
+
+    public bool Is_buffing { get => is_buffing; set => is_buffing = value; }
+
     // Start is called before the first frame update
     void Start()
     {
+        Set_Buff_Status();
         start_pos = transform.position;
+    }
+
+    //重置buff效果
+    public void Set_Buff_Status()
+    {
+        is_buffing = true;
     }
 
     #region For Bodys
@@ -46,20 +58,28 @@ public class Ninja : MonoBehaviour
         is_moving = false;
     }
     #endregion
-    public void Jump()
+    public void Jump(bool if_resumed)
     {
         Reset_Y_Action();
         chara.Play("Jump");
         transform.DOMoveY(range.x, time.x);
-        Invoke("Resume_Jump", resume_time);
+        //如果腾空，则不需要调用
+        if (if_resumed)
+        {
+            Invoke(nameof(Resume_Jump), resume_time);
+        }
     }
 
-    public void Down()
+    public void Down(bool if_resumed)
     {
         Reset_Y_Action();
         chara.Play("Down");
         transform.DOMoveY(start_pos.y - range.y, time.y);
-        Invoke("Resume_Down", resume_time);
+        //如果腾空，则不需要调用
+        if (if_resumed)
+        {
+            Invoke(nameof(Resume_Down), resume_time);
+        }
     }
 
     /// <summary>
@@ -73,7 +93,10 @@ public class Ninja : MonoBehaviour
 
     public void Resume_Jump()
     {
+        Debug.Log("恢复到原地");
+        //播放动画
         chara.Play("Run");
+        //返回原地
         transform.DOMoveY(start_pos.y, time.x).SetEase(Ease.Linear);
     }
 
@@ -82,6 +105,7 @@ public class Ninja : MonoBehaviour
         chara.Play("Run");
         transform.DOMoveY(start_pos.y, time.y).SetEase(Ease.Linear);
     }
+
     private void OnTriggerEnter(Collider other)
     {
         if (other.tag == "Border")
@@ -96,6 +120,7 @@ public class Ninja : MonoBehaviour
             }
         }
     }
+
     private void OnTriggerExit(Collider other)
     {
         if (other.tag == "Border")

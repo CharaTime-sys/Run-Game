@@ -16,6 +16,10 @@ public class DynamicJoystick : Joystick
         background.gameObject.SetActive(false);
     }
 
+    /// <summary>
+    /// 鼠标按下
+    /// </summary>
+    /// <param name="eventData"></param>
     public override void OnPointerDown(PointerEventData eventData)
     {
         background.anchoredPosition = ScreenPointToAnchoredPosition(eventData.position);
@@ -23,12 +27,23 @@ public class DynamicJoystick : Joystick
         //让手指的位置加入gamecontroller进入判定
         if (Input.touches.Length!=0)
         {
+            //加入手指的开始坐标
             Game_Controller.Instance.finger_start_pos.Add(Input.touches[0].position);
-            Game_Controller.Instance.Test_Check_Line();
+            //设置按下状态
+            if (Game_Controller.Instance.ninja.Is_buffing)
+            {
+                Game_Controller.Instance.Press_Checked(true);
+            }
+            //测试上方的判定线
+            //Game_Controller.Instance.Test_Check_Line();
         }
         base.OnPointerDown(eventData);
     }
 
+    /// <summary>
+    /// 鼠标抬起
+    /// </summary>
+    /// <param name="eventData"></param>
     public override void OnPointerUp(PointerEventData eventData)
     {
         background.gameObject.SetActive(false);
@@ -36,10 +51,18 @@ public class DynamicJoystick : Joystick
         if (Input.touches.Length != 0)
         {
             Game_Controller.Instance.test_vector = Input.touches[0].position - Game_Controller.Instance.finger_start_pos[0];
+            //取消按下状态
+            Game_Controller.Instance.Press_Checked(false);
         }
         //移除原来的坐标
         Game_Controller.Instance.finger_start_pos.RemoveAt(0);
-        Game_Controller.Instance.Test_Direction();
+        //防止有bug
+        if (!Game_Controller.Instance.is_jump_after)
+        {
+            Game_Controller.Instance.Test_Direction();
+        }
+        //重置长按跳跃的状态
+        Game_Controller.Instance.is_jump_after = false;
         base.OnPointerUp(eventData);
     }
 
