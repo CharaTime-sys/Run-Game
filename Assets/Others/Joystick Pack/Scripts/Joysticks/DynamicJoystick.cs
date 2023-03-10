@@ -20,9 +20,11 @@ public class DynamicJoystick : Joystick
     {
         background.anchoredPosition = ScreenPointToAnchoredPosition(eventData.position);
         background.gameObject.SetActive(true);
+        //让手指的位置加入gamecontroller进入判定
         if (Input.touches.Length!=0)
         {
             Game_Controller.Instance.finger_start_pos.Add(Input.touches[0].position);
+            Game_Controller.Instance.Test_Check_Line();
         }
         base.OnPointerDown(eventData);
     }

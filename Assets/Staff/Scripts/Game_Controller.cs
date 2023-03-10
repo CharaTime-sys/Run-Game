@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
 public class Game_Controller : MonoBehaviour
@@ -33,6 +34,13 @@ public class Game_Controller : MonoBehaviour
     [Header("人物")]
     public Ninja ninja;
     public LineRenderer line;
+    [Header("判定线")]
+    [SerializeField] RectTransform check_line;
+    [Header("判定线区间")]
+    [SerializeField] float line_range;
+
+    //UI相关
+    [SerializeField] Text grade_text;
     private void Awake()
     {
         Instance = this;
@@ -66,28 +74,21 @@ public class Game_Controller : MonoBehaviour
         {
             angle = 270f + Mathf.Atan(-test_vector.x / test_vector.y) * Mathf.Rad2Deg;
         }
-        //调用身体移动方法，后面可以加入动画
-        //if (angle<90f)
-        //{
-        //    ninja.Set_Right_Leg();
-        //}
-        //else if (angle>90f&& angle<180f)
-        //{
-        //    ninja.Set_Left_Leg();
-        //}
-        //else if (angle > 180f && angle < 270f)
-        //{
-        //    ninja.Set_Right_Arm();
-        //}
-        //else if (angle > 270f && angle < 360f)
-        //{
-        //    ninja.Set_Left_Arm();
-        //}
-        if (angle < 180f)
+
+        //根据角度调用不同方法
+        if (angle < 45 || angle > 315)
+        {
+            ninja.Move_Left_And_Right(1);
+        }
+        else if (angle >135 && angle < 225)
+        {
+            ninja.Move_Left_And_Right(-1);
+        }
+        else if (angle > 45 && angle < 135)
         {
             ninja.Jump();
         }
-        else 
+        else if (angle > 225 && angle < 315)
         {
             ninja.Down();
         }
@@ -116,6 +117,21 @@ public class Game_Controller : MonoBehaviour
         else
         {
             Debug.Log("减分！！");
+        }
+    }
+
+    /// <summary>
+    /// 判定线按下调用
+    /// </summary>
+    public void Test_Check_Line()
+    {
+        if (Mathf.Abs(finger_start_pos[0].y - check_line.position.y) <=line_range)
+        {
+            grade_text.text = "判定成功";
+        }
+        else
+        {
+            grade_text.text = "判定失败";
         }
     }
 }
