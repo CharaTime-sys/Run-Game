@@ -50,6 +50,8 @@ public class Game_Controller : MonoBehaviour
     public bool is_jump_after;
     //是否到达了ui点
     [SerializeField] bool is_reached;
+    //按下状态
+    public bool pressed;
     [SerializeField] Vector3 press_pos;//目前的手指位置
     [Header("悬空时间")]
     [SerializeField] float buff_time;
@@ -71,6 +73,7 @@ public class Game_Controller : MonoBehaviour
 
     public Vector3 Press_pos { get => press_pos; }
     public float Finger_radious { get => finger_radious;}
+    public Buff_Type Buff_Type { get => buff_Type; }
 
     private void Awake()
     {
@@ -106,7 +109,7 @@ public class Game_Controller : MonoBehaviour
     /// </summary>
     void Test_target_UI()
     {
-        switch (buff_Type)
+        switch (Buff_Type)
         {
             case Buff_Type.Jump:
                 target_pos = jump_buff_ui.transform.position;
@@ -215,56 +218,67 @@ public class Game_Controller : MonoBehaviour
     /// </summary>
     void Buff_Pressed()
     {
-        //如果正在按下并且手指的距离在buffui的范围内则能腾空
-        if (is_pressing && buff_distance <= buff_max_distance)
+        if (pressed)
         {
-            //当玩家具有跳跃或下蹲buff
-            if (ninja.Is_buffing)
+            //如果正在按下并且手指的距离在buffui的范围内则能腾空
+            if (is_pressing && buff_distance <= buff_max_distance)
             {
-                //Debug.Log("buff_distance:" + buff_distance);
-                switch (buff_Type)
+                //当玩家具有跳跃或下蹲buff
+                if (ninja.Is_buffing)
                 {
+                    //不让玩家完成后返回地面
+                    switch (Buff_Type)
+                    {
+                        case Buff_Type.Jump:
+                            ninja.Jump(false);
+                            break;
+                        case Buff_Type.Down:
+                            ninja.Down(false);
+                            break;
+                        default:
+                            break;
+                    }
+                    //到达了标识点
+                    is_reached = true;
+                }
+            }
+            //当手指到达了之后，时间消失或者手指放开或者距离过大
+            if ((is_reached && (buff_time < 0f || buff_distance >= buff_max_distance)) || !is_pressing)
+            {
+                //取消玩家buff状态
+                ninja.Is_buffing = false;
+                //落地
+                switch (Buff_Type)
+                {
+                    //只有当玩家确实按到了按钮才会返回跳跃，不然就是普通的跳跃
                     case Buff_Type.Jump:
-                        ninja.Jump(false);
+                        if (is_reached)
+                        {
+                            ninja.Resume_Jump();
+                        }
+                        Set_Jump_UI(false);
                         break;
                     case Buff_Type.Down:
-                        ninja.Down(false);
-                        break;
-                    default:
+                        if (is_reached)
+                        {
+                            ninja.Resume_Down();
+                        }
+                        Set_Down_UI(false);
                         break;
                 }
-                is_reached = true;
+                //取消到达ui状态
+                is_reached = false;
+                //测试用，后面可以删掉
+                Set_buff_time_And_type(3f, temp_buff[Random.Range(0, 2)]);
+                //设置长按跳跃状态
+                is_jump_after = true;
+                ninja.Set_Buff_Status();
             }
-        }
-        //当手指到达了之后，时间消失或者手指放开或者距离过大
-        if (is_reached && (buff_time < 0f || buff_distance >= buff_max_distance) || !is_pressing)
-        {
-            //取消玩家buff状态
-            ninja.Is_buffing = false;
-            //落地
-            switch (buff_Type)
+            //当玩家没有buff时，防止时间一直减少
+            if (ninja.Is_buffing)
             {
-                case Buff_Type.Jump:
-                    ninja.Resume_Jump();
-                    Set_Jump_UI(false);
-                    break;
-                case Buff_Type.Down:
-                    ninja.Resume_Down();
-                    Set_Down_UI(false);
-                    break;
+                buff_time -= Time.deltaTime;
             }
-            //取消到达ui状态
-            is_reached = false;
-            //测试用，后面可以删掉
-            Set_buff_time_And_type(3f,temp_buff[Random.Range(0,2)]);
-            //设置长按跳跃状态
-            is_jump_after = true;
-            ninja.Set_Buff_Status();
-        }
-        //当玩家没有buff时，防止时间一直减少
-        if (ninja.Is_buffing)
-        {
-            buff_time -= Time.deltaTime;
         }
     }
 
@@ -274,8 +288,15 @@ public class Game_Controller : MonoBehaviour
     /// <param name="enable"></param>
     public void Set_Jump_UI(bool enable)
     {
+        Debug.Log("ui：" + enable);
         //后面增加特效
         jump_buff_ui.gameObject.SetActive(enable);
+        if (Input.touchCount==0)
+        {
+            return;
+        }
+        //设置位置
+        jump_buff_ui.transform.position = new Vector3(Input.touches[0].position.x, jump_buff_ui.transform.position.y, 0);
     }
 
     /// <summary>
@@ -286,6 +307,12 @@ public class Game_Controller : MonoBehaviour
     {
         //后面增加特效
         down_buff_ui.gameObject.SetActive(enable);
+        if (Input.touchCount == 0)
+        {
+            return;
+        }
+        //设置位置
+        down_buff_ui.transform.position = new Vector3(Input.touches[0].position.x, down_buff_ui.transform.position.y, 0);
     }
 
     /// <summary>
@@ -293,7 +320,7 @@ public class Game_Controller : MonoBehaviour
     /// </summary>
     public void Check_Down_And_Jump()
     {
-        switch (buff_Type)
+        switch (Buff_Type)
         {
             case Buff_Type.Jump:
                 Set_Jump_UI(true);

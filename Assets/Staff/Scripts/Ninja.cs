@@ -62,6 +62,7 @@ public class Ninja : MonoBehaviour
     {
         Reset_Y_Action();
         chara.Play("Jump");
+        GetComponent<Rigidbody>().useGravity = false;
         transform.DOMoveY(range.x, time.x);
         //如果腾空，则不需要调用
         if (if_resumed)
@@ -74,6 +75,8 @@ public class Ninja : MonoBehaviour
     {
         Reset_Y_Action();
         chara.Play("Down");
+        GetComponent<Rigidbody>().useGravity = false;
+        GetComponent<BoxCollider>().enabled = false;
         transform.DOMoveY(start_pos.y - range.y, time.y);
         //如果腾空，则不需要调用
         if (if_resumed)
@@ -93,17 +96,16 @@ public class Ninja : MonoBehaviour
 
     public void Resume_Jump()
     {
-        Debug.Log("恢复到原地");
         //播放动画
         chara.Play("Run");
         //返回原地
-        transform.DOMoveY(start_pos.y, time.x).SetEase(Ease.Linear);
+        GetComponent<Rigidbody>().useGravity = true;
     }
 
     public void Resume_Down()
     {
         chara.Play("Run");
-        transform.DOMoveY(start_pos.y, time.y).SetEase(Ease.Linear);
+        GetComponent<BoxCollider>().enabled = true;
     }
 
     private void OnTriggerEnter(Collider other)

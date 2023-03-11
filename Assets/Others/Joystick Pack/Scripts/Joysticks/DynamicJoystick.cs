@@ -30,6 +30,7 @@ public class DynamicJoystick : Joystick
             //加入手指的开始坐标
             Game_Controller.Instance.finger_start_pos.Add(Input.touches[0].position);
             //设置按下状态
+            Game_Controller.Instance.pressed = true;
             if (Game_Controller.Instance.ninja.Is_buffing)
             {
                 Game_Controller.Instance.Press_Checked(true);
@@ -54,6 +55,7 @@ public class DynamicJoystick : Joystick
             Game_Controller.Instance.test_vector = Input.touches[0].position - Game_Controller.Instance.finger_start_pos[0];
             //取消按下状态
             Game_Controller.Instance.Press_Checked(false);
+            Game_Controller.Instance.pressed = false;
         }
         //移除原来的坐标
         Game_Controller.Instance.finger_start_pos.RemoveAt(0);
@@ -61,6 +63,17 @@ public class DynamicJoystick : Joystick
         if (!Game_Controller.Instance.is_jump_after)
         {
             Game_Controller.Instance.Test_Direction();
+        }
+        switch (Game_Controller.Instance.Buff_Type)
+        {
+            case Buff_Type.Jump:
+                Game_Controller.Instance.Set_Jump_UI(false);
+                break;
+            case Buff_Type.Down:
+                Game_Controller.Instance.Set_Down_UI(false);
+                break;
+            default:
+                break;
         }
         //重置长按跳跃的状态
         Game_Controller.Instance.is_jump_after = false;
