@@ -33,6 +33,7 @@ public class DynamicJoystick : Joystick
             if (Game_Controller.Instance.ninja.Is_buffing)
             {
                 Game_Controller.Instance.Press_Checked(true);
+                Game_Controller.Instance.Check_Down_And_Jump();
             }
             //测试上方的判定线
             //Game_Controller.Instance.Test_Check_Line();
