@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Block : MonoBehaviour
+public class Curve_Follow : MonoBehaviour
 {
     // Start is called before the first frame update
     void Start()
@@ -11,8 +11,13 @@ public class Block : MonoBehaviour
     }
 
     // Update is called once per frame
-    void FixedUpdate()
+    void Update()
     {
-        transform.Translate(new Vector3(0, 0, -1) * Game_Controller.Instance.speed * Time.deltaTime);
+        Debug.Log(Curve_Point());
+    }
+
+    public Vector2 Curve_Point()
+    {
+        return Camera.main.WorldToScreenPoint(transform.position);
     }
 }

@@ -3483,8 +3483,8 @@ GameObject:
   - component: {fileID: 4650069559067139346}
   - component: {fileID: 4650069559067139349}
   - component: {fileID: 4650069559067139348}
-  - component: {fileID: 4650069559067139347}
   - component: {fileID: 4650069559067139345}
+  - component: {fileID: 4650069559067139347}
   m_Layer: 0
   m_Name: HeroTadita 1
   m_TagString: Untagged
@@ -3583,6 +3583,24 @@ MonoBehaviour:
   time: 5
   index: 0
   is_line: 0
+--- !u!114 &4650069559067139345
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4651039883797469014}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a36c3afd61035594392eac46221bd275, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  eventID: Down
+  target_obj: {fileID: 0}
+  audio_source: {fileID: 0}
+  time: 5
+  index: 0
+  is_line: 1
 --- !u!114 &4650069559067139347
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3602,24 +3620,6 @@ MonoBehaviour:
   move_time: 0.1
   chara: {fileID: 4650069559067139346}
   is_buffing: 0
---- !u!114 &4650069559067139345
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4651039883797469014}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: a36c3afd61035594392eac46221bd275, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  eventID: Down
-  target_obj: {fileID: 0}
-  audio_source: {fileID: 0}
-  time: 5
-  index: 0
-  is_line: 1
 --- !u!1 &4651039883901718072
 GameObject:
   m_ObjectHideFlags: 0

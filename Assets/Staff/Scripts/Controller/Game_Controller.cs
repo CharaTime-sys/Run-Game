@@ -15,14 +15,20 @@ public class Game_Controller : MonoBehaviour
     [Header("地板移动速度")]
     public Material floor_material;
     public float speed;
+    public float curve_speed;
     public float tile_speed;
     private float offset_y;
 
     public GameObject[] blocks;
     public GameObject[] downs;
-
+    public GameObject[] turns;
+    #region 未知参数
     [Header("障碍物生成的位置参数")]
-    public Vector3 block_pos;
+    public Vector3[] block_pos;
+    public Vector3[] down_pos;
+    public Vector3[] turn_pos;
+    public Vector3[] gesture_pos;
+    #endregion
     [Header("每个障碍物的间隔距离（暂时为定值）")]
     public float distance;
     [Header("障碍物开始出现的距离")]
@@ -49,7 +55,7 @@ public class Game_Controller : MonoBehaviour
     //判断是否是长按后的跳跃，防止手指放开的时候跳跃
     public bool is_jump_after;
     //是否到达了ui点
-    [SerializeField] bool is_reached;
+    public bool is_reached;
     //按下状态
     public bool pressed;
     [SerializeField] Vector3 press_pos;//目前的手指位置
@@ -61,24 +67,50 @@ public class Game_Controller : MonoBehaviour
     //buff类型
     [SerializeField] Buff_Type buff_Type;
 
-    //UI相关
+    #region UI相关
     [SerializeField] Text grade_text;
     [SerializeField] Image jump_buff_ui;
     [SerializeField] Image down_buff_ui;
-    Vector3 target_pos;
+    [SerializeField] Text hp_ui;
+    [SerializeField] Text score_ui;
+    #endregion
+    Vector3 target_pos;//用于长按的判断
 
     //临时存储变量，后面会删掉
     public Buff_Type[] temp_buff;
     [SerializeField] Text buff_ui;
+    public Text status_ui;
 
+    #region 属性
     public Vector3 Press_pos { get => press_pos; }
     public float Finger_radious { get => finger_radious;}
     public Buff_Type Buff_Type { get => buff_Type; }
+    #endregion
 
     private void Awake()
     {
         Instance = this;
         Set_buff_time_And_type(3f,Buff_Type.Jump);
+    }
+
+    /// <summary>
+    /// 设置血量
+    /// </summary>
+    /// <param name="hp"></param>
+    public void Set_HP(int hp)
+    {
+        ninja.Hp += hp;
+        hp_ui.text = "血量：" + ninja.Hp.ToString();
+    }
+
+    /// <summary>
+    /// 设置分数
+    /// </summary>
+    /// <param name="score"></param>
+    public void Set_Score(int score)
+    {
+        ninja.score += score;
+        score_ui.text = "分数：" + ninja.score.ToString();
     }
 
     /// <summary>

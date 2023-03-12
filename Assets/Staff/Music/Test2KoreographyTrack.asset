@@ -14,12 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mEventID: Jump_To_Sky
   mEventList:
-  - mStartSample: 1124352
-    mEndSample: 1124352
-  - mStartSample: 1146880
-    mEndSample: 1146880
-  - mStartSample: 1167551
-    mEndSample: 1167551
+  - mStartSample: 66150
+    mEndSample: 66150
   - mStartSample: 1865728
     mEndSample: 1865728
   - mStartSample: 1889280

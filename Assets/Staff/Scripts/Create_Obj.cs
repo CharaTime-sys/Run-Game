@@ -21,7 +21,7 @@ namespace SonicBloom.Koreo.Demos
         void Start()
         {
             // Register for Koreography Events.  This sets up the callback.
-            //Koreographer.Instance.RegisterForEvents(eventID, AddImpulse);
+            Koreographer.Instance.RegisterForEvents(eventID, AddImpulse);
             Invoke("Set_Audio", time);
         }
 
@@ -35,34 +35,65 @@ namespace SonicBloom.Koreo.Demos
             }
         }
 
-        //void AddImpulse(KoreographyEvent evt)
-        //{
-        //    if (is_line)
-        //    {
-        //        if (Line_Controller.Instance.nums == 4)
-        //        {
-        //            Line_Controller.Instance.delta = 0.01f;
-        //        }
-        //        Line_Controller.Instance.Set_Line();
-        //        return;
-        //    }
-        //    // Add impulse by overriding the Vertical component of the Velocity.
-        //    GameObject _target_obj = null;
-        //    if (index == 0)
-        //    {
-        //        _target_obj = Game_Controller.Instance.blocks[Random.Range(0, 3)];
-        //    }
-        //    else
-        //    {
-        //        _target_obj = Game_Controller.Instance.downs[0];
-        //    }
-        //    Debug.Log(_target_obj.name);
-        //    GameObject block = Instantiate(_target_obj, Game_Controller.Instance.block_pos, Quaternion.identity);
-        //    block.transform.position = new Vector3(block.transform.position.x, block.transform.position.y, target_obj.transform.position.z);
-        //}
+        void AddImpulse(KoreographyEvent evt)
+        {
+            if (is_line)
+            {
+                switch (Cure_Controller.Instance.curve_Type)
+                {
+                    case Curve_Type.Up:
+                        GameObject curve = Instantiate(Cure_Controller.Instance.curves[0], Game_Controller.Instance.gesture_pos[0], Quaternion.identity);
+                        curve.transform.SetParent(GameObject.Find("Curves").transform);
+                        break;
+                    case Curve_Type.Right:
+                        break;
+                    case Curve_Type.Left:
+                        break;
+                    case Curve_Type.Circle:
+                        break;
+                    case Curve_Type.Down:
+                        break;
+                    default:
+                        break;
+                }
+                return;
+            }
+            // Add impulse by overriding the Vertical component of the Velocity.
+            GameObject _target_obj = null;
+            GameObject block = null;
+            switch (index)
+            {
+                case 0:
+                    _target_obj = Game_Controller.Instance.blocks[Random.Range(0, Game_Controller.Instance.blocks.Length - 1)];
+                    block = Get_Block_Pos(_target_obj, Game_Controller.Instance.block_pos);
+                    break;
+                case 1:
+                    _target_obj = Game_Controller.Instance.downs[Random.Range(0, Game_Controller.Instance.downs.Length - 1)];
+                    block = Get_Block_Pos(_target_obj, Game_Controller.Instance.down_pos);
+                    break;
+                case 2:
+                    _target_obj = Game_Controller.Instance.turns[Random.Range(0, Game_Controller.Instance.turns.Length - 1)];
+                    block = Get_Block_Pos(_target_obj, Game_Controller.Instance.turn_pos);
+                    break;
+                default:
+                    break;
+            }
+            block.transform.position = new Vector3(block.transform.position.x, block.transform.position.y, target_obj.transform.position.z);
+        }
         void Set_Audio()
         {
             audio_source.Play();
+        }
+
+        /// <summary>
+        /// 生成对应物体
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <param name="pos"></param>
+        /// <returns></returns>
+        public GameObject Get_Block_Pos(GameObject obj,Vector3[] pos)
+        {
+            return Instantiate(obj, pos[Random.Range(0, pos.Length - 1)], Quaternion.identity);
         }
     }
 }
