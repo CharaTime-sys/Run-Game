@@ -4,18 +4,10 @@ using UnityEngine;
 
 public class Curve_Follow : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-        Debug.Log(Curve_Point());
-    }
-
+    /// <summary>
+    /// 得到曲线在屏幕中的开始位置
+    /// </summary>
+    /// <returns></returns>
     public Vector2 Curve_Point()
     {
         return Camera.main.WorldToScreenPoint(transform.position);

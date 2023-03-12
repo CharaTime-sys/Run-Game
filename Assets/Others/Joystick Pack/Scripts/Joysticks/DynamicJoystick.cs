@@ -61,24 +61,27 @@ public class DynamicJoystick : Joystick
         {
             Game_Controller.Instance.Test_Direction();
         }
-        switch (Game_Controller.Instance.Buff_Type)
+        if (Game_Controller.Instance.ninja.Is_buffing)
         {
-            case Buff_Type.Jump:
-                Game_Controller.Instance.Set_Jump_UI(false);
-                if (Game_Controller.Instance.is_reached)
-                {
-                    Game_Controller.Instance.ninja.Resume_Jump();
-                }
-                break;
-            case Buff_Type.Down:
-                Game_Controller.Instance.Set_Down_UI(false);
-                if (Game_Controller.Instance.is_reached)
-                {
-                    Game_Controller.Instance.ninja.Resume_Down();
-                }
-                break;
-            default:
-                break;
+            switch (Game_Controller.Instance.Buff_Type)
+            {
+                case Buff_Type.Jump:
+                    Game_Controller.Instance.Set_Jump_UI(false);
+                    if (Game_Controller.Instance.is_reached)
+                    {
+                        Game_Controller.Instance.ninja.Resume_Jump();
+                    }
+                    break;
+                case Buff_Type.Down:
+                    Game_Controller.Instance.Set_Down_UI(false);
+                    if (Game_Controller.Instance.is_reached)
+                    {
+                        Game_Controller.Instance.ninja.Resume_Down();
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
         //重置长按跳跃的状态
         Game_Controller.Instance.is_jump_after = false;

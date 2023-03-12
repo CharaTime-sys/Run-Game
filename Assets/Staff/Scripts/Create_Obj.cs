@@ -13,16 +13,16 @@ namespace SonicBloom.Koreo.Demos
         public string eventID;
         public GameObject target_obj;
         public AudioSource audio_source;
-        public float time;
+        [Header("0代表跳跃障碍，1代表下滑障碍，2代表转向障碍，手势就不用管索引")]
         public int index;
-        [Header("是否是划线")]
+        [Header("是否是手势")]
         public bool is_line;
 
         void Start()
         {
             // Register for Koreography Events.  This sets up the callback.
             Koreographer.Instance.RegisterForEvents(eventID, AddImpulse);
-            Invoke("Set_Audio", time);
+            Invoke("Set_Audio", Game_Controller.Instance.music_delay);
         }
 
         void OnDestroy()
@@ -37,6 +37,7 @@ namespace SonicBloom.Koreo.Demos
 
         void AddImpulse(KoreographyEvent evt)
         {
+            //如果是手势的话就到这里来判断
             if (is_line)
             {
                 switch (Cure_Controller.Instance.curve_Type)
@@ -61,6 +62,7 @@ namespace SonicBloom.Koreo.Demos
             // Add impulse by overriding the Vertical component of the Velocity.
             GameObject _target_obj = null;
             GameObject block = null;
+            //生成对应的物体
             switch (index)
             {
                 case 0:
@@ -78,6 +80,7 @@ namespace SonicBloom.Koreo.Demos
                 default:
                     break;
             }
+            //设置位置
             block.transform.position = new Vector3(block.transform.position.x, block.transform.position.y, target_obj.transform.position.z);
         }
         void Set_Audio()

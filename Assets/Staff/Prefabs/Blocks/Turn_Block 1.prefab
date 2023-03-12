@@ -95,7 +95,7 @@ GameObject:
   - component: {fileID: -2707148009114429249}
   - component: {fileID: 5473646477414672015}
   m_Layer: 0
-  m_Name: Normal_Block
+  m_Name: Turn_Block 1
   m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

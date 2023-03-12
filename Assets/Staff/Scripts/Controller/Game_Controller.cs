@@ -11,45 +11,55 @@ public enum Buff_Type
 public class Game_Controller : MonoBehaviour
 {
     public static Game_Controller Instance;
-
-    [Header("地板移动速度")]
+    [Header("音乐开始的延迟")]
+    public float music_delay;
+    #region 速度变量
+    //设置材质速度，后面可以删除
     public Material floor_material;
+    [Header("速度变量------------------------------------------")]
+    [Header("障碍物移动速度")]
     public float speed;
+    [Header("曲线移动速度")]
     public float curve_speed;
+    [Header("地板移动速度")]
     public float tile_speed;
-    private float offset_y;
+    #endregion
 
+    #region 障碍物
+    [Header("障碍物变量------------------------------------------")]
+    [Header("障碍物预制体（跳跃，下滑，转向,buff）")]
     public GameObject[] blocks;
     public GameObject[] downs;
     public GameObject[] turns;
-    #region 未知参数
-    [Header("障碍物生成的位置参数")]
+    public GameObject[] buffs;
+    #endregion
+
+    #region 位置参数
+    [Header("障碍物位置变量------------------------------------------")]
+    [Header("障碍物生成的位置参数(跳跃障碍，下滑障碍，转向障碍，手势障碍)")]
     public Vector3[] block_pos;
     public Vector3[] down_pos;
     public Vector3[] turn_pos;
     public Vector3[] gesture_pos;
+    public Vector3[] buff_pos;
     #endregion
-    [Header("每个障碍物的间隔距离（暂时为定值）")]
-    public float distance;
-    [Header("障碍物开始出现的距离")]
-    public float start_pos = -4f;
-    [Header("控制手柄")]
-    public DynamicJoystick joystick;
 
-    //手指按下和抬起的坐标
-    public List<Vector2> finger_start_pos;
-    [Header("手指判定半径")]
-    [SerializeField] float finger_radious;
-    public Vector2 test_vector;
+    #region 物体
+    [Header("控制手柄")]
+    [SerializeField] DynamicJoystick joystick;
     [Header("人物")]
     public Ninja ninja;
+    #endregion
 
-    public LineRenderer line;
+    #region 判定线
     [Header("判定线")]
     [SerializeField] RectTransform check_line;
     [Header("判定线区间")]
     [SerializeField] float line_range;
+    #endregion
 
+    #region 状态变量
+    [Header("手指状态（不用管）------------------------------------------")]
     //是否正在按下
     bool is_pressing;
     //判断是否是长按后的跳跃，防止手指放开的时候跳跃
@@ -58,34 +68,44 @@ public class Game_Controller : MonoBehaviour
     public bool is_reached;
     //按下状态
     public bool pressed;
-    [SerializeField] Vector3 press_pos;//目前的手指位置
+    #endregion
+
     [Header("悬空时间")]
     [SerializeField] float buff_time;
-    [Header("手指到ui的最大距离")]
-    [SerializeField]float buff_max_distance;
-    [SerializeField] float buff_distance;
+    [Header("手指到ui的最大范围")]
+    [SerializeField] float buff_max_distance;
+    float buff_distance;
     //buff类型
     [SerializeField] Buff_Type buff_Type;
+
+    #region 手势位置
+    [Header("手势变量(不用管)------------------------------------------")]
+    //手指按下和抬起的坐标
+    public List<Vector2> finger_start_pos;
+    public Vector2 test_vector;//手势方向
+    #endregion
 
     #region UI相关
     [SerializeField] Text grade_text;
     [SerializeField] Image jump_buff_ui;
     [SerializeField] Image down_buff_ui;
     [SerializeField] Text hp_ui;
-    [SerializeField] Text score_ui;
-    #endregion
-    Vector3 target_pos;//用于长按的判断
-
-    //临时存储变量，后面会删掉
-    public Buff_Type[] temp_buff;
+    [Header("这个不用管，会自动装上去")]
     [SerializeField] Text buff_ui;
+    [SerializeField] public Text score_ui;
+    #endregion
+
+    Vector3 target_pos;//用于长按的判断
+    Vector3 press_pos;//目前的手指位置
     public Text status_ui;
 
     #region 属性
     public Vector3 Press_pos { get => press_pos; }
-    public float Finger_radious { get => finger_radious;}
     public Buff_Type Buff_Type { get => buff_Type; }
     #endregion
+
+    //临时变量
+    float offset_y;
 
     private void Awake()
     {
@@ -109,8 +129,7 @@ public class Game_Controller : MonoBehaviour
     /// <param name="score"></param>
     public void Set_Score(int score)
     {
-        ninja.score += score;
-        score_ui.text = "分数：" + ninja.score.ToString();
+        ninja.Score += score;
     }
 
     /// <summary>
@@ -156,6 +175,7 @@ public class Game_Controller : MonoBehaviour
 
     private void FixedUpdate()
     {
+        //设置偏移量，用于材质，后面可以删除
         offset_y += tile_speed * Time.deltaTime;
         floor_material.mainTextureOffset = new Vector2(0, offset_y);
     }
@@ -193,47 +213,6 @@ public class Game_Controller : MonoBehaviour
         else if (angle > 225 && angle < 315)
         {
             ninja.Down(true);
-        }
-    }
-
-    public void Test_Finger()
-    {
-        if (line.positionCount == 0)
-        {
-            return;
-        }
-        Vector2 line_screen_pos = Camera.main.WorldToScreenPoint(line.GetPosition(line.positionCount - 1));
-        if (finger_start_pos.Count == 0)
-        {
-            Debug.Log("减分！！");
-            return;
-        }
-        //Debug.Log("线段位置"+line_screen_pos);
-        //Debug.Log("手指位置"+ Input.touches[0].position);
-        float distance = Mathf.Sqrt(Vector2.SqrMagnitude(line_screen_pos - Input.touches[0].position))/100;
-        Debug.Log(distance);
-        if (distance<=Finger_radious)
-        {
-            Debug.Log("加分！！");
-        }
-        else
-        {
-            Debug.Log("减分！！");
-        }
-    }
-
-    /// <summary>
-    /// 判定线按下调用
-    /// </summary>
-    public void Test_Check_Line()
-    {
-        if (Mathf.Abs(finger_start_pos[0].y - check_line.position.y) <=line_range)
-        {
-            grade_text.text = "判定成功";
-        }
-        else
-        {
-            grade_text.text = "判定失败";
         }
     }
 
@@ -278,6 +257,7 @@ public class Game_Controller : MonoBehaviour
             if ((is_reached && (buff_time < 0f || buff_distance >= buff_max_distance)) || !is_pressing)
             {
                 //取消玩家buff状态
+                Debug.Log("取消buff状态");
                 ninja.Is_buffing = false;
                 //落地
                 switch (Buff_Type)
@@ -300,11 +280,8 @@ public class Game_Controller : MonoBehaviour
                 }
                 //取消到达ui状态
                 is_reached = false;
-                //测试用，后面可以删掉
-                Set_buff_time_And_type(3f, temp_buff[Random.Range(0, 2)]);
                 //设置长按跳跃状态
                 is_jump_after = true;
-                ninja.Set_Buff_Status();
             }
             //当玩家没有buff时，防止时间一直减少
             if (ninja.Is_buffing)
@@ -320,7 +297,6 @@ public class Game_Controller : MonoBehaviour
     /// <param name="enable"></param>
     public void Set_Jump_UI(bool enable)
     {
-        Debug.Log("ui：" + enable);
         //后面增加特效
         jump_buff_ui.gameObject.SetActive(enable);
         if (Input.touchCount==0)
@@ -352,6 +328,10 @@ public class Game_Controller : MonoBehaviour
     /// </summary>
     public void Check_Down_And_Jump()
     {
+        if (!ninja.Is_buffing)
+        {
+            return;
+        }
         switch (Buff_Type)
         {
             case Buff_Type.Jump:

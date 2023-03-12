@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: -7224829925844529908}
   - component: {fileID: -1477988810494118154}
   m_Layer: 0
-  m_Name: PreBusBackA1
+  m_Name: Down_Block
   m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

@@ -45,19 +45,41 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   floor_material: {fileID: 2100000, guid: a12d66d1a62470b4885593fbac22083a, type: 2}
-  speed: 0.3
+  speed: 7
+  curve_speed: 4
+  tile_speed: 0.3
   blocks:
-  - {fileID: 1000010720020006, guid: c92599795724d4644af24bf0388ed4b7, type: 3}
-  - {fileID: 1000010503081622, guid: e50108ce6f4796942b6ba506e31c3ab0, type: 3}
-  - {fileID: 1000010376564098, guid: 1eb5d5b161a96134182e0057f014c976, type: 3}
+  - {fileID: 1000010720020006, guid: ae66d136930b79a45a4e6fe8ce7c2628, type: 3}
   downs:
-  - {fileID: 1000010762472760, guid: 9f290db5290ce3641a60348ec137b079, type: 3}
-  block_pos: {x: 0, y: 0, z: 0}
-  distance: 0.5
-  start_pos: -4
+  - {fileID: 1000010376564098, guid: 1eb5d5b161a96134182e0057f014c976, type: 3}
+  turns:
+  - {fileID: 1000010720020006, guid: c92599795724d4644af24bf0388ed4b7, type: 3}
+  block_pos:
+  - {x: 3.415e-41, y: -3, z: 0}
+  down_pos:
+  - {x: 3.4018e-41, y: 3, z: 0}
+  turn_pos:
+  - {x: -0.3, y: 0, z: 0}
+  - {x: 4.5, y: 0, z: 0}
+  - {x: -4.5, y: 0, z: 0}
+  gesture_pos:
+  - {x: -1.25, y: 2, z: 20}
   joystick: {fileID: 0}
-  finger_start_pos: []
-  finger_radious: 2
-  test_vector: {x: 0, y: 0}
   ninja: {fileID: 0}
-  line: {fileID: 0}
+  check_line: {fileID: 0}
+  line_range: 100
+  is_jump_after: 0
+  is_reached: 0
+  pressed: 0
+  buff_time: 3
+  buff_max_distance: 150
+  buff_Type: 0
+  finger_start_pos: []
+  test_vector: {x: 0, y: 0}
+  grade_text: {fileID: 0}
+  jump_buff_ui: {fileID: 0}
+  down_buff_ui: {fileID: 0}
+  hp_ui: {fileID: 0}
+  buff_ui: {fileID: 0}
+  score_ui: {fileID: 0}
+  status_ui: {fileID: 0}
