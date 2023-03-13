@@ -70,6 +70,15 @@ public class Game_Controller : MonoBehaviour
     public bool pressed;
     #endregion
 
+    #region 时间变量
+    [Header("开始判定的时间")]
+    public float start_time;
+    [Header("完美时间")]
+    public float prefect_time;
+    [Header("失败时间")]
+    public float loss_time;
+    #endregion
+
     [Header("悬空时间")]
     [SerializeField] float buff_time;
     [Header("手指到ui的最大范围")]
@@ -77,6 +86,9 @@ public class Game_Controller : MonoBehaviour
     float buff_distance;
     //buff类型
     [SerializeField] Buff_Type buff_Type;
+    //目前测试的障碍物
+    public Block cur_block;
+    bool if_once = true;//开始只有一次加入
 
     #region 手势位置
     [Header("手势变量(不用管)------------------------------------------")]
@@ -89,6 +101,7 @@ public class Game_Controller : MonoBehaviour
     [SerializeField] Text grade_text;
     [SerializeField] Image jump_buff_ui;
     [SerializeField] Image down_buff_ui;
+    [SerializeField] Text perfermence_ui;
     [SerializeField] Text hp_ui;
     [Header("这个不用管，会自动装上去")]
     [SerializeField] Text buff_ui;
@@ -343,5 +356,30 @@ public class Game_Controller : MonoBehaviour
             default:
                 break;
         }
+    }
+
+    /// <summary>
+    /// 第一次加入方块
+    /// </summary>
+    public void Add_Block_To_Current(Block block)
+    {
+        if (if_once)
+        {
+            cur_block = block;
+            if_once = false;
+        }
+    }
+
+    /// <summary>
+    /// 重置第一次
+    /// </summary>
+    public void Set_Once()
+    {
+        if_once = true;
+    }
+
+    public void Set_preference_Text(string content)
+    {
+        perfermence_ui.text = content;
     }
 }

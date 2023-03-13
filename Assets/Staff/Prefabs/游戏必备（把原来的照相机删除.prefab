@@ -31,6 +31,37 @@ Transform:
   m_Father: {fileID: 6235311665553069420}
   m_RootOrder: 6
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &823997613
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 823997614}
+  m_Layer: 0
+  m_Name: Blocks
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &823997614
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 823997613}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 6235311665553069420}
+  m_RootOrder: 7
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &963194225
 GameObject:
   m_ObjectHideFlags: 0
@@ -262,10 +293,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a36c3afd61035594392eac46221bd275, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  eventID: Move
+  eventID: Jump_To_Sky
   target_obj: {fileID: 751657570}
   audio_source: {fileID: 6235311665573696779}
-  index: 2
+  index: 0
   is_line: 0
 --- !u!114 &6235311665137214157
 MonoBehaviour:
@@ -274,7 +305,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6235311663846734858}
-  m_Enabled: 1
+  m_Enabled: 0
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: c5aa5ed077433fb42ad12c57141eb709, type: 3}
   m_Name: 
@@ -1408,6 +1439,7 @@ Transform:
   - {fileID: 6235311663984550447}
   - {fileID: 963194228}
   - {fileID: 751657574}
+  - {fileID: 823997614}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1709,6 +1741,10 @@ PrefabInstance:
       propertyPath: ninja
       value: 
       objectReference: {fileID: 6235311664503770365}
+    - target: {fileID: 5057382757781126045, guid: 6f285a15ea4f700448698e53fbbcda29, type: 3}
+      propertyPath: speed
+      value: 4
+      objectReference: {fileID: 0}
     - target: {fileID: 5057382757781126045, guid: 6f285a15ea4f700448698e53fbbcda29, type: 3}
       propertyPath: joystick
       value: 

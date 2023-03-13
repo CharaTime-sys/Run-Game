@@ -82,6 +82,8 @@ namespace SonicBloom.Koreo.Demos
             }
             //设置位置
             block.transform.position = new Vector3(block.transform.position.x, block.transform.position.y, target_obj.transform.position.z);
+            block.transform.parent = GameObject.Find("游戏必备/Blocks").transform;
+            Game_Controller.Instance.Add_Block_To_Current(block.GetComponent<Block>());
         }
         void Set_Audio()
         {

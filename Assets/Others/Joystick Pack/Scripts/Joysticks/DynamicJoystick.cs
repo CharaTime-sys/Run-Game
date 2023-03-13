@@ -53,8 +53,8 @@ public class DynamicJoystick : Joystick
             //取消按下状态
             Game_Controller.Instance.Press_Checked(false);
             Game_Controller.Instance.pressed = false;
-        //移除原来的坐标
-        Game_Controller.Instance.finger_start_pos.RemoveAt(0);
+            //移除原来的坐标
+            Game_Controller.Instance.finger_start_pos.RemoveAt(0);
         }
         //防止有bug
         if (!Game_Controller.Instance.is_jump_after)
@@ -85,6 +85,11 @@ public class DynamicJoystick : Joystick
         }
         //重置长按跳跃的状态
         Game_Controller.Instance.is_jump_after = false;
+        //进行评分
+        if (Game_Controller.Instance.cur_block!=null)
+        {
+            Game_Controller.Instance.cur_block.Test_Score();
+        }
         base.OnPointerUp(eventData);
     }
 
