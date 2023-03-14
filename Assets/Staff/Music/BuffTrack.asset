@@ -15,7 +15,7 @@ MonoBehaviour:
   mEventID: BuffTrack
   mEventList:
   - mStartSample: 88200
-    mEndSample: 176400
+    mEndSample: 264600
   - mStartSample: 308700
     mEndSample: 431324
   - mStartSample: 557277

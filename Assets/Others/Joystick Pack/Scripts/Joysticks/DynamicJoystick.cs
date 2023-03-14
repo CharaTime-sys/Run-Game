@@ -86,7 +86,7 @@ public class DynamicJoystick : Joystick
         //重置长按跳跃的状态
         Game_Controller.Instance.is_jump_after = false;
         //进行评分
-        if (Game_Controller.Instance.cur_block!=null)
+        if (Game_Controller.Instance.cur_block!=null && !Game_Controller.Instance.ninja.Is_buffing)
         {
             Game_Controller.Instance.cur_block.Test_Score();
         }

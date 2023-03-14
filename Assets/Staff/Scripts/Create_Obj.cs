@@ -44,7 +44,7 @@ namespace SonicBloom.Koreo.Demos
                 {
                     case Curve_Type.Up:
                         GameObject curve = Instantiate(Cure_Controller.Instance.curves[0], Game_Controller.Instance.gesture_pos[0], Quaternion.identity);
-                        curve.transform.SetParent(GameObject.Find("Curves").transform);
+                        curve.transform.SetParent(GameObject.Find("游戏必备/Curves").transform);
                         break;
                     case Curve_Type.Right:
                         break;

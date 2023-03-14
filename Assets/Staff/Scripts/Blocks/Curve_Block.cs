@@ -56,9 +56,6 @@ public class Curve_Block : Block
             Vector2 follow_pos = splineFollower.GetComponent<Curve_Follow>().Curve_Point();
             //得到距离
             float distance = Vector2.Distance(follow_pos, Input.touches[0].position);
-            Debug.Log(follow_pos);
-            Debug.Log(splineFollower.transform.position);
-            Debug.Log(distance);
             //当判定到了就跟随，并且更新曲线
             if (distance <= Cure_Controller.Instance.follow_radious)
             {

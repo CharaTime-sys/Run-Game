@@ -111,6 +111,7 @@ public class Game_Controller : MonoBehaviour
     Vector3 target_pos;//用于长按的判断
     Vector3 press_pos;//目前的手指位置
     public Text status_ui;
+    public float target_z;
 
     #region 属性
     public Vector3 Press_pos { get => press_pos; }

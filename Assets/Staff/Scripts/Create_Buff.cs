@@ -33,8 +33,11 @@ namespace SonicBloom.Koreo.Demos
                 _buff.GetComponent<Buff_Block>().buff_time = (koreoEvent.EndSample - koreoEvent.StartSample) / 88200;
                 //设置位置
                 _buff.transform.position = new Vector3(_buff.transform.position.x, _buff.transform.position.y, target_obj.transform.position.z);
+                //创造对应的物体
+                Create_Constant_Obj(_buff.transform.position, (int)_buff.GetComponent<Buff_Block>().buff_time);
             }
         }
+
         void OnDestroy()
         {
             // Sometimes the Koreographer Instance gets cleaned up before hand.
@@ -54,6 +57,36 @@ namespace SonicBloom.Koreo.Demos
         public GameObject Get_Block_Pos(GameObject obj,Vector3[] pos)
         {
             return Instantiate(obj, pos[UnityEngine.Random.Range(0, pos.Length - 1)], Quaternion.identity);
+        }
+
+        /// <summary>
+        /// 生成buff连续的物体
+        /// </summary>
+        void Create_Constant_Obj(Vector3 block_pos,int nums)
+        {
+            GameObject target_obj = null;
+            Vector3 target_pos = Vector3.zero;
+            //生成对应的物体
+            switch (buff_Type)
+            {
+                case Buff_Type.Jump:
+                    target_obj = Game_Controller.Instance.blocks[0];
+                    target_pos += Game_Controller.Instance.block_pos[0];
+                    break;
+                case Buff_Type.Down:
+                    target_obj = Game_Controller.Instance.downs[0];
+                    target_pos += Game_Controller.Instance.down_pos[0];
+                    break;
+                default:
+                    break;
+            }
+            //目标z轴
+            float target_z = block_pos.z;
+            for (int i = 0; i < nums; i++)
+            {
+                target_z += Game_Controller.Instance.target_z;
+                Instantiate(target_obj, target_pos + new Vector3(0, 0, target_z), Quaternion.identity,GameObject.Find("游戏必备/Blocks").transform);
+            }
         }
     }
 }
