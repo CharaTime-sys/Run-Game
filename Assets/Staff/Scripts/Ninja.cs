@@ -42,7 +42,7 @@ public class Ninja : MonoBehaviour
     #region 私有变量
     [Header("角色动画")]
     [SerializeField] Animator chara;
-    Vector3 start_pos;
+    [SerializeField] Vector3 start_pos;
 
     //血量和分数
     int hp = 100;
@@ -66,11 +66,6 @@ public class Ninja : MonoBehaviour
         }
     }
     #endregion
-    // Start is called before the first frame update
-    void Start()
-    {
-        start_pos = transform.position;
-    }
 
     private void Update()
     {
@@ -104,15 +99,17 @@ public class Ninja : MonoBehaviour
     /// <param 方向="direction"></param>
     public void Move_Left_And_Right(int direction)
     {
-        //超过范围不能移动
+        ////超过范围不能移动
         if ((dir_component < 0 && direction < 0) || (dir_component > 0 && direction > 0) || is_moving)
         {
             return;
         }
-        transform.DOMove(new Vector3(transform.position.x + direction * move_distance,transform.position.y,transform.position.z), move_time).SetEase(Ease.Linear);
+        //transform.DOMove(new Vector3(transform.position.x + direction * move_distance,transform.position.y,transform.position.z), move_time).SetEase(Ease.Linear);
+        //设置镜头转换
+        Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(false, -direction);
         is_moving = true;
         //清空移动状态
-        Invoke("Reset_Move", move_time);
+        Invoke(nameof(Reset_Move), move_time);
     }
 
     /// <summary>
@@ -133,11 +130,13 @@ public class Ninja : MonoBehaviour
         {
             return;
         }
+        Debug.Log("跳跃");
         is_jumping = true;//设置跳跃状态
         is_downing = false;
-        Reset_Y_Action();//重置分量，防止回去的时候y轴错误
         chara.Play("Jump");//播放动画
-        transform.DOMoveY(range.x, time.x);//跳跃
+        //设置镜头转换
+        Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(false, 2);
+        transform.DOMoveY(start_pos.y+range.x, time.x);//跳跃
         //如果腾空，则不需要调用
         if (if_resumed)
         {
@@ -155,11 +154,13 @@ public class Ninja : MonoBehaviour
         {
             return;
         }
+        Debug.Log("下滑");
         is_downing = true;
         is_jumping = false;
-        Reset_Y_Action();
         chara.Play("Down");
         transform.DOMoveY(start_pos.y - range.y, time.y);
+        //设置镜头转换
+        Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(false, 0);
         //如果腾空，则不需要调用
         if (if_resumed)
         {
@@ -181,9 +182,12 @@ public class Ninja : MonoBehaviour
     /// </summary>
     public void Resume_Jump()
     {
+        Debug.Log("返回跳跃");
         //播放动画
         chara.Play("Run");
-        transform.DOMoveY(start_pos.y, time.y);
+        //设置镜头转换
+        Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(true, 2);
+        transform.DOMove(start_pos, time.x);
         is_jumping = false;
     }
 
@@ -192,8 +196,11 @@ public class Ninja : MonoBehaviour
     /// </summary>
     public void Resume_Down()
     {
+        Debug.Log("返回下滑");
         chara.Play("Run");
-        transform.DOMoveY(start_pos.y, time.y);
+        transform.DOMove(start_pos, time.y);
+        //设置镜头转换
+        Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(true, 0);
         is_downing = false;
     }
     #endregion

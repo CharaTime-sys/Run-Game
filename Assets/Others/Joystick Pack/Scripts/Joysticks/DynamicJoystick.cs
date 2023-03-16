@@ -5,15 +5,36 @@ using UnityEngine.EventSystems;
 
 public class DynamicJoystick : Joystick
 {
+    public static DynamicJoystick Instance;
     public float MoveThreshold { get { return moveThreshold; } set { moveThreshold = Mathf.Abs(value); } }
 
     [SerializeField] private float moveThreshold = 1;
 
+    //是否判定上方
+    public bool if_top;
+    [Header("判定线位置")]
+    [SerializeField] Transform checkline;
+    [Header("上下的偏移值")]
+    [SerializeField] float offset_y = 10f;
+    public int touch_index = 0;//手指索引
+    //判定线委托
+    public delegate void Set_check_line(int index);
+    public Set_check_line set_Check_Line;
+    //手指松开委托
+    public delegate void Disable_check_line();
+    public Disable_check_line disable_Check_Line;
+    bool Test_CheckLine;//测试手指在哪里判断的
+    private void Awake()
+    {
+        Instance = this;
+    }
     protected override void Start()
     {
         MoveThreshold = moveThreshold;
         base.Start();
         background.gameObject.SetActive(false);
+        //找到checkline
+        checkline = GameObject.Find("游戏必备/屏幕画布/判定手势相关/CheckLine").GetComponent<Transform>();
     }
 
     /// <summary>
@@ -27,18 +48,30 @@ public class DynamicJoystick : Joystick
         //让手指的位置加入gamecontroller进入判定
         if (Input.touches.Length != 0)
         {
-            //加入手指的开始坐标
-            Game_Controller.Instance.finger_start_pos.Add(Input.touches[0].position);
-            //设置按下状态
-            Game_Controller.Instance.pressed = true;
-            Game_Controller.Instance.Press_Checked(true);
-            Game_Controller.Instance.Check_Down_And_Jump();
-            //测试上方的判定线
-            //Game_Controller.Instance.Test_Check_Line();
+            //对每个位置进行循环
+            foreach (var item in Input.touches)
+            {
+                Test_CheckLine = item.position.y >= checkline.position.y - offset_y;
+                //如果在判定线上方
+                if (Test_CheckLine)
+                {
+                    Debug.Log(touch_index);
+                    set_Check_Line?.Invoke(touch_index);//设置每个手势的手指位置坐标
+                }
+                else
+                {
+                    //加入手指的开始坐标
+                    Game_Controller.Instance.finger_start_pos.Add(Input.touches[0].position);
+                    //设置按下状态
+                    Game_Controller.Instance.pressed = true;
+                    Game_Controller.Instance.Press_Checked(true);
+                    Game_Controller.Instance.Check_Down_And_Jump();
+                }
+            }
         }
+        touch_index++;//增加索引
         base.OnPointerDown(eventData);
     }
-
     /// <summary>
     /// 鼠标抬起
     /// </summary>
@@ -46,8 +79,9 @@ public class DynamicJoystick : Joystick
     public override void OnPointerUp(PointerEventData eventData)
     {
         background.gameObject.SetActive(false);
+        touch_index--;//减少索引
         //得到手势的方向
-        if (Input.touches.Length != 0)
+        if (Input.touches.Length != 0 && !Test_CheckLine)
         {
             Game_Controller.Instance.test_vector = Input.touches[0].position - Game_Controller.Instance.finger_start_pos[0];
             //取消按下状态
@@ -55,40 +89,41 @@ public class DynamicJoystick : Joystick
             Game_Controller.Instance.pressed = false;
             //移除原来的坐标
             Game_Controller.Instance.finger_start_pos.RemoveAt(0);
-        }
-        //防止有bug
-        if (!Game_Controller.Instance.is_jump_after)
-        {
-            Game_Controller.Instance.Test_Direction();
-        }
-        if (Game_Controller.Instance.ninja.Is_buffing)
-        {
-            switch (Game_Controller.Instance.Buff_Type)
+            disable_Check_Line?.Invoke();//手指松开判断
+            //防止有bug
+            if (!Game_Controller.Instance.is_jump_after)
             {
-                case Buff_Type.Jump:
-                    Game_Controller.Instance.Set_Jump_UI(false);
-                    if (Game_Controller.Instance.is_reached)
-                    {
-                        Game_Controller.Instance.ninja.Resume_Jump();
-                    }
-                    break;
-                case Buff_Type.Down:
-                    Game_Controller.Instance.Set_Down_UI(false);
-                    if (Game_Controller.Instance.is_reached)
-                    {
-                        Game_Controller.Instance.ninja.Resume_Down();
-                    }
-                    break;
-                default:
-                    break;
+                Game_Controller.Instance.Test_Direction();
             }
-        }
-        //重置长按跳跃的状态
-        Game_Controller.Instance.is_jump_after = false;
-        //进行评分
-        if (Game_Controller.Instance.cur_block!=null && !Game_Controller.Instance.ninja.Is_buffing)
-        {
-            Game_Controller.Instance.cur_block.Test_Score();
+            if (Game_Controller.Instance.ninja.Is_buffing)
+            {
+                switch (Game_Controller.Instance.Buff_Type)
+                {
+                    case Buff_Type.Jump:
+                        Game_Controller.Instance.Set_Jump_UI(false);
+                        if (Game_Controller.Instance.is_reached)
+                        {
+                            Game_Controller.Instance.ninja.Resume_Jump();
+                        }
+                        break;
+                    case Buff_Type.Down:
+                        Game_Controller.Instance.Set_Down_UI(false);
+                        if (Game_Controller.Instance.is_reached)
+                        {
+                            Game_Controller.Instance.ninja.Resume_Down();
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+            //重置长按跳跃的状态
+            Game_Controller.Instance.is_jump_after = false;
+            //进行评分
+            if (Game_Controller.Instance.cur_block != null && !Game_Controller.Instance.ninja.Is_buffing)
+            {
+                Game_Controller.Instance.cur_block.Test_Score();
+            }
         }
         base.OnPointerUp(eventData);
     }
