@@ -12,9 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: -2076007791, guid: aa81bbec85a3f423193272a7c6154986, type: 3}
   m_Name: TestKoreography
   m_EditorClassIdentifier: 
-  mSourceClip: {fileID: 8300000, guid: 220c5a03851c3f0419866e52c5b82433, type: 3}
+  mSourceClip: {fileID: 8300000, guid: 9b153792eef80694a802528a1a6500a3, type: 3}
   mAudioFilePath: 
-  mSampleRate: 48000
+  mSampleRate: 44100
   mIgnoreLatencyOffset: 0
   mTempoSections:
   - sectionName: New Section
@@ -32,3 +32,5 @@ MonoBehaviour:
   - {fileID: 11400000, guid: cd099f618a0436440b673893a0fa2689, type: 2}
   - {fileID: 11400000, guid: bbe7421346ed260459c276125841d891, type: 2}
   - {fileID: 11400000, guid: 999e84b4634b71144ac810233757ce6f, type: 2}
+  - {fileID: 11400000, guid: 1c06148bfc3fc694cb5488726b1a3e3c, type: 2}
+  - {fileID: 11400000, guid: de884b46309668c47bdf4c2fbc72b42d, type: 2}

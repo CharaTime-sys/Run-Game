@@ -50,6 +50,7 @@ public class Jump_Block : Block
 
     private void OnTriggerEnter(Collider other)
     {
+        base.OnTriggerEnter(other);
         if (other.tag == "Effect")
         {
             if (other.name.StartsWith("3"))
@@ -62,11 +63,16 @@ public class Jump_Block : Block
                 _material.SetColor("_EmissionColor", Color.black);
                 Set_Uping();
             }
+            else if (other.name.StartsWith("0"))
+            {
+                is_shining = false;
+                _material.SetColor("_EmissionColor", Color.black);
+            }
         }
     }
 
     void Set_Uping()
     {
-        transform.DOMoveY(transform.position.y + offset_y, time);
+        transform.DOLocalMoveY(transform.localPosition.y + offset_y, time);
     }
 }

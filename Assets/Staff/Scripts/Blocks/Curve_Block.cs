@@ -11,18 +11,19 @@ public class Curve_Block : Block
     [SerializeField] float end_z_max = 6.4f;
     [SerializeField] SplineRenderer splineComputer;
     [SerializeField] SplineFollower splineFollower;
-    [SerializeField] int touch_index;//目前的手指位置
+    int touch_index = -1;//目前的手指位置
 
     bool is_over;//是否超过了判定范围
     bool is_once;//是否第一次按下
     bool is_add_once;//是否第一次加入事件
+    bool is_add_once_disable;//是否第一次加入事件(放开事件)
     bool is_pressed;//是否按下了
     private void FixedUpdate()
     {
         ////如果超过了就不会前进
         if (!is_pressed && !is_over)
         {
-            base.FixedUpdate();
+            transform.Translate(new Vector3(0, 0, -1) * Game_Controller.Instance.curve_speed * Time.deltaTime);
         }
     }
     // Update is called once per frame
@@ -34,7 +35,6 @@ public class Curve_Block : Block
             if (!is_add_once)
             {
                 DynamicJoystick.Instance.set_Check_Line += Set_Pressed;
-                DynamicJoystick.Instance.disable_Check_Line += Disable_Pressed;
                 is_add_once = true;
             }
             Renew_Curve();
@@ -57,9 +57,19 @@ public class Curve_Block : Block
         }
         if (is_pressed)
         {
+            //当按下后才添加取消事件
+            if (!is_add_once_disable)
+            {
+                DynamicJoystick.Instance.disable_Check_Line += Disable_Pressed;
+                is_add_once_disable = true;
+            }
             //得到位置
             Vector2 follow_pos = splineFollower.GetComponent<Curve_Follow>().Curve_Point();
             //得到距离
+            if (Input.touches.Length <touch_index+1 )
+            {
+                return;//如果没有手指按下就返回
+            }
             float distance = Vector2.Distance(follow_pos, Input.touches[touch_index].position);
             //当判定到了就跟随，并且更新曲线
             if (distance <= Cure_Controller.Instance.follow_radious)
@@ -100,6 +110,10 @@ public class Curve_Block : Block
     /// <param 目标记录的手指位置="touch"></param>
     void Set_Pressed(int index)
     {
+        if (touch_index!= -1)
+        {
+            return;
+        }
         //设置对应变量
         is_once = true;
         is_pressed = true;
@@ -114,6 +128,7 @@ public class Curve_Block : Block
         //如果松的是目前的手指的话
         if (Input.touches[DynamicJoystick.Instance.touch_index].position == Input.touches[touch_index].position)
         {
+            Game_Controller.Instance.Set_Score(5);
             is_pressed = false;
         }
     }

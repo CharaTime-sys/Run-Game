@@ -55,13 +55,14 @@ public class DynamicJoystick : Joystick
                 //如果在判定线上方
                 if (Test_CheckLine)
                 {
-                    Debug.Log(touch_index);
                     set_Check_Line?.Invoke(touch_index);//设置每个手势的手指位置坐标
                 }
+                //玩家手势
                 else
                 {
+                    Debug.Log(touch_index);
                     //加入手指的开始坐标
-                    Game_Controller.Instance.finger_start_pos.Add(Input.touches[0].position);
+                    Game_Controller.Instance.finger_start_pos=Input.touches[touch_index].position;
                     //设置按下状态
                     Game_Controller.Instance.pressed = true;
                     Game_Controller.Instance.Press_Checked(true);
@@ -80,16 +81,16 @@ public class DynamicJoystick : Joystick
     {
         background.gameObject.SetActive(false);
         touch_index--;//减少索引
-        //得到手势的方向
-        if (Input.touches.Length != 0 && !Test_CheckLine)
+        //得到手势的方向，手指坐标不为空 检测在下面 手指坐标不为0
+        if (Input.touches.Length != 0 && !Test_CheckLine && Game_Controller.Instance.finger_start_pos != new Vector2(-1000,1000))
         {
-            Game_Controller.Instance.test_vector = Input.touches[0].position - Game_Controller.Instance.finger_start_pos[0];
+            Game_Controller.Instance.test_vector = Input.touches[touch_index].position - Game_Controller.Instance.finger_start_pos;
             //取消按下状态
             Game_Controller.Instance.Press_Checked(false);
             Game_Controller.Instance.pressed = false;
             //移除原来的坐标
-            Game_Controller.Instance.finger_start_pos.RemoveAt(0);
-            disable_Check_Line?.Invoke();//手指松开判断
+            Game_Controller.Instance.finger_start_pos = new Vector2(-1000, 1000);
+
             //防止有bug
             if (!Game_Controller.Instance.is_jump_after)
             {
@@ -125,6 +126,7 @@ public class DynamicJoystick : Joystick
                 Game_Controller.Instance.cur_block.Test_Score();
             }
         }
+        disable_Check_Line?.Invoke();//手指松开判断
         base.OnPointerUp(eventData);
     }
 

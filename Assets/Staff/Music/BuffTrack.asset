@@ -14,12 +14,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mEventID: BuffTrack
   mEventList:
-  - mStartSample: 88200
-    mEndSample: 264600
-  - mStartSample: 308700
-    mEndSample: 431324
-  - mStartSample: 557277
-    mEndSample: 714714
+  - mStartSample: 974474
+    mEndSample: 1040330
+  - mStartSample: 1212496
+    mEndSample: 1304870
+  - mStartSample: 1441111
+    mEndSample: 1540835
+  - mStartSample: 1680074
+    mEndSample: 1912451
   _SerializedPayloadTypes:
   - SonicBloom.Koreo.CurvePayload
   _AssetPayloads: []
@@ -99,7 +101,31 @@ MonoBehaviour:
       m_PreInfinity: 2
       m_PostInfinity: 2
       m_RotationOrder: 4
-  _CurvePayloadIdxs: 000000000100000002000000
+  - mCurveData:
+      serializedVersion: 2
+      m_Curve:
+      - serializedVersion: 3
+        time: 0
+        value: 0
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      - serializedVersion: 3
+        time: 1
+        value: 1
+        inSlope: 1
+        outSlope: 1
+        tangentMode: 0
+        weightedMode: 0
+        inWeight: 0.33333334
+        outWeight: 0.33333334
+      m_PreInfinity: 2
+      m_PostInfinity: 2
+      m_RotationOrder: 4
+  _CurvePayloadIdxs: 00000000010000000200000003000000
   _FloatPayloads: []
   _FloatPayloadIdxs: 
   _GradientPayloads: []

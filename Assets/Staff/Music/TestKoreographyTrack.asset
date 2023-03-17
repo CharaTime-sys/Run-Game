@@ -14,14 +14,10 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mEventID: Down
   mEventList:
-  - mStartSample: 286650
-    mEndSample: 286650
-  - mStartSample: 837900
-    mEndSample: 837900
-  - mStartSample: 1389150
-    mEndSample: 1389150
-  - mStartSample: 1830150
-    mEndSample: 1830150
+  - mStartSample: 263686
+    mEndSample: 263686
+  - mStartSample: 381023
+    mEndSample: 381023
   - mStartSample: 6078774
     mEndSample: 6078774
   _SerializedPayloadTypes: []

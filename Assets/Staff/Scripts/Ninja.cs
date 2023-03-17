@@ -11,6 +11,8 @@ public class Ninja : MonoBehaviour
     public Vector2 time;
     [Header("恢复时间")]
     public float resume_time;
+    [Header("下滑恢复时间")]
+    public float down_resume_time;
     [Header("左右移动的时间")]
     [SerializeField] float move_time;
     [Header("无敌时间")]
@@ -43,6 +45,7 @@ public class Ninja : MonoBehaviour
     [Header("角色动画")]
     [SerializeField] Animator chara;
     [SerializeField] Vector3 start_pos;
+    [SerializeField] float[] collider_y;
 
     //血量和分数
     int hp = 100;
@@ -104,7 +107,8 @@ public class Ninja : MonoBehaviour
         {
             return;
         }
-        //transform.DOMove(new Vector3(transform.position.x + direction * move_distance,transform.position.y,transform.position.z), move_time).SetEase(Ease.Linear);
+        //播放音效
+        Game_Controller.Instance.Play_Effect(3);
         //设置镜头转换
         Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(false, -direction);
         is_moving = true;
@@ -134,6 +138,8 @@ public class Ninja : MonoBehaviour
         is_jumping = true;//设置跳跃状态
         is_downing = false;
         chara.Play("Jump");//播放动画
+        //播放音效
+        Game_Controller.Instance.Play_Effect(0);
         //设置镜头转换
         Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(false, 2);
         transform.DOMoveY(start_pos.y+range.x, time.x);//跳跃
@@ -154,17 +160,20 @@ public class Ninja : MonoBehaviour
         {
             return;
         }
-        Debug.Log("下滑");
+        //改变碰撞体体积
+        GetComponent<BoxCollider>().size =new Vector3(GetComponent<BoxCollider>().size.x, collider_y[1], GetComponent<BoxCollider>().size.z);
         is_downing = true;
         is_jumping = false;
         chara.Play("Down");
+        //播放音效
+        Game_Controller.Instance.Play_Effect(2);
         transform.DOMoveY(start_pos.y - range.y, time.y);
         //设置镜头转换
         Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(false, 0);
         //如果腾空，则不需要调用
         if (if_resumed)
         {
-            Invoke(nameof(Resume_Down), resume_time);
+            Invoke(nameof(Resume_Down), down_resume_time);
         }
     }
 
@@ -182,7 +191,6 @@ public class Ninja : MonoBehaviour
     /// </summary>
     public void Resume_Jump()
     {
-        Debug.Log("返回跳跃");
         //播放动画
         chara.Play("Run");
         //设置镜头转换
@@ -196,7 +204,8 @@ public class Ninja : MonoBehaviour
     /// </summary>
     public void Resume_Down()
     {
-        Debug.Log("返回下滑");
+        //改变碰撞体体积
+        GetComponent<BoxCollider>().size = new Vector3(GetComponent<BoxCollider>().size.x, collider_y[0], GetComponent<BoxCollider>().size.z);
         chara.Play("Run");
         transform.DOMove(start_pos, time.y);
         //设置镜头转换
@@ -231,10 +240,11 @@ public class Ninja : MonoBehaviour
         //如果碰到了障碍物则扣血
         if (other.tag == "Block")
         {
-            if (is_unmathcing)
+            if (is_unmathcing || other.GetComponent<Block>().If_great)
             {
                 return;
             }
+            other.GetComponent<Block>().Set_loss();//设置失败
             //扣血
             Game_Controller.Instance.Set_HP(other.gameObject.GetComponent<Block>().damage);
             //设置无敌状态
@@ -247,7 +257,6 @@ public class Ninja : MonoBehaviour
         //如果碰到了buff就设置相应的buff
         if (other.tag == "Buff")
         {
-            Debug.Log("碰到buff了");
             Game_Controller.Instance.Set_buff_time_And_type(other.GetComponent<Buff_Block>().buff_time, other.GetComponent<Buff_Block>().buff_Type);
             Set_Buff_Status();
         }

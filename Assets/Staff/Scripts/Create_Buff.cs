@@ -21,7 +21,6 @@ namespace SonicBloom.Koreo.Demos
         {
             // Register for Koreography Events.  This sets up the callback.
             Koreographer.Instance.RegisterForEventsWithTime(eventID, AddImpulse);
-            Invoke("Set_Audio", Game_Controller.Instance.music_delay);
         }
 
         void AddImpulse(KoreographyEvent koreoEvent, int sampleTime, int sampleDelta, DeltaSlice deltaSlice)
@@ -29,6 +28,7 @@ namespace SonicBloom.Koreo.Demos
             if (koreoEvent.GetValueOfCurveAtTime(sampleTime)<=0.003f)
             {
                 GameObject _buff = Get_Block_Pos(Game_Controller.Instance.buffs[(int)buff_Type], Game_Controller.Instance.buff_pos);
+                _buff.transform.SetParent(GameObject.Find("游戏必备/Blocks").transform);
                 _buff.GetComponent<Buff_Block>().buff_Type = buff_Type;
                 _buff.GetComponent<Buff_Block>().buff_time = (koreoEvent.EndSample - koreoEvent.StartSample) / 88200;
                 //设置位置

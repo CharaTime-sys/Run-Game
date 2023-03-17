@@ -15,6 +15,10 @@ namespace SonicBloom.Koreo.Demos
         public AudioSource audio_source;
         [Header("0代表跳跃障碍，1代表下滑障碍，2代表转向障碍，手势就不用管索引")]
         public int index;
+        [Header("转向的索引集合(哪个不需要产生)")]
+        public int[] indexs;
+        //目前的索引
+        int cur_index = 0;
         [Header("是否是手势")]
         public bool is_line;
 
@@ -22,7 +26,6 @@ namespace SonicBloom.Koreo.Demos
         {
             // Register for Koreography Events.  This sets up the callback.
             Koreographer.Instance.RegisterForEvents(eventID, AddImpulse);
-            Invoke("Set_Audio", Game_Controller.Instance.music_delay);
         }
 
         void OnDestroy()
@@ -74,20 +77,25 @@ namespace SonicBloom.Koreo.Demos
                     block = Get_Block_Pos(_target_obj, Game_Controller.Instance.down_pos);
                     break;
                 case 2:
-                    _target_obj = Game_Controller.Instance.turns[Random.Range(0, Game_Controller.Instance.turns.Length - 1)];
-                    block = Get_Block_Pos(_target_obj, Game_Controller.Instance.turn_pos);
+                    int _index = 0;
+                    for (int i = 0; i < Game_Controller.Instance.turn_pos.Length; i++)
+                    {
+                        if (i != indexs[cur_index])
+                        {
+                            _target_obj = Game_Controller.Instance.turns[0];
+                            block = Get_Block_Pos(_target_obj, Game_Controller.Instance.turn_pos[_index]);
+                        }
+                        _index++;
+                    }
+                    cur_index++;//增加索引
                     break;
                 default:
                     break;
             }
-            //设置位置
-            block.transform.position = new Vector3(block.transform.position.x, block.transform.position.y, target_obj.transform.position.z);
-            block.transform.parent = GameObject.Find("游戏必备/Blocks").transform;
-            Game_Controller.Instance.Add_Block_To_Current(block.GetComponent<Block>());
-        }
-        void Set_Audio()
-        {
-            audio_source.Play();
+            if (Game_Controller.Instance.If_once)
+            {
+                Game_Controller.Instance.Add_Block_To_Current(block.GetComponent<Block>());
+            }
         }
 
         /// <summary>
@@ -98,7 +106,20 @@ namespace SonicBloom.Koreo.Demos
         /// <returns></returns>
         public GameObject Get_Block_Pos(GameObject obj,Vector3[] pos)
         {
-            return Instantiate(obj, pos[Random.Range(0, pos.Length - 1)], Quaternion.identity);
+            GameObject block = Instantiate(obj, GameObject.Find("游戏必备/Blocks").transform);
+            //设置位置
+            block.transform.localPosition = pos[Random.Range(0, pos.Length)];
+            block.transform.localPosition += new Vector3(0, 0, target_obj.transform.localPosition.z);
+            return block;
+        }
+
+        public GameObject Get_Block_Pos(GameObject obj, Vector3 pos)
+        {
+            GameObject block = Instantiate(obj, GameObject.Find("游戏必备/Blocks").transform);
+            //设置位置
+            block.transform.localPosition = pos;
+            block.transform.localPosition += new Vector3(0, 0, target_obj.transform.localPosition.z);
+            return block;
         }
     }
 }

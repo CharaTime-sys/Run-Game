@@ -21,8 +21,6 @@ public class Game_Controller : MonoBehaviour
     public float speed;
     [Header("曲线移动速度")]
     public float curve_speed;
-    [Header("地板移动速度")]
-    public float tile_speed;
     #endregion
 
     #region 障碍物
@@ -86,6 +84,11 @@ public class Game_Controller : MonoBehaviour
     float buff_distance;
     //buff类型
     [SerializeField] Buff_Type buff_Type;
+    //音乐播放器
+    [SerializeField] AudioSource audioSource;
+    //音效播放器
+    [SerializeField] AudioSource audio_player;
+    [SerializeField] AudioClip[] audioClips;
     //目前测试的障碍物
     public Block cur_block;
     bool if_once = true;//开始只有一次加入
@@ -93,7 +96,7 @@ public class Game_Controller : MonoBehaviour
     #region 手势位置
     [Header("手势变量(不用管)------------------------------------------")]
     //手指按下和抬起的坐标
-    public List<Vector2> finger_start_pos;
+    public Vector2 finger_start_pos;
     public Vector2 test_vector;//手势方向
     #endregion
 
@@ -116,6 +119,7 @@ public class Game_Controller : MonoBehaviour
     #region 属性
     public Vector3 Press_pos { get => press_pos; }
     public Buff_Type Buff_Type { get => buff_Type; }
+    public bool If_once { get => if_once;}
     #endregion
 
     //临时变量
@@ -124,7 +128,24 @@ public class Game_Controller : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-        Set_buff_time_And_type(3f,Buff_Type.Jump);
+        Invoke(nameof(Set_Audio), Game_Controller.Instance.music_delay);
+    }
+
+    /// <summary>
+    /// 播放音乐
+    /// </summary>
+    void Set_Audio()
+    {
+        audioSource.Play();
+    }
+
+    /// <summary>
+    /// 播放音效
+    /// </summary>
+    /// <param name="index"></param>
+    public void Play_Effect(int index)
+    {
+        audio_player.PlayOneShot(audioClips[index]);
     }
 
     /// <summary>
@@ -161,7 +182,10 @@ public class Game_Controller : MonoBehaviour
         if (is_pressing)
         {
             //得到手指位置
-            press_pos = Input.touches[0].position;
+            if (Input.touches.Length!=0)
+            {
+                press_pos = Input.touches[Input.touches.Length - 1].position;
+            }
             Test_target_UI();
             //得到手指和buffui的距离
             buff_distance = Vector3.Distance(press_pos, target_pos);
@@ -185,13 +209,6 @@ public class Game_Controller : MonoBehaviour
             default:
                 break;
         }
-    }
-
-    private void FixedUpdate()
-    {
-        //设置偏移量，用于材质，后面可以删除
-        offset_y += tile_speed * Time.deltaTime;
-        floor_material.mainTextureOffset = new Vector2(0, offset_y);
     }
 
     public void Test_Direction()
@@ -364,11 +381,8 @@ public class Game_Controller : MonoBehaviour
     /// </summary>
     public void Add_Block_To_Current(Block block)
     {
-        if (if_once)
-        {
-            cur_block = block;
-            if_once = false;
-        }
+        cur_block = block;
+        if_once = false;
     }
 
     /// <summary>
