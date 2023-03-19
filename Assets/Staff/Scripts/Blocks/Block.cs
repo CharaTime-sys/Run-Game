@@ -26,10 +26,6 @@ public class Block : MonoBehaviour
         if (if_loss && !touched)
         {
             touched = true;
-            if (transform.GetSiblingIndex() + 1 != transform.parent.childCount)
-            {
-                Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Block>();
-            }
         }
         if (transform.position.z < 2)
         {
@@ -58,7 +54,7 @@ public class Block : MonoBehaviour
     public virtual void Test_Score()
     {
         //设置不同得分标准
-        if (if_prefect)
+        if (!if_over && if_prefect)
         {
             Game_Controller.Instance.Set_Score(20);
             Game_Controller.Instance.Set_preference_Text("Prefect");
@@ -73,19 +69,29 @@ public class Block : MonoBehaviour
         if (if_over || if_great || if_prefect)
         {
             //切换判断的对象
-            if ((transform.GetSiblingIndex() + 1 == transform.parent.childCount) || (GetComponent<Normal_Block>() != null && transform.GetSiblingIndex() + 2 == transform.parent.childCount))
+            Turn_Next();
+        }
+    }
+
+    public void Turn_Next()
+    {
+        if ((transform.GetSiblingIndex() + 1 == transform.parent.childCount) || (GetComponent<Normal_Block>() != null && transform.GetSiblingIndex() + 2 == transform.parent.childCount))
+        {
+            Game_Controller.Instance.Set_Once();
+        }
+        else
+        {
+            if (GetComponent<Normal_Block>() != null)
             {
-                Game_Controller.Instance.Set_Once();
+                Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 2).GetComponent<Block>();
             }
             else
             {
-                if (GetComponent<Normal_Block>()!=null)
+                Debug.Log(transform.GetSiblingIndex());
+                Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 3).GetComponent<Block>();
+                if (Game_Controller.Instance.cur_block.GetComponent<Normal_Block>() != null)
                 {
                     Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 2).GetComponent<Block>();
-                }
-                else
-                {
-                    Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Block>();
                 }
             }
         }

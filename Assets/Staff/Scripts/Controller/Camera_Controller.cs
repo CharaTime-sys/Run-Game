@@ -77,7 +77,6 @@ public class Camera_Controller : MonoBehaviour
             //横向移动
             if (index == 1 || index == -1)
             {
-                Debug.Log(index);
                 main_staff.transform.DOMoveX(main_staff.transform.position.x + target_pos[1].x * index, change_time_horizontal);
             }
             //纵向移动

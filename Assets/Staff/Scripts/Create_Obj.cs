@@ -69,12 +69,18 @@ namespace SonicBloom.Koreo.Demos
             switch (index)
             {
                 case 0:
-                    _target_obj = Game_Controller.Instance.blocks[Random.Range(0, Game_Controller.Instance.blocks.Length - 1)];
-                    block = Get_Block_Pos(_target_obj, Game_Controller.Instance.block_pos);
+                    for (int i = 0; i < Game_Controller.Instance.block_pos.Length; i++)
+                    {
+                        _target_obj = Game_Controller.Instance.blocks[Random.Range(0, Game_Controller.Instance.blocks.Length - 1)];
+                        block = Get_Block_Pos(_target_obj, Game_Controller.Instance.block_pos[i]);
+                    }
                     break;
                 case 1:
-                    _target_obj = Game_Controller.Instance.downs[Random.Range(0, Game_Controller.Instance.downs.Length - 1)];
-                    block = Get_Block_Pos(_target_obj, Game_Controller.Instance.down_pos);
+                    for (int i = 0; i < Game_Controller.Instance.down_pos.Length; i++)
+                    {
+                        _target_obj = Game_Controller.Instance.downs[Random.Range(0, Game_Controller.Instance.downs.Length - 1)];
+                        block = Get_Block_Pos(_target_obj, Game_Controller.Instance.down_pos[i]);
+                    }
                     break;
                 case 2:
                     int _index = 0;
@@ -82,7 +88,7 @@ namespace SonicBloom.Koreo.Demos
                     {
                         if (i != indexs[cur_index])
                         {
-                            _target_obj = Game_Controller.Instance.turns[0];
+                            _target_obj = Game_Controller.Instance.turns[Random.Range(0, Game_Controller.Instance.blocks.Length - 1)];
                             block = Get_Block_Pos(_target_obj, Game_Controller.Instance.turn_pos[_index]);
                         }
                         _index++;

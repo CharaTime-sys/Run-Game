@@ -128,7 +128,6 @@ public class Curve_Block : Block
         //如果松的是目前的手指的话
         if (Input.touches[DynamicJoystick.Instance.touch_index].position == Input.touches[touch_index].position)
         {
-            Game_Controller.Instance.Set_Score(5);
             is_pressed = false;
         }
     }

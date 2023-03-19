@@ -20,7 +20,11 @@ Shader "VacuumShaders/Curved World/Unlit"
 		_MainTex ("  Map (RGB) RefStr (A)", 2D) = "white" {}
 		[CurvedWorldUVScroll] _V_CW_MainTex_Scroll("    ", vector) = (0, 0, 0, 0)
 		 
-		 
+			//иак╦
+		[CurvedWorldLargeLabel] V_CW_Label_Flash("Flash", float) = 0
+		_FlashColor("  Color", color) = (1, 1, 1, 1)
+		_FlashIntensity("  Intensity", Range(0.0, 1.0)) = 1.0
+
 		  
 		//Curved World
 		[CurvedWorldLabel] V_CW_Label_UnityDefaults("Curved World Optionals", float) = 0
@@ -49,6 +53,7 @@ Shader "VacuumShaders/Curved World/Unlit"
 
 		[HideInInspector] _V_CW_SecondaryNormalMap("", 2D) = ""{}
 		[HideInInspector] _V_CW_SecondaryNormalMap_UV_Scale("", float) = 1
+
 	}
 
 	   
@@ -62,7 +67,43 @@ Shader "VacuumShaders/Curved World/Unlit"
 		LOD 100		     
 		            
 		//Cull Off     
-			        
+				  // Add a new pass for the character's flashing effect
+		Pass
+{
+	Name "Flashing"
+
+	// Use a blend mode for the flashing effect
+	Blend SrcAlpha OneMinusSrcAlpha
+
+	CGPROGRAM
+	#pragma vertex vert
+	#pragma fragment frag
+
+			// Declare the shader properties and uniforms
+			// ...
+						struct v2f {
+	float2 uv : TEXCOORD0;
+};
+
+			// Add code to make the character flash
+			void frag(v2f i) : SV_Target
+			{
+			// Calculate the flashing color based on time and a sine wave
+			float flashing = abs(sin(_Time.y * 10));
+			fixed4 flashColor = lerp(flashColorA, flashColorB, flashing);
+
+			// Sample the main texture and apply the flashing color
+			fixed4 texColor = tex2D(_MainTex, i.uv);
+			fixed4 color = texColor * _Color * flashColor;
+
+			// Output the final color
+			SV_Target = color;
+		}
+
+		ENDCG
+	}
+
+
 		//PassName "BASE" 
 		Pass       
 	    {                       

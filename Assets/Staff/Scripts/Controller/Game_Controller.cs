@@ -25,11 +25,12 @@ public class Game_Controller : MonoBehaviour
 
     #region 障碍物
     [Header("障碍物变量------------------------------------------")]
-    [Header("障碍物预制体（跳跃，下滑，转向,buff）")]
+    [Header("障碍物预制体（跳跃，下滑，转向,buff,buff物体）")]
     public GameObject[] blocks;
     public GameObject[] downs;
     public GameObject[] turns;
     public GameObject[] buffs;
+    public GameObject[] buff_blocks;
     #endregion
 
     #region 位置参数
@@ -40,6 +41,8 @@ public class Game_Controller : MonoBehaviour
     public Vector3[] turn_pos;
     public Vector3[] gesture_pos;
     public Vector3[] buff_pos;
+    public Vector3[] buff_jump_pos;
+    public Vector3[] buff_down_pos;
     #endregion
 
     #region 物体
@@ -288,7 +291,6 @@ public class Game_Controller : MonoBehaviour
             if ((is_reached && (buff_time < 0f || buff_distance >= buff_max_distance)) || !is_pressing)
             {
                 //取消玩家buff状态
-                Debug.Log("取消buff状态");
                 ninja.Is_buffing = false;
                 //落地
                 switch (Buff_Type)

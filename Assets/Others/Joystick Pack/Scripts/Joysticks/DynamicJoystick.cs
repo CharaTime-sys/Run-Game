@@ -60,7 +60,6 @@ public class DynamicJoystick : Joystick
                 //玩家手势
                 else
                 {
-                    Debug.Log(touch_index);
                     //加入手指的开始坐标
                     Game_Controller.Instance.finger_start_pos=Input.touches[touch_index].position;
                     //设置按下状态
