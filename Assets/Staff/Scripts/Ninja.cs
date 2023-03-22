@@ -124,7 +124,6 @@ public class Ninja : MonoBehaviour
             else
             {
                 is_unmathcing = false;//退出无敌状态
-                GetComponent<BoxCollider>().enabled = true;//取消受伤检测
                 StopAllCoroutines();
                 player_render.enabled = true;
                 Game_Controller.Instance.status_ui.gameObject.SetActive(false);
@@ -155,7 +154,7 @@ public class Ninja : MonoBehaviour
             return;
         }
         //播放音效
-        Game_Controller.Instance.Play_Effect(3);
+        AudioManager.instance.PlaySFX(3);
         //设置镜头转换
         Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(false, -direction);
         is_moving = true;
@@ -190,7 +189,7 @@ public class Ninja : MonoBehaviour
         //停止上一次的动作
         tw.Pause();
         //播放音效
-        Game_Controller.Instance.Play_Effect(0);
+        AudioManager.instance.PlaySFX(0);
         //设置镜头转换
         Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(false, 2);
         tw = transform.DOMoveY(start_pos.y+range.x, time.x);//跳跃
@@ -220,7 +219,7 @@ public class Ninja : MonoBehaviour
         //停止上一次的动作
         tw.Pause();
         //播放音效
-        Game_Controller.Instance.Play_Effect(2);
+       AudioManager.instance.PlaySFX(2);
         tw = transform.DOMoveY(start_pos.y - range.y, time.y);
         //设置镜头转换
         Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(false, 0);
@@ -306,19 +305,18 @@ public class Ninja : MonoBehaviour
         //如果碰到了障碍物则扣血
         if (other.tag == "Block")
         {
+            //Game_Controller.Instance.cur_block.Turn_Next();
             if (is_unmathcing || other.GetComponent<Block>().If_great)
             {
                 return;
             }
             other.GetComponent<Block>().Set_loss();//设置失败
-            Game_Controller.Instance.cur_block.Turn_Next();
             Set_Buff_Status(false);
             //扣血
             Game_Controller.Instance.Set_HP(other.gameObject.GetComponent<Block>().damage);
             //设置无敌状态
             is_unmathcing = true;
             _unmatched_time = unmatched_time;
-            GetComponent<BoxCollider>().enabled = false;//取消受伤检测
             //显示ui，方便判断
             Game_Controller.Instance.status_ui.gameObject.SetActive(true);
         }

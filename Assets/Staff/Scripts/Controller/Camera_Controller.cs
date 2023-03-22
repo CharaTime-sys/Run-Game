@@ -35,7 +35,7 @@ public class Camera_Controller : MonoBehaviour
     void Start()
     {
         main_camera = Camera.main;
-        Set_Camera_Type();
+        //Set_Camera_Type();
         offset = new Vector2(Mathf.Abs(transform.position.x - target_pos[0].x), Mathf.Abs(transform.position.y - target_pos[1].y));
     }
 

@@ -55,11 +55,30 @@ public class Floor_Controller : MonoBehaviour
         //等待地板运动完
         yield return new WaitForSeconds(floor_down_time);
         //循环地板
-        item.transform.localPosition += new Vector3(0, floor_distance.x + floor_distance.y, 60f);
+        item.transform.localPosition += new Vector3(0, floor_distance.x + floor_distance.y, 105f);
+        //显示子物体
+        foreach (Transform child in item.transform)
+        {
+            child.gameObject.SetActive(true);
+        }
         //改变状态
         floor_onces[floor_parts.IndexOf(item)] = false;
         //从上面降下来
         item.transform.DOLocalMoveY(item.transform.localPosition.y - floor_distance.y, floor_up_time);
         StopAllCoroutines();
+    }
+
+    [ContextMenu("加标签")]
+    public void Add_tag()
+    {
+        foreach (var item in floor_parts)
+        {
+            Transform parent = item.transform;
+            foreach (Transform child in parent)
+            {
+                child.gameObject.AddComponent<BoxCollider>();
+                child.gameObject.GetComponent<BoxCollider>().isTrigger = true;
+            }
+        }
     }
 }

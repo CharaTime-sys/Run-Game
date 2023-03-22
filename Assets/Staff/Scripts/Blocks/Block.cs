@@ -27,7 +27,7 @@ public class Block : MonoBehaviour
         {
             touched = true;
         }
-        if (transform.position.z < 2)
+        if (transform.position.z < 0)
         {
             Destroy(gameObject);
         }
@@ -39,6 +39,10 @@ public class Block : MonoBehaviour
         //障碍物是否超过人物
         if (transform.position.z < Game_Controller.Instance.ninja.transform.position.z)
         {
+            if (Game_Controller.Instance.cur_block == gameObject.GetComponent<Block>())
+            {
+                Turn_Next();
+            }
             if_over = true;
         }
     }
@@ -59,7 +63,7 @@ public class Block : MonoBehaviour
             Game_Controller.Instance.Set_Score(20);
             Game_Controller.Instance.Set_preference_Text("Prefect");
             //播放音效
-            Game_Controller.Instance.Play_Effect(1);
+            AudioManager.instance.PlaySFX(1);
         }
         else if (If_great)
         {
@@ -75,7 +79,7 @@ public class Block : MonoBehaviour
 
     public void Turn_Next()
     {
-        if ((transform.GetSiblingIndex() + 1 == transform.parent.childCount) || (GetComponent<Normal_Block>() != null && transform.GetSiblingIndex() + 2 == transform.parent.childCount))
+        if ((transform.GetSiblingIndex() + 1 == transform.parent.childCount) || (GetComponent<Normal_Block>() != null&& transform.GetSiblingIndex() + 2 == transform.parent.childCount))
         {
             Game_Controller.Instance.Set_Once();
         }
@@ -87,11 +91,11 @@ public class Block : MonoBehaviour
             }
             else
             {
-                Debug.Log(transform.GetSiblingIndex());
+                Debug.Log(transform.parent.GetChild(transform.GetSiblingIndex() + 3));
                 Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 3).GetComponent<Block>();
                 if (Game_Controller.Instance.cur_block.GetComponent<Normal_Block>() != null)
                 {
-                    Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 2).GetComponent<Block>();
+                    Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 2).GetComponent<Normal_Block>();
                 }
             }
         }
@@ -113,15 +117,12 @@ public class Block : MonoBehaviour
             {
                 //设置得分状态
                 if_great = true;
-                //设置效果
-                transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.yellow;
             }
             else if (other.name.StartsWith("0"))
             {
                 //设置得分状态
                 if_great = false;
                 if_prefect = true;
-                transform.GetChild(0).GetComponent<MeshRenderer>().material.color = Color.red;
             }
         }
     }

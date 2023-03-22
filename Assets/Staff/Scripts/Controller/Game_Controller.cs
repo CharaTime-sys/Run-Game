@@ -11,6 +11,8 @@ public enum Buff_Type
 public class Game_Controller : MonoBehaviour
 {
     public static Game_Controller Instance;
+    [Header("物体开始的延迟")]
+    public float staff_delay;
     [Header("音乐开始的延迟")]
     public float music_delay;
     #region 速度变量
@@ -87,11 +89,6 @@ public class Game_Controller : MonoBehaviour
     float buff_distance;
     //buff类型
     [SerializeField] Buff_Type buff_Type;
-    //音乐播放器
-    [SerializeField] AudioSource audioSource;
-    //音效播放器
-    [SerializeField] AudioSource audio_player;
-    [SerializeField] AudioClip[] audioClips;
     //目前测试的障碍物
     public Block cur_block;
     bool if_once = true;//开始只有一次加入
@@ -128,10 +125,28 @@ public class Game_Controller : MonoBehaviour
     //临时变量
     float offset_y;
 
+    [SerializeField] GameObject[] startups;
+
     private void Awake()
     {
         Instance = this;
-        Invoke(nameof(Set_Audio), Game_Controller.Instance.music_delay);
+    }
+
+    private void Start()
+    {
+        AudioManager.instance.PlaySFX(4);
+        Invoke(nameof(Set_Staff), staff_delay);
+    }
+
+    #region 音乐相关
+
+    void Set_Staff()
+    {
+        foreach (var item in startups)
+        {
+            item.SetActive(true);
+        }
+        Invoke(nameof(Set_Audio), music_delay);
     }
 
     /// <summary>
@@ -139,18 +154,12 @@ public class Game_Controller : MonoBehaviour
     /// </summary>
     void Set_Audio()
     {
-        audioSource.Play();
+        AudioManager.instance.PlayBGM(AudioManager.instance.background_bgm);
     }
 
-    /// <summary>
-    /// 播放音效
-    /// </summary>
-    /// <param name="index"></param>
-    public void Play_Effect(int index)
-    {
-        audio_player.PlayOneShot(audioClips[index]);
-    }
+    #endregion
 
+    #region 设置属性
     /// <summary>
     /// 设置血量
     /// </summary>
@@ -178,6 +187,7 @@ public class Game_Controller : MonoBehaviour
         this.buff_time = target_time;
         this.buff_Type = buff_Type;
     }
+    #endregion
 
     // Update is called once per frame
     void Update()

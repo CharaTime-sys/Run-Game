@@ -7,45 +7,14 @@ public class Jump_Block : Block
 {
     Material _material;
 
-    bool is_shining;
-
-    [Header("闪烁间隔")]
-    [SerializeField] float delta = 0.3f;
-    float timer = 0.3f;//计时器
-
     //动画相关
     [SerializeField] float offset_y;
-    [SerializeField] float time;
+    [SerializeField] float offset_child_y;
+    [SerializeField] float time = 0.3f;
     // Start is called before the first frame update
     void Start()
     {
-        _material = transform.GetChild(0).GetComponent<MeshRenderer>().material;
-    }
-
-    protected override void Changing_Status()
-    {
-        //闪烁状态
-        if (is_shining)
-        {
-            if (timer >= 0f)
-            {
-                timer -= Time.deltaTime;
-            }
-            else
-            {
-                // 设置材质
-                if (is_switched)
-                {
-                    _material.SetColor("_EmissionColor", Color.black);
-                }
-                else
-                {
-                    _material.SetColor("_EmissionColor", Color.red);
-                }
-                is_switched = !is_switched;
-                timer = delta;//重置计时器
-            }
-        }
+        _material = GetComponent<MeshRenderer>().material;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -53,26 +22,34 @@ public class Jump_Block : Block
         base.OnTriggerEnter(other);
         if (other.tag == "Effect")
         {
-            if (other.name.StartsWith("3"))
+            if (other.name.StartsWith("1"))
             {
-                is_shining = true;//设置改变状态
-            }
-            else if (other.name.StartsWith("1"))
-            {
-                is_shining = false;
-                _material.SetColor("_EmissionColor", Color.black);
-                Set_Uping();
+                Set_Uping(true);
             }
             else if (other.name.StartsWith("0"))
             {
-                is_shining = false;
-                _material.SetColor("_EmissionColor", Color.black);
+                Set_Uping(false);
             }
+        }
+        //让地面消失
+        if (other.tag == "Ground")
+        {
+            other.gameObject.SetActive(false);
         }
     }
 
-    void Set_Uping()
+    /// <summary>
+    /// 升起来
+    /// </summary>
+    void Set_Uping(bool if_self)
     {
-        transform.DOLocalMoveY(transform.localPosition.y + offset_y, time);
+        if (if_self)
+        {
+            transform.DOLocalMoveY(transform.localPosition.y + offset_y, time);
+        }
+        else
+        {
+            transform.GetChild(0).DOLocalMoveY(transform.GetChild(0).localPosition.y + offset_child_y, time);
+        }
     }
 }

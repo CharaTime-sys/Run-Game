@@ -8,6 +8,7 @@ TagManager:
   - Block
   - Effect
   - Buff
+  - Ground
   layers:
   - Default
   - TransparentFX

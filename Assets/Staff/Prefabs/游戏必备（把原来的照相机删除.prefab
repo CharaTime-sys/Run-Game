@@ -169,9 +169,13 @@ MonoBehaviour:
   - {x: 5, y: 14.01, z: 0}
   target_rotate:
   - {x: 0, y: 0, z: 0}
+  return_target_pos: {x: 0, y: 0, z: 0}
+  return_target_rotate: {x: 0, y: 0, z: 0}
   main_camera: {fileID: 0}
+  main_staff: {fileID: 0}
   curve_parent: {fileID: 0}
   change_time: 1
+  change_time_horizontal: 0
 --- !u!1 &6235311663835741714
 GameObject:
   m_ObjectHideFlags: 0
@@ -297,6 +301,7 @@ MonoBehaviour:
   target_obj: {fileID: 751657570}
   audio_source: {fileID: 6235311665573696779}
   index: 0
+  indexs: 
   is_line: 1
 --- !u!114 &6235311665137214157
 MonoBehaviour:
@@ -1906,6 +1911,14 @@ PrefabInstance:
     - target: {fileID: 4651039883797469014, guid: 0bb300014a92cf74bb58dee716852598, type: 3}
       propertyPath: m_Name
       value: HeroTadita
+      objectReference: {fileID: 0}
+    - target: {fileID: 4714958099637404540, guid: 0bb300014a92cf74bb58dee716852598, type: 3}
+      propertyPath: m_Materials.Array.data[1]
+      value: 
+      objectReference: {fileID: 2100000, guid: ac40a811b52cf8842896a8c3805c90db, type: 2}
+    - target: {fileID: 4776807192795616836, guid: 0bb300014a92cf74bb58dee716852598, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 0bb300014a92cf74bb58dee716852598, type: 3}
