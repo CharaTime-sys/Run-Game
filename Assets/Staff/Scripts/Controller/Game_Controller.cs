@@ -8,6 +8,14 @@ public enum Buff_Type
     Jump,
     Down
 }
+
+public enum Dir_Type
+{
+    Left,
+    Right,
+    Up,
+    Down
+}
 public class Game_Controller : MonoBehaviour
 {
     public static Game_Controller Instance;
@@ -23,28 +31,6 @@ public class Game_Controller : MonoBehaviour
     public float speed;
     [Header("曲线移动速度")]
     public float curve_speed;
-    #endregion
-
-    #region 障碍物
-    [Header("障碍物变量------------------------------------------")]
-    [Header("障碍物预制体（跳跃，下滑，转向,buff,buff物体）")]
-    public GameObject[] blocks;
-    public GameObject[] downs;
-    public GameObject[] turns;
-    public GameObject[] buffs;
-    public GameObject[] buff_blocks;
-    #endregion
-
-    #region 位置参数
-    [Header("障碍物位置变量------------------------------------------")]
-    [Header("障碍物生成的位置参数(跳跃障碍，下滑障碍，转向障碍，手势障碍)")]
-    public Vector3[] block_pos;
-    public Vector3[] down_pos;
-    public Vector3[] turn_pos;
-    public Vector3[] gesture_pos;
-    public Vector3[] buff_pos;
-    public Vector3[] buff_jump_pos;
-    public Vector3[] buff_down_pos;
     #endregion
 
     #region 物体
@@ -89,9 +75,6 @@ public class Game_Controller : MonoBehaviour
     float buff_distance;
     //buff类型
     [SerializeField] Buff_Type buff_Type;
-    //目前测试的障碍物
-    public Block cur_block;
-    bool if_once = true;//开始只有一次加入
 
     #region 手势位置
     [Header("手势变量(不用管)------------------------------------------")]
@@ -119,7 +102,6 @@ public class Game_Controller : MonoBehaviour
     #region 属性
     public Vector3 Press_pos { get => press_pos; }
     public Buff_Type Buff_Type { get => buff_Type; }
-    public bool If_once { get => if_once;}
     #endregion
 
     //临时变量
@@ -224,7 +206,7 @@ public class Game_Controller : MonoBehaviour
         }
     }
 
-    public void Test_Direction()
+    public Dir_Type Test_Direction()
     {
         //得到具体的角度，顺时针
         float angle = Mathf.Atan(test_vector.y/test_vector.x) * Mathf.Rad2Deg;
@@ -245,19 +227,24 @@ public class Game_Controller : MonoBehaviour
         if (angle < 45 || angle > 315)
         {
             ninja.Move_Left_And_Right(1);
+            return Dir_Type.Right;
         }
         else if (angle >135 && angle < 225)
         {
             ninja.Move_Left_And_Right(-1);
+            return Dir_Type.Left;
         }
         else if (angle > 45 && angle < 135)
         {
             ninja.Jump(true);
+            return Dir_Type.Up;
         }
         else if (angle > 225 && angle < 315)
         {
             ninja.Down(true);
+            return Dir_Type.Down;
         }
+        return Dir_Type.Up;
     }
 
     /// <summary>
@@ -386,23 +373,6 @@ public class Game_Controller : MonoBehaviour
             default:
                 break;
         }
-    }
-
-    /// <summary>
-    /// 第一次加入方块
-    /// </summary>
-    public void Add_Block_To_Current(Block block)
-    {
-        cur_block = block;
-        if_once = false;
-    }
-
-    /// <summary>
-    /// 重置第一次
-    /// </summary>
-    public void Set_Once()
-    {
-        if_once = true;
     }
 
     public void Set_preference_Text(string content)

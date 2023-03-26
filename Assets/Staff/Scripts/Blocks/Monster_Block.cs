@@ -4,8 +4,8 @@ using UnityEngine;
 
 public class Monster_Block : Block
 {
-    private void OnTriggerEnter(Collider other)
+    protected override void Ray_Cast()
     {
-        
+
     }
 }

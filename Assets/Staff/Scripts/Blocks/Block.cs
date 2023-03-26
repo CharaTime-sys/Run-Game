@@ -15,13 +15,18 @@ public class Block : MonoBehaviour
     protected bool if_loss;
     [SerializeField] protected bool if_over;
     protected bool touched;
-
     public bool If_great { get => if_great;}
+    [SerializeField] Dir_Type dir_Type;
     #endregion
+    //组件
+    [SerializeField] Animator animator;
+    private void Start()
+    {
+        Ray_Cast();
+    }
     // Update is called once per frame
     protected virtual void FixedUpdate()
     {
-        transform.Translate(new Vector3(0, 0, -1) * Game_Controller.Instance.speed * Time.deltaTime);
         //没得到分就换下一个
         if (if_loss && !touched)
         {
@@ -35,11 +40,12 @@ public class Block : MonoBehaviour
 
     private void Update()
     {
+        transform.Translate(Vector3.back * Game_Controller.Instance.speed * Time.deltaTime);
         Changing_Status();
         //障碍物是否超过人物
         if (transform.position.z < Game_Controller.Instance.ninja.transform.position.z)
         {
-            if (Game_Controller.Instance.cur_block == gameObject.GetComponent<Block>())
+            if (Block_Controller.Instance.cur_block == gameObject.GetComponent<Block>())
             {
                 Turn_Next();
             }
@@ -55,8 +61,17 @@ public class Block : MonoBehaviour
     /// <summary>
     /// 测试分数
     /// </summary>
-    public virtual void Test_Score()
+    public virtual void Test_Score(Dir_Type _dir_type)
     {
+        if (if_over || if_great || if_prefect)
+        {
+            //切换判断的对象
+            Turn_Next();
+        }
+        if (dir_Type !=_dir_type)
+        {
+            return;
+        }
         //设置不同得分标准
         if (!if_over && if_prefect)
         {
@@ -72,32 +87,34 @@ public class Block : MonoBehaviour
         }
         if (if_over || if_great || if_prefect)
         {
-            //切换判断的对象
-            Turn_Next();
+            if (!if_over)
+            {
+                Do_Ani("return");
+            }
         }
+    }
+
+    /// <summary>
+    /// 一些动画
+    /// </summary>
+    public virtual void Do_Ani(string name)
+    {
+        if (animator == null)
+        {
+            return;
+        }
+        animator.Play(name);
     }
 
     public void Turn_Next()
     {
-        if ((transform.GetSiblingIndex() + 1 == transform.parent.childCount) || (GetComponent<Normal_Block>() != null&& transform.GetSiblingIndex() + 2 == transform.parent.childCount))
+        if ((transform.GetSiblingIndex() + 1 == transform.parent.childCount) || (GetComponent<Normal_Block>() != null&& transform.GetSiblingIndex() + 1 == transform.parent.childCount))
         {
-            Game_Controller.Instance.Set_Once();
+            Block_Controller.Instance.Set_Once();
         }
         else
         {
-            if (GetComponent<Normal_Block>() != null)
-            {
-                Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 2).GetComponent<Block>();
-            }
-            else
-            {
-                Debug.Log(transform.parent.GetChild(transform.GetSiblingIndex() + 3));
-                Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 3).GetComponent<Block>();
-                if (Game_Controller.Instance.cur_block.GetComponent<Normal_Block>() != null)
-                {
-                    Game_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 2).GetComponent<Normal_Block>();
-                }
-            }
+            Block_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Block>();
         }
     }
 
@@ -117,6 +134,7 @@ public class Block : MonoBehaviour
             {
                 //设置得分状态
                 if_great = true;
+                Do_Ani("start");
             }
             else if (other.name.StartsWith("0"))
             {
@@ -125,5 +143,20 @@ public class Block : MonoBehaviour
                 if_prefect = true;
             }
         }
+    }
+
+    protected virtual void Ray_Cast()
+    {
+        RaycastHit hit;
+        if (Physics.Raycast(transform.position, Vector3.down, out hit, 6))
+        {
+            foreach (Transform item in hit.transform.parent)
+            {
+                if (item!=hit.transform)
+                {
+                    item.gameObject.SetActive(false);
+                }
+            }
+        };
     }
 }

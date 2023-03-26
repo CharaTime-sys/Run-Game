@@ -78,6 +78,7 @@ public class DynamicJoystick : Joystick
     /// <param name="eventData"></param>
     public override void OnPointerUp(PointerEventData eventData)
     {
+        Dir_Type dir_Type = Dir_Type.Up;
         background.gameObject.SetActive(false);
         touch_index--;//减少索引
         //得到手势的方向，手指坐标不为空 检测在下面 手指坐标不为0
@@ -93,7 +94,7 @@ public class DynamicJoystick : Joystick
             //防止有bug
             if (!Game_Controller.Instance.is_jump_after)
             {
-                Game_Controller.Instance.Test_Direction();
+                dir_Type = Game_Controller.Instance.Test_Direction();
             }
             if (Game_Controller.Instance.ninja.Is_buffing)
             {
@@ -120,9 +121,9 @@ public class DynamicJoystick : Joystick
             //重置长按跳跃的状态
             Game_Controller.Instance.is_jump_after = false;
             //进行评分
-            if (Game_Controller.Instance.cur_block != null && !Game_Controller.Instance.ninja.Is_buffing)
+            if (Block_Controller.Instance.cur_block != null && !Game_Controller.Instance.ninja.Is_buffing)
             {
-                Game_Controller.Instance.cur_block.Test_Score();
+                Block_Controller.Instance.cur_block.Test_Score(dir_Type);
             }
         }
         disable_Check_Line?.Invoke();//手指松开判断

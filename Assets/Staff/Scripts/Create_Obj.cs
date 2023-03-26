@@ -11,7 +11,6 @@ namespace SonicBloom.Koreo.Demos
     {
         [EventID]
         public string eventID;
-        public GameObject target_obj;
         public AudioSource audio_source;
         [Header("0代表跳跃障碍，1代表下滑障碍，2代表转向障碍，手势就不用管索引")]
         public int index;
@@ -46,7 +45,7 @@ namespace SonicBloom.Koreo.Demos
                 switch (Cure_Controller.Instance.curve_Type)
                 {
                     case Curve_Type.Up:
-                        GameObject curve = Instantiate(Cure_Controller.Instance.curves[0], Game_Controller.Instance.gesture_pos[0], Quaternion.identity);
+                        GameObject curve = Instantiate(Cure_Controller.Instance.curves[0], Block_Controller.Instance.gesture_pos[0], Quaternion.identity);
                         curve.transform.SetParent(GameObject.Find("Curves").transform);
                         break;
                     case Curve_Type.Right:
@@ -69,63 +68,26 @@ namespace SonicBloom.Koreo.Demos
             switch (index)
             {
                 case 0:
-                    for (int i = 0; i < Game_Controller.Instance.block_pos.Length; i++)
-                    {
-                        _target_obj = Game_Controller.Instance.blocks[Random.Range(0, Game_Controller.Instance.blocks.Length - 1)];
-                        block = Get_Block_Pos(_target_obj, Game_Controller.Instance.block_pos[i]);
-                    }
+                    _target_obj = Block_Controller.Instance.blocks[Random.Range(0, Block_Controller.Instance.blocks.Length - 1)];
+                    int _index = Random.Range(0, Block_Controller.Instance.block_pos.Length);
+                    block = Block_Controller.Instance.Get_Block_Pos(_target_obj, Block_Controller.Instance.block_pos,_index);
+                    Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.block_extres[0], Block_Controller.Instance.block_extre_pos, _index);
                     break;
                 case 1:
-                    for (int i = 0; i < Game_Controller.Instance.down_pos.Length; i++)
-                    {
-                        _target_obj = Game_Controller.Instance.downs[Random.Range(0, Game_Controller.Instance.downs.Length - 1)];
-                        block = Get_Block_Pos(_target_obj, Game_Controller.Instance.down_pos[i]);
-                    }
+                    _target_obj = Block_Controller.Instance.downs[Random.Range(0, Block_Controller.Instance.downs.Length - 1)];
+                    block = Block_Controller.Instance.Get_Block_Pos(_target_obj, Block_Controller.Instance.down_pos);
                     break;
                 case 2:
-                    int _index = 0;
-                    for (int i = 0; i < Game_Controller.Instance.turn_pos.Length; i++)
-                    {
-                        if (i != indexs[cur_index])
-                        {
-                            _target_obj = Game_Controller.Instance.turns[Random.Range(0, Game_Controller.Instance.blocks.Length - 1)];
-                            block = Get_Block_Pos(_target_obj, Game_Controller.Instance.turn_pos[_index]);
-                        }
-                        _index++;
-                    }
-                    cur_index++;//增加索引
+                    _target_obj = Block_Controller.Instance.turns[Random.Range(0, Block_Controller.Instance.turns.Length - 1)];
+                    block = Block_Controller.Instance.Get_Block_Pos(_target_obj, Block_Controller.Instance.turn_pos);
                     break;
                 default:
                     break;
             }
-            if (Game_Controller.Instance.If_once)
+            if (Block_Controller.Instance.If_once)
             {
-                Game_Controller.Instance.Add_Block_To_Current(block.GetComponent<Block>());
+                Block_Controller.Instance.Add_Block_To_Current(block.GetComponent<Block>());
             }
-        }
-
-        /// <summary>
-        /// 生成对应物体
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="pos"></param>
-        /// <returns></returns>
-        public GameObject Get_Block_Pos(GameObject obj,Vector3[] pos)
-        {
-            GameObject block = Instantiate(obj, GameObject.Find("游戏必备/Blocks").transform);
-            //设置位置
-            block.transform.localPosition = pos[Random.Range(0, pos.Length)];
-            block.transform.localPosition += new Vector3(0, 0, target_obj.transform.localPosition.z);
-            return block;
-        }
-
-        public GameObject Get_Block_Pos(GameObject obj, Vector3 pos)
-        {
-            GameObject block = Instantiate(obj, GameObject.Find("游戏必备/Blocks").transform);
-            //设置位置
-            block.transform.localPosition = pos;
-            block.transform.localPosition += new Vector3(0, 0, target_obj.transform.localPosition.z);
-            return block;
         }
     }
 }

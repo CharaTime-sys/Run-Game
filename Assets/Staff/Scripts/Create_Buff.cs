@@ -36,11 +36,11 @@ namespace SonicBloom.Koreo.Demos
             {
                 return;
             }
-            GameObject _buff = Get_Block_Pos(Game_Controller.Instance.buffs[(int)buff_Type], Game_Controller.Instance.buff_pos);
+            GameObject _buff = Block_Controller.Instance.Get_Block_Pos(Block_Controller.Instance.buffs[(int)buff_Type], Block_Controller.Instance.buff_pos);
             _buff.GetComponent<Buff_Block>().buff_Type = buff_Type;
             _buff.GetComponent<Buff_Block>().buff_time = (koreoEvent.EndSample - koreoEvent.StartSample) / 88200;
             //创造对应的物体
-            Create_Constant_Obj(_buff.transform.localPosition, (int)_buff.GetComponent<Buff_Block>().buff_time * 2);
+            Block_Controller.Instance.Create_Constant_Obj(_buff.transform.localPosition, (int)_buff.GetComponent<Buff_Block>().buff_time * 2,buff_Type);
             _buff.GetComponent<Buff_Block>().buff_time += 1.9f;
             if_once = false;
         }
@@ -52,54 +52,6 @@ namespace SonicBloom.Koreo.Demos
             if (Koreographer.Instance != null)
             {
                 Koreographer.Instance.UnregisterForAllEvents(this);
-            }
-        }
-
-        /// <summary>
-        /// 生成对应物体
-        /// </summary>
-        /// <param name="obj"></param>
-        /// <param name="pos"></param>
-        /// <returns></returns>
-        public GameObject Get_Block_Pos(GameObject obj,Vector3[] pos)
-        {
-            GameObject _block = Instantiate(obj, GameObject.Find("游戏必备/Blocks").transform);
-            _block.transform.localPosition = pos[UnityEngine.Random.Range(0, pos.Length - 1)] + new Vector3(0,0, target_obj.transform.position.z);
-            return _block;
-        }
-
-        /// <summary>
-        /// 生成buff连续的物体
-        /// </summary>
-        void Create_Constant_Obj(Vector3 block_pos,int nums)
-        {
-            GameObject target_obj = null;
-            Vector3[] target_pos = new Vector3[3];
-            //生成对应的物体
-            switch (buff_Type)
-            {
-                case Buff_Type.Jump:
-                    target_obj = Game_Controller.Instance.buff_blocks[0];
-                    target_pos = Game_Controller.Instance.buff_jump_pos;
-                    break;
-                case Buff_Type.Down:
-                    target_obj = Game_Controller.Instance.buff_blocks[0];
-                    target_pos = Game_Controller.Instance.buff_down_pos;
-                    break;
-                default:
-                    break;
-            }
-            //目标z轴
-            float target_z = block_pos.z + 5;
-            for (int i = 0; i < nums; i++)
-            {
-                //在三个地方都生成
-                for (int j = 0; j < 3; j++)
-                {
-                    GameObject _block = Instantiate(target_obj, GameObject.Find("游戏必备/Blocks").transform);
-                    _block.transform.localPosition = new Vector3(target_pos[j].x, target_pos[j].y, target_z);
-                }
-                target_z += Game_Controller.Instance.target_z;
             }
         }
     }

@@ -76,8 +76,7 @@ public class Floor_Controller : MonoBehaviour
             Transform parent = item.transform;
             foreach (Transform child in parent)
             {
-                child.gameObject.AddComponent<BoxCollider>();
-                child.gameObject.GetComponent<BoxCollider>().isTrigger = true;
+                child.gameObject.layer = 3;
             }
         }
     }
