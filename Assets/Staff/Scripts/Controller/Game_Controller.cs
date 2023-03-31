@@ -11,6 +11,7 @@ public enum Buff_Type
 
 public enum Dir_Type
 {
+    None,
     Left,
     Right,
     Up,
@@ -328,6 +329,10 @@ public class Game_Controller : MonoBehaviour
     public void Set_Jump_UI(bool enable)
     {
         //后面增加特效
+        if (enable)
+        {
+            jump_buff_ui.GetComponent<buff_ui>().Reset_uis();
+        }
         jump_buff_ui.gameObject.SetActive(enable);
         if (Input.touchCount==0)
         {
@@ -344,6 +349,10 @@ public class Game_Controller : MonoBehaviour
     public void Set_Down_UI(bool enable)
     {
         //后面增加特效
+        if (enable)
+        {
+            down_buff_ui.GetComponent<buff_ui>().Reset_uis();
+        }
         down_buff_ui.gameObject.SetActive(enable);
         if (Input.touchCount == 0)
         {

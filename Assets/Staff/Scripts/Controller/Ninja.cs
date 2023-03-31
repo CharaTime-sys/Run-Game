@@ -51,7 +51,10 @@ public class Ninja : MonoBehaviour
     [SerializeField] Animator chara;
     [SerializeField] Vector3 start_pos;
     [SerializeField] SkinnedMeshRenderer player_render;
+    [SerializeField] float move_y;
     Tweener tw;
+    [Header("碰撞体体积")]
+    [SerializeField] Vector2[] collider_size_and_pos_y;
     //血量和分数
     int hp = 100;
     int score = 0;
@@ -153,6 +156,7 @@ public class Ninja : MonoBehaviour
         {
             return;
         }
+        dir_component += direction;
         //播放音效
         AudioManager.instance.PlaySFX(3);
         //设置镜头转换
@@ -181,7 +185,7 @@ public class Ninja : MonoBehaviour
         {
             return;
         }
-        GetComponent<BoxCollider>().enabled = false;
+        Set_Collider(2);
         is_jumping = true;//设置跳跃状态
         is_downing = false;
         chara.Play("Jump");//播放动画
@@ -211,7 +215,7 @@ public class Ninja : MonoBehaviour
             return;
         }
         //改变碰撞体体积
-        GetComponent<BoxCollider>().enabled = false;
+        Set_Collider(1);
         is_downing = true;
         is_jumping = false;
         chara.Play("Down");
@@ -219,7 +223,7 @@ public class Ninja : MonoBehaviour
         //停止上一次的动作
         tw.Pause();
         //播放音效
-       AudioManager.instance.PlaySFX(2);
+        AudioManager.instance.PlaySFX(2);
         tw = transform.DOMoveY(start_pos.y - range.y, time.y);
         //设置镜头转换
         Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(false, 0);
@@ -228,6 +232,12 @@ public class Ninja : MonoBehaviour
         {
             Invoke(nameof(Resume_Down), down_resume_time);
         }
+    }
+
+    private void Set_Collider(int index)
+    {
+        GetComponent<BoxCollider>().center = new Vector3(0, collider_size_and_pos_y[index].x, 0);
+        GetComponent<BoxCollider>().size = new Vector3(0.5f, collider_size_and_pos_y[index].y, 0.5f);
     }
 
     /// <summary>
@@ -244,7 +254,8 @@ public class Ninja : MonoBehaviour
     /// </summary>
     public void Resume_Jump()
     {
-        GetComponent<BoxCollider>().enabled = true;
+        //改变碰撞体体积
+        Set_Collider(0);
         //播放动画
         chara.Play("Run");
         //停止上一次的动作
@@ -261,7 +272,7 @@ public class Ninja : MonoBehaviour
     public void Resume_Down()
     {
         //改变碰撞体体积
-        GetComponent<BoxCollider>().enabled = true;
+        Set_Collider(0);
         chara.Play("Run");
         //停止上一次的动作
         tw.Pause();
@@ -278,6 +289,7 @@ public class Ninja : MonoBehaviour
     public void Set_Buff_Status(bool enable)
     {
         is_buffing = enable;
+        Particle_Controller.Instance.Set_Particle_visual(Particle_Controller.Instance.buff_particle, enable);
         if (!enable)
         {
             Game_Controller.Instance.Set_Jump_UI(false);
@@ -288,20 +300,6 @@ public class Ninja : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        //如果碰到边界的话就无法继续向相同的方向移动
-        if (other.tag == "Border")
-        {
-            if (other.name == "Border")
-            {
-                dir_component = -1;
-            }
-            else if (other.name == "Border_2")
-            {
-                dir_component = 1;
-            }
-            Debug.Log("碰到边界了");
-        }
-
         //如果碰到了障碍物则扣血
         if (other.tag == "Block")
         {
@@ -316,24 +314,14 @@ public class Ninja : MonoBehaviour
             Game_Controller.Instance.Set_HP(other.gameObject.GetComponent<Block>().damage);
             //设置无敌状态
             is_unmathcing = true;
+            is_moving = false;
             _unmatched_time = unmatched_time;
             //显示ui，方便判断
             Game_Controller.Instance.status_ui.gameObject.SetActive(true);
         }
-        //如果碰到了buff就设置相应的buff
-        if (other.tag == "Buff")
+        if (other.transform.parent.GetComponent<Buff_Block>()!=null)
         {
-            Game_Controller.Instance.Set_buff_time_And_type(other.GetComponent<Buff_Block>().buff_time, other.GetComponent<Buff_Block>().buff_Type);
-            Set_Buff_Status(true);
-        }
-    }
-
-    private void OnTriggerExit(Collider other)
-    {
-        //离开了边界以后恢复左右移动
-        if (other.tag == "Border")
-        {
-            dir_component = 0;
+            transform.DOLocalMoveY(transform.localPosition.y + move_y, 0.5f);
         }
     }
 }

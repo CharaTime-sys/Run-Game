@@ -16,12 +16,8 @@ MonoBehaviour:
   mEventList:
   - mStartSample: 500505
     mEndSample: 500505
-  - mStartSample: 570318
-    mEndSample: 570318
   - mStartSample: 648018
     mEndSample: 648018
-  - mStartSample: 717282
-    mEndSample: 717282
   - mStartSample: 3628032
     mEndSample: 3628032
   - mStartSample: 3648703

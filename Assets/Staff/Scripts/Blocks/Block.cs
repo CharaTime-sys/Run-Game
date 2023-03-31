@@ -38,7 +38,7 @@ public class Block : MonoBehaviour
         }
     }
 
-    private void Update()
+    protected virtual void Update()
     {
         transform.Translate(Vector3.back * Game_Controller.Instance.speed * Time.deltaTime);
         Changing_Status();
@@ -134,7 +134,6 @@ public class Block : MonoBehaviour
             {
                 //…Ë÷√µ√∑÷◊¥Ã¨
                 if_great = true;
-                Do_Ani("start");
             }
             else if (other.name.StartsWith("0"))
             {
@@ -142,21 +141,29 @@ public class Block : MonoBehaviour
                 if_great = false;
                 if_prefect = true;
             }
+            else if (other.name.StartsWith("3"))
+            {
+                Do_Ani("start");
+            }
+        }
+        if (other.tag == "Ground")
+        {
+            other.gameObject.SetActive(false);
         }
     }
 
     protected virtual void Ray_Cast()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.down, out hit, 6))
-        {
-            foreach (Transform item in hit.transform.parent)
-            {
-                if (item!=hit.transform)
-                {
-                    item.gameObject.SetActive(false);
-                }
-            }
-        };
+        //RaycastHit hit;
+        //if (Physics.Raycast(transform.position, Vector3.up, out hit, 3))
+        //{
+        //    foreach (Transform item in hit.transform.parent)
+        //    {
+        //        if (item != hit.transform)
+        //        {
+        //            hit.gameObject.SetActive(false);
+        //        }
+        //    }
+        //};
     }
 }

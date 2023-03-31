@@ -16,6 +16,7 @@ public class Floor_Controller : MonoBehaviour
     [SerializeField] float floor_up_time;
     [Header("距离，x为下沉，y为上升")]
     [SerializeField] Vector2 floor_distance;
+    [SerializeField] RuntimeAnimatorController animator;
     private void Start()
     {
         floor_onces = new bool[floor_parts.Count];//初始化地板检测
@@ -76,7 +77,9 @@ public class Floor_Controller : MonoBehaviour
             Transform parent = item.transform;
             foreach (Transform child in parent)
             {
-                child.gameObject.layer = 3;
+                child.transform.localScale *= 10;
+                child.GetComponent<BoxCollider>().center /= 10;
+                child.GetComponent<BoxCollider>().size /= 10;
             }
         }
     }

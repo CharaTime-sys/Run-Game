@@ -131,4 +131,9 @@ public class Curve_Block : Block
             is_pressed = false;
         }
     }
+
+    void Enable_Curve()
+    {
+
+    }
 }

@@ -8,4 +8,8 @@ public class Monster_Block : Block
     {
 
     }
+    public override void OnTriggerEnter(Collider other)
+    {
+        
+    }
 }

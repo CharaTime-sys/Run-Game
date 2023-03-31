@@ -20,7 +20,7 @@ namespace SonicBloom.Koreo.Demos
         int cur_index = 0;
         [Header("是否是手势")]
         public bool is_line;
-
+        int down_previous = 0;
         void Start()
         {
             // Register for Koreography Events.  This sets up the callback.
@@ -64,18 +64,57 @@ namespace SonicBloom.Koreo.Demos
             // Add impulse by overriding the Vertical component of the Velocity.
             GameObject _target_obj = null;
             GameObject block = null;
+            int _index = Random.Range(0, Block_Controller.Instance.block_x_coords.Length);//取得随机一列的值
+            int obj_index = 0;
+            float temp_y = 0;
             //生成对应的物体
             switch (index)
             {
                 case 0:
-                    _target_obj = Block_Controller.Instance.blocks[Random.Range(0, Block_Controller.Instance.blocks.Length - 1)];
-                    int _index = Random.Range(0, Block_Controller.Instance.block_pos.Length);
-                    block = Block_Controller.Instance.Get_Block_Pos(_target_obj, Block_Controller.Instance.block_pos,_index);
-                    Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.block_extres[0], Block_Controller.Instance.block_extre_pos, _index);
+                    obj_index = Random.Range(0, Block_Controller.Instance.blocks.Length);
+                    _target_obj = Block_Controller.Instance.blocks[obj_index];//得到随机的跳跃障碍
+                    float temp_x = 0;
+                    switch (obj_index)
+                    {
+                        case 0:
+                            temp_y = Block_Controller.Instance.block_y[0];
+                            temp_x = Block_Controller.Instance.block_x_coords[_index];
+                            break;
+                        case 1:
+                            temp_y = Block_Controller.Instance.block_y[6];
+                            temp_x = Block_Controller.Instance.jump_sec_x;
+                            _index = 0;
+                            break;
+                        default:
+                            break;
+                    }
+                    block = Block_Controller.Instance.Get_Block_Pos(_target_obj, new Vector3(temp_x, temp_y,0));
+                    Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.block_extres[0], Block_Controller.Instance.block_x_coords, _index,1);
                     break;
                 case 1:
-                    _target_obj = Block_Controller.Instance.downs[Random.Range(0, Block_Controller.Instance.downs.Length - 1)];
-                    block = Block_Controller.Instance.Get_Block_Pos(_target_obj, Block_Controller.Instance.down_pos);
+                    obj_index = Random.Range(0, Block_Controller.Instance.downs.Length);
+                    if (down_previous == 1 && obj_index == 1)
+                    {
+                        obj_index = 0;
+                    }
+                    down_previous = obj_index;
+                    _target_obj = Block_Controller.Instance.downs[obj_index];
+                    switch (obj_index)
+                    {
+                        case 0:
+                            temp_y = Block_Controller.Instance.block_y[2];
+                            break;
+                        case 1:
+                            temp_y = Block_Controller.Instance.block_y[3];
+                            break;
+                        case 2:
+                            temp_y = Block_Controller.Instance.block_y[4];
+                            break;
+                        default:
+                            break;
+                    }
+                    block = Block_Controller.Instance.Get_Block_Pos(_target_obj, new Vector3(Block_Controller.Instance.block_x_coords[_index], temp_y, 0));
+                    Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.down_extres[0], Block_Controller.Instance.block_x_coords, _index,5);
                     break;
                 case 2:
                     _target_obj = Block_Controller.Instance.turns[Random.Range(0, Block_Controller.Instance.turns.Length - 1)];

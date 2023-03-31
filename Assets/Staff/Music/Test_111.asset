@@ -14,12 +14,12 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mEventID: Test_111
   mEventList:
-  - mStartSample: 88200
-    mEndSample: 176400
-  - mStartSample: 264600
-    mEndSample: 352800
-  - mStartSample: 441000
-    mEndSample: 529200
+  - mStartSample: 22050
+    mEndSample: 132300
+  - mStartSample: 176400
+    mEndSample: 264600
+  - mStartSample: 352800
+    mEndSample: 441000
   _SerializedPayloadTypes:
   - SonicBloom.Koreo.CurvePayload
   _AssetPayloads: []

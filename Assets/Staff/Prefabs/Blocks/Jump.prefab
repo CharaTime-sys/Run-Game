@@ -186,7 +186,7 @@ MonoBehaviour:
   if_great: 0
   if_prefect: 0
   if_over: 0
-  dir_Type: 2
+  dir_Type: 3
   animator: {fileID: 2169827642664994744}
 --- !u!65 &3987081865469358329
 BoxCollider:

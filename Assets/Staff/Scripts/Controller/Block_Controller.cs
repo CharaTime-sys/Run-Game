@@ -20,10 +20,12 @@ public class Block_Controller : MonoBehaviour
     #region 位置参数
     [Header("障碍物位置变量------------------------------------------")]
     [Header("障碍物生成的位置参数(跳跃障碍，下滑障碍，转向障碍，手势障碍)")]
-    public Vector3[] block_pos;
-    public Vector3[] block_extre_pos;
-    public Vector3[] down_pos;
-    public Vector3[] down_extre_pos;
+    [Header("障碍物的x轴")]
+    public float[] block_x_coords;
+    public float jump_sec_x;
+    [Header("不同障碍物y轴(jump,jump_extre,down1,down2,down3,down_extre,jump2")]
+    public float[] block_y;
+    [Header("其他障碍物")]
     public Vector3[] turn_pos;
     public Vector3[] gesture_pos;
     public Vector3[] buff_pos;
@@ -141,9 +143,8 @@ public class Block_Controller : MonoBehaviour
     /// 生成普通障碍物的附属物体
     /// </summary>
     /// <param name="block_extre_pos"></param>
-    public void Create_Constant_Obj(GameObject block_extres,Vector3[]block_extre_pos,int ignore)
+    public void Create_Constant_Obj(GameObject block_extres,float[]block_extre_pos,int ignore,int type)
     {
-        Debug.Log("开始生成连续物体");
         for (int i = 0; i < block_extre_pos.Length; i++)
         {
             if (i == ignore)
@@ -151,7 +152,7 @@ public class Block_Controller : MonoBehaviour
                 continue;
             }
             GameObject block = Instantiate(block_extres, GameObject.Find("游戏必备/Blocks").transform);
-            block.transform.localPosition = block_extre_pos[i];
+            block.transform.localPosition = new Vector3(block_extre_pos[i],block_y[type],0);
             block.transform.localPosition += new Vector3(0, 0, target_obj.transform.localPosition.z);
         }
     }

@@ -102,6 +102,8 @@ MonoBehaviour:
   if_great: 0
   if_prefect: 0
   if_over: 0
+  dir_Type: 0
+  animator: {fileID: 0}
 --- !u!65 &7514652526237930511
 BoxCollider:
   m_ObjectHideFlags: 0
