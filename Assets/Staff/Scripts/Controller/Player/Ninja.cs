@@ -80,6 +80,10 @@ public class Ninja : MonoBehaviour
 
     private void Update()
     {
+        if (!Game_Controller.Instance.game_started)
+        {
+            return;
+        }
         if (Is_buffing &&(is_downing || is_jumping))
         {
             if (buff_delta_timer <= 0f)

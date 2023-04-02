@@ -82,9 +82,9 @@ public class Normal_Curve : MonoBehaviour
             {
                 splineFollower.follow = false;
             }
-            if (splineComputer.clipFrom == 1)
+            if (splineComputer.clipFrom >= 0.98f)
             {
-                Game_Controller.Instance.Set_Score(10);
+                Game_Controller.Instance.Game_Start();
                 Destroy(gameObject);
             }
         }
@@ -92,7 +92,6 @@ public class Normal_Curve : MonoBehaviour
         {
             //当按下后又松开就判断失败
             splineFollower.follow = false;
-            Destroy(gameObject);
         }
     }
 
@@ -119,11 +118,11 @@ public class Normal_Curve : MonoBehaviour
             return false;
         }
         //设置对应变量
-        is_once = true;
-        is_pressed = true;
-        touch_index = index;
         if (distance <= Cure_Controller.Instance.follow_radious)
         {
+            is_once = true;
+            is_pressed = true;
+            touch_index = index;
             return true;
         }
         return false;

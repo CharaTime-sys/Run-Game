@@ -44,6 +44,10 @@ public class Block : MonoBehaviour
 
     protected virtual void Update()
     {
+        if (!Game_Controller.Instance.game_started)
+        {
+            return;
+        }
         transform.Translate(Vector3.back * Game_Controller.Instance.speed * Time.deltaTime);
         Changing_Status();
         //障碍物是否超过人物

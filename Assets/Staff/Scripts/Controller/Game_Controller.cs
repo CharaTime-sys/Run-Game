@@ -24,6 +24,7 @@ public class Game_Controller : MonoBehaviour
     public float staff_delay;
     [Header("音乐开始的延迟")]
     public float music_delay;
+    public bool start_game = false;
     #region 速度变量
     //设置材质速度，后面可以删除
     public Material floor_material;
@@ -41,13 +42,6 @@ public class Game_Controller : MonoBehaviour
     public Ninja ninja;
     #endregion
 
-    #region 判定线
-    [Header("判定线")]
-    [SerializeField] RectTransform check_line;
-    [Header("判定线区间")]
-    [SerializeField] float line_range;
-    #endregion
-
     #region 状态变量
     [Header("手指状态（不用管）------------------------------------------")]
     //是否正在按下
@@ -58,6 +52,7 @@ public class Game_Controller : MonoBehaviour
     public bool is_reached;
     //按下状态
     public bool pressed;
+    public bool game_started;
     #endregion
 
     #region 时间变量
@@ -115,10 +110,12 @@ public class Game_Controller : MonoBehaviour
         Instance = this;
     }
 
-    private void Start()
+    public void Game_Start()
     {
+        game_started = true;
         AudioManager.instance.PlaySFX(4);
         Invoke(nameof(Set_Staff), staff_delay);
+        ninja.GetComponent<Animator>().enabled = true;
     }
 
     #region 音乐相关

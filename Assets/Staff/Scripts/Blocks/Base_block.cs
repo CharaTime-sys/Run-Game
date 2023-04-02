@@ -8,6 +8,10 @@ public class Base_block : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        if (!Game_Controller.Instance.game_started)
+        {
+            return;
+        }
         Ray_Cast();
     }
 

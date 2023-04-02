@@ -24,6 +24,10 @@ public class Floor_Controller : MonoBehaviour
     // Update is called once per frame
     void FixedUpdate()
     {
+        if (!Game_Controller.Instance.game_started)
+        {
+            return;
+        }
         Floor_Move();
     }
 
@@ -36,7 +40,7 @@ public class Floor_Controller : MonoBehaviour
         {
             item.transform.localPosition -= new Vector3(0, 0, floor_speed * Time.deltaTime);
             //回到原点
-            if (item.transform.localPosition.z < -18.5f)
+            if (item.transform.localPosition.z < -24f)
             {
                 //让地板沉下去
                 if (!floor_onces[floor_parts.IndexOf(item)])
@@ -56,7 +60,7 @@ public class Floor_Controller : MonoBehaviour
         //等待地板运动完
         yield return new WaitForSeconds(floor_down_time);
         //循环地板
-        item.transform.localPosition += new Vector3(0, floor_distance.x + floor_distance.y, 105f);
+        item.transform.localPosition += new Vector3(0, floor_distance.x + floor_distance.y, 84f);
         //显示子物体
         foreach (Transform child in item.transform)
         {
@@ -66,7 +70,7 @@ public class Floor_Controller : MonoBehaviour
         floor_onces[floor_parts.IndexOf(item)] = false;
         //从上面降下来
         item.transform.DOLocalMoveY(item.transform.localPosition.y - floor_distance.y, floor_up_time);
-        StopAllCoroutines();
+        //StopAllCoroutines();
     }
 
     [ContextMenu("加标签")]
@@ -75,6 +79,7 @@ public class Floor_Controller : MonoBehaviour
         foreach (var item in floor_parts)
         {
             Transform parent = item.transform;
+            int i = 0;
             foreach (Transform child in parent)
             {
                 child.transform.localScale *= 10;
