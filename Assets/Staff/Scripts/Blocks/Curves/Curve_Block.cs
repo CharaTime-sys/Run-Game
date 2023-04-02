@@ -12,7 +12,7 @@ public class Curve_Block : Block
     [SerializeField] SplineRenderer splineComputer;
     [SerializeField] SplineFollower splineFollower;
     int touch_index = -1;//目前的手指位置
-
+    float distance;
     bool is_over;//是否超过了判定范围
     bool is_once;//是否第一次按下
     bool is_add_once;//是否第一次加入事件
@@ -70,7 +70,7 @@ public class Curve_Block : Block
             {
                 return;//如果没有手指按下就返回
             }
-            float distance = Vector2.Distance(follow_pos, Input.touches[touch_index].position);
+            distance = Vector2.Distance(follow_pos, Input.touches[touch_index].position);
             //当判定到了就跟随，并且更新曲线
             if (distance <= Cure_Controller.Instance.follow_radious)
             {
@@ -108,16 +108,21 @@ public class Curve_Block : Block
     /// 设置按下事件
     /// </summary>
     /// <param 目标记录的手指位置="touch"></param>
-    void Set_Pressed(int index)
+    bool Set_Pressed(int index)
     {
-        if (touch_index!= -1)
+        if (touch_index != -1)
         {
-            return;
+            return false;
         }
         //设置对应变量
         is_once = true;
         is_pressed = true;
         touch_index = index;
+        if (distance <= Cure_Controller.Instance.follow_radious)
+        {
+            return true;
+        }
+        return false;
     }
 
     /// <summary>

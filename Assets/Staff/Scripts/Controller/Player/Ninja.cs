@@ -301,7 +301,7 @@ public class Ninja : MonoBehaviour
     private void OnTriggerEnter(Collider other)
     {
         //如果碰到了障碍物则扣血
-        if (other.tag == "Block")
+        if (other.tag == "Block" && !other.GetComponent<Block>().if_end)
         {
             //Game_Controller.Instance.cur_block.Turn_Next();
             if (is_unmathcing || other.GetComponent<Block>().If_great)

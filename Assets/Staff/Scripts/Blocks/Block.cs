@@ -13,6 +13,7 @@ public class Block : MonoBehaviour
     [SerializeField] protected bool if_great;
     [SerializeField] protected bool if_prefect;
     protected bool if_loss;
+    public bool if_end = false;
     [SerializeField] protected bool if_over;
     protected bool touched;
     public bool If_great { get => if_great;}
@@ -20,6 +21,8 @@ public class Block : MonoBehaviour
     #endregion
     //×é¼þ
     [SerializeField] Animator animator;
+    //Î¯ÍÐ
+    System.Action<Block> deactivateAction;
     private void Start()
     {
         Ray_Cast();
@@ -34,6 +37,7 @@ public class Block : MonoBehaviour
         }
         if (transform.position.z < 0)
         {
+            //deactivateAction.Invoke(this);
             Destroy(gameObject);
         }
     }
@@ -91,6 +95,7 @@ public class Block : MonoBehaviour
             {
                 Do_Ani("return");
             }
+            if_end = true;
         }
     }
 
@@ -154,16 +159,11 @@ public class Block : MonoBehaviour
 
     protected virtual void Ray_Cast()
     {
-        //RaycastHit hit;
-        //if (Physics.Raycast(transform.position, Vector3.up, out hit, 3))
-        //{
-        //    foreach (Transform item in hit.transform.parent)
-        //    {
-        //        if (item != hit.transform)
-        //        {
-        //            hit.gameObject.SetActive(false);
-        //        }
-        //    }
-        //};
+
+    }
+
+    public void SetDeactivateAction(System.Action<Block> deactivateAction)
+    {
+        this.deactivateAction = deactivateAction;
     }
 }

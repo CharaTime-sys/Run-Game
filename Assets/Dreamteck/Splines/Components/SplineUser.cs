@@ -670,7 +670,6 @@ namespace Dreamteck.Splines {
                 _sampleCount = 0;
                 return;
             }
-
             _spline.GetSamples(_sampleCollection);
             if(_clipFrom != 0.0)
             {
@@ -679,15 +678,13 @@ namespace Dreamteck.Splines {
             {
                 _clipFromSample = _sampleCollection.samples[0];
             }
-
-            if(_clipTo != 1.0)
+            if (_clipTo != 1.0)
             {
                 _sampleCollection.Evaluate(_clipTo, ref _clipToSample);
             } else
             {
                 _clipToSample = _sampleCollection.samples[_sampleCollection.length - 1];
             }
-            
             int start, end;
             _sampleCount = _sampleCollection.GetClippedSampleCount(_clipFrom, _clipTo, out start, out end);
             double lerp;

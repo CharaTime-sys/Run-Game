@@ -14,8 +14,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   mEventID: Down
   mEventList:
-  - mStartSample: 263686
-    mEndSample: 263686
+  - mStartSample: 264600
+    mEndSample: 264600
   - mStartSample: 381023
     mEndSample: 381023
   - mStartSample: 6078774

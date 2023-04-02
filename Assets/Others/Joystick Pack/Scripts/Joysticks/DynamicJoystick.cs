@@ -18,7 +18,7 @@ public class DynamicJoystick : Joystick
     [SerializeField] float offset_y = 10f;
     public int touch_index = 0;//手指索引
     //判定线委托
-    public delegate void Set_check_line(int index);
+    public delegate bool Set_check_line(int index);
     public Set_check_line set_Check_Line;
     //手指松开委托
     public delegate void Disable_check_line();
@@ -51,22 +51,16 @@ public class DynamicJoystick : Joystick
             //对每个位置进行循环
             foreach (var item in Input.touches)
             {
-                Test_CheckLine = item.position.y >= checkline.position.y - offset_y;
-                //如果在判定线上方
-                if (Test_CheckLine)
+                if (set_Check_Line.Invoke(touch_index))
                 {
-                    set_Check_Line?.Invoke(touch_index);//设置每个手势的手指位置坐标
-                }
-                //玩家手势
-                else
-                {
-                    //加入手指的开始坐标
-                    Game_Controller.Instance.finger_start_pos=Input.touches[touch_index].position;
-                    //设置按下状态
-                    Game_Controller.Instance.pressed = true;
-                    Game_Controller.Instance.Press_Checked(true);
-                    Game_Controller.Instance.Check_Down_And_Jump();
-                }
+                    Test_CheckLine = true;
+                }//设置每个手势的手指位置坐标
+                //加入手指的开始坐标
+                Game_Controller.Instance.finger_start_pos = Input.touches[touch_index].position;
+                Game_Controller.Instance.pressed = true;
+                Game_Controller.Instance.Press_Checked(true);
+                //设置按下状态
+                Game_Controller.Instance.Check_Down_And_Jump();
             }
         }
         touch_index++;//增加索引
@@ -82,7 +76,7 @@ public class DynamicJoystick : Joystick
         background.gameObject.SetActive(false);
         touch_index--;//减少索引
         //得到手势的方向，手指坐标不为空 检测在下面 手指坐标不为0
-        if (Input.touches.Length != 0 && !Test_CheckLine && Game_Controller.Instance.finger_start_pos != new Vector2(-1000,1000))
+        if (Input.touches.Length != 0  && Game_Controller.Instance.finger_start_pos != new Vector2(-1000,1000))
         {
             Game_Controller.Instance.test_vector = Input.touches[touch_index].position - Game_Controller.Instance.finger_start_pos;
             //取消按下状态
@@ -91,6 +85,11 @@ public class DynamicJoystick : Joystick
             //移除原来的坐标
             Game_Controller.Instance.finger_start_pos = new Vector2(-1000, 1000);
 
+            if (Test_CheckLine)
+            {
+                Test_CheckLine = false;
+                return;
+            }
             //防止有bug
             if (!Game_Controller.Instance.is_jump_after)
             {
