@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 using UnityEngine.EventSystems;
 public enum Buff_Type
 {
@@ -79,20 +78,8 @@ public class Game_Controller : MonoBehaviour
     public Vector2 test_vector;//手势方向
     #endregion
 
-    #region UI相关
-    [SerializeField] Text grade_text;
-    [SerializeField] Image jump_buff_ui;
-    [SerializeField] Image down_buff_ui;
-    [SerializeField] Text perfermence_ui;
-    [SerializeField] Text hp_ui;
-    [Header("这个不用管，会自动装上去")]
-    [SerializeField] Text buff_ui;
-    [SerializeField] public Text score_ui;
-    #endregion
-
     Vector3 target_pos;//用于长按的判断
     Vector3 press_pos;//目前的手指位置
-    public Text status_ui;
     public float target_z;
 
     #region 属性
@@ -116,6 +103,7 @@ public class Game_Controller : MonoBehaviour
         AudioManager.instance.PlaySFX(4);
         Invoke(nameof(Set_Staff), staff_delay);
         ninja.GetComponent<Animator>().enabled = true;
+        UI_Manager.Instance.Set_Tip(false, null);
     }
 
     #region 音乐相关
@@ -147,7 +135,7 @@ public class Game_Controller : MonoBehaviour
     public void Set_HP(int hp)
     {
         ninja.Hp += hp;
-        hp_ui.text = "血量：" + ninja.Hp.ToString();
+        UI_Manager.Instance.Set_Hp_UI();
     }
 
     /// <summary>
@@ -194,10 +182,10 @@ public class Game_Controller : MonoBehaviour
         switch (Buff_Type)
         {
             case Buff_Type.Jump:
-                target_pos = jump_buff_ui.transform.position;
+                target_pos = UI_Manager.Instance.jump_buff_ui.transform.position;
                 break;
             case Buff_Type.Down:
-                target_pos = down_buff_ui.transform.position;
+                target_pos = UI_Manager.Instance.down_buff_ui.transform.position;
                 break;
             default:
                 break;
@@ -296,14 +284,14 @@ public class Game_Controller : MonoBehaviour
                         {
                             ninja.Resume_Jump();
                         }
-                        Set_Jump_UI(false);
+                        UI_Manager.Instance.Set_Jump_UI(false);
                         break;
                     case Buff_Type.Down:
                         if (is_reached)
                         {
                             ninja.Resume_Down();
                         }
-                        Set_Down_UI(false);
+                        UI_Manager.Instance.Set_Down_UI(false);
                         break;
                 }
                 //取消到达ui状态
@@ -320,46 +308,6 @@ public class Game_Controller : MonoBehaviour
     }
 
     /// <summary>
-    /// 设置跳跃ui
-    /// </summary>
-    /// <param name="enable"></param>
-    public void Set_Jump_UI(bool enable)
-    {
-        //后面增加特效
-        if (enable)
-        {
-            jump_buff_ui.GetComponent<buff_ui>().Reset_uis();
-        }
-        jump_buff_ui.gameObject.SetActive(enable);
-        if (Input.touchCount==0)
-        {
-            return;
-        }
-        //设置位置
-        jump_buff_ui.transform.position = new Vector3(Input.touches[0].position.x, jump_buff_ui.transform.position.y, 0);
-    }
-
-    /// <summary>
-    /// 设置滑行ui
-    /// </summary>
-    /// <param name="enable"></param>
-    public void Set_Down_UI(bool enable)
-    {
-        //后面增加特效
-        if (enable)
-        {
-            down_buff_ui.GetComponent<buff_ui>().Reset_uis();
-        }
-        down_buff_ui.gameObject.SetActive(enable);
-        if (Input.touchCount == 0)
-        {
-            return;
-        }
-        //设置位置
-        down_buff_ui.transform.position = new Vector3(Input.touches[0].position.x, down_buff_ui.transform.position.y, 0);
-    }
-
-    /// <summary>
     /// 测试跳跃还是滑行，改变ui
     /// </summary>
     public void Check_Down_And_Jump()
@@ -371,18 +319,14 @@ public class Game_Controller : MonoBehaviour
         switch (Buff_Type)
         {
             case Buff_Type.Jump:
-                Set_Jump_UI(true);
+                UI_Manager.Instance.Set_Jump_UI(true);
                 break;
             case Buff_Type.Down:
-                Set_Down_UI(true);
+                UI_Manager.Instance.Set_Down_UI(true);
                 break;
             default:
                 break;
         }
     }
 
-    public void Set_preference_Text(string content)
-    {
-        perfermence_ui.text = content;
-    }
 }

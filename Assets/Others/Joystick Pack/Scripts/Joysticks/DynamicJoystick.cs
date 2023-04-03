@@ -12,8 +12,6 @@ public class DynamicJoystick : Joystick
 
     //是否判定上方
     public bool if_top;
-    [Header("判定线位置")]
-    [SerializeField] Transform checkline;
     [Header("上下的偏移值")]
     [SerializeField] float offset_y = 10f;
     public int touch_index = 0;//手指索引
@@ -33,8 +31,6 @@ public class DynamicJoystick : Joystick
         MoveThreshold = moveThreshold;
         base.Start();
         background.gameObject.SetActive(false);
-        //找到checkline
-        checkline = GameObject.Find("游戏必备/屏幕画布/判定手势相关/CheckLine").GetComponent<Transform>();
     }
 
     /// <summary>
@@ -100,14 +96,14 @@ public class DynamicJoystick : Joystick
                 switch (Game_Controller.Instance.Buff_Type)
                 {
                     case Buff_Type.Jump:
-                        Game_Controller.Instance.Set_Jump_UI(false);
+                        UI_Manager.Instance.Set_Jump_UI(false);
                         if (Game_Controller.Instance.is_reached)
                         {
                             Game_Controller.Instance.ninja.Resume_Jump();
                         }
                         break;
                     case Buff_Type.Down:
-                        Game_Controller.Instance.Set_Down_UI(false);
+                        UI_Manager.Instance.Set_Down_UI(false);
                         if (Game_Controller.Instance.is_reached)
                         {
                             Game_Controller.Instance.ninja.Resume_Down();

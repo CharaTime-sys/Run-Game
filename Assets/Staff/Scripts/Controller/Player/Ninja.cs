@@ -73,7 +73,7 @@ public class Ninja : MonoBehaviour
     public int Score { get => score;set
         {
             score = value;
-            Game_Controller.Instance.score_ui.text = "分数：" + score.ToString();
+            UI_Manager.Instance.Set_Score_UI();
         }
     }
     #endregion
@@ -133,7 +133,6 @@ public class Ninja : MonoBehaviour
                 is_unmathcing = false;//退出无敌状态
                 StopAllCoroutines();
                 player_render.enabled = true;
-                Game_Controller.Instance.status_ui.gameObject.SetActive(false);
             }
         }
     }
@@ -296,8 +295,8 @@ public class Ninja : MonoBehaviour
         Particle_Controller.Instance.Set_Particle_visual(Particle_Controller.Instance.buff_particle, enable);
         if (!enable)
         {
-            Game_Controller.Instance.Set_Jump_UI(false);
-            Game_Controller.Instance.Set_Down_UI(false);
+            UI_Manager.Instance.Set_Jump_UI(false);
+            UI_Manager.Instance.Set_Down_UI(false);
             StopAllCoroutines();
         }
     }
@@ -320,8 +319,6 @@ public class Ninja : MonoBehaviour
             is_unmathcing = true;
             is_moving = false;
             _unmatched_time = unmatched_time;
-            //显示ui，方便判断
-            Game_Controller.Instance.status_ui.gameObject.SetActive(true);
         }
         if (other.transform.parent.GetComponent<Buff_Block>()!=null)
         {

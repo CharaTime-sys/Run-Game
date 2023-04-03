@@ -89,7 +89,8 @@ namespace SonicBloom.Koreo.Demos
                             break;
                     }
                     block = Block_Controller.Instance.Get_Block_Pos(_target_obj, new Vector3(temp_x, temp_y,0));
-                    Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.block_extres[0], Block_Controller.Instance.block_x_coords, _index,1);
+                    //temping not to create monster
+                    //Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.block_extres[0], Block_Controller.Instance.block_x_coords, _index,1);
                     break;
                 case 1:
                     obj_index = Random.Range(0, Block_Controller.Instance.downs.Length);
@@ -114,11 +115,13 @@ namespace SonicBloom.Koreo.Demos
                             break;
                     }
                     block = Block_Controller.Instance.Get_Block_Pos(_target_obj, new Vector3(Block_Controller.Instance.block_x_coords[_index], temp_y, 0));
-                    Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.down_extres[0], Block_Controller.Instance.block_x_coords, _index,5);
+                    //temping not to create monster
+                    //Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.down_extres[0], Block_Controller.Instance.block_x_coords, _index,5);
                     break;
                 case 2:
                     _target_obj = Block_Controller.Instance.turns[Random.Range(0, Block_Controller.Instance.turns.Length - 1)];
-                    block = Block_Controller.Instance.Get_Block_Pos(_target_obj, Block_Controller.Instance.turn_pos);
+                    //temping not to create monster
+                    //block = Block_Controller.Instance.Get_Block_Pos(_target_obj, Block_Controller.Instance.turn_pos);
                     break;
                 default:
                     break;

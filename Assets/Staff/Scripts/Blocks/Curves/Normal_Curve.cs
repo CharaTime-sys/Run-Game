@@ -14,7 +14,7 @@ public class Normal_Curve : MonoBehaviour
     int touch_index = -1;//目前的手指位置
     [SerializeField] float finger_speed;
     [SerializeField] float delta_time;
-    [SerializeField] float distance;
+    [SerializeField] float distance = 2000;
     float delta_timer;
     [SerializeField] Vector2 last_pos;
     [SerializeField] Vector2 point_pos;
@@ -41,6 +41,7 @@ public class Normal_Curve : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        Check_Distance();
         splineComputer.clipFrom = splineFollower.GetPercent();
         Renew_Curve();
     }
@@ -72,7 +73,6 @@ public class Normal_Curve : MonoBehaviour
                 return;//如果没有手指按下就返回
             }
             particle.transform.position = splineFollower.transform.position;
-            distance = Vector2.Distance(follow_pos, Input.touches[touch_index].position);
             //当判定到了就跟随，并且更新曲线
             if (distance <= Cure_Controller.Instance.follow_radious || Vector2.Distance(Input.touches[touch_index].position,point_pos) < Vector2.Distance(follow_pos, point_pos))
             {
@@ -82,7 +82,7 @@ public class Normal_Curve : MonoBehaviour
             {
                 splineFollower.follow = false;
             }
-            if (splineComputer.clipFrom >= 0.98f)
+            if (splineComputer.clipFrom >= 0.9f)
             {
                 Game_Controller.Instance.Game_Start();
                 Destroy(gameObject);
@@ -126,5 +126,26 @@ public class Normal_Curve : MonoBehaviour
             return true;
         }
         return false;
+    }
+
+    void Check_Distance()
+    {
+        if (Input.touches.Length>0)
+        {
+            if (touch_index ==-1)
+            {
+                distance = Vector2.Distance(splineFollower.GetComponent<Curve_Follow>().Curve_Point(), Input.touches[Input.touches.Length - 1].position);
+            }
+            else
+            {
+                distance = Vector2.Distance(splineFollower.GetComponent<Curve_Follow>().Curve_Point(), Input.touches[touch_index].position);
+            }
+        }
+        if (distance <= Cure_Controller.Instance.follow_radious)
+        {
+            is_once = true;
+            is_pressed = true;
+            touch_index = Input.touches.Length-1;
+        }
     }
 }

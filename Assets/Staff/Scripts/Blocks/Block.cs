@@ -84,14 +84,12 @@ public class Block : MonoBehaviour
         if (!if_over && if_prefect)
         {
             Game_Controller.Instance.Set_Score(20);
-            Game_Controller.Instance.Set_preference_Text("Prefect");
             //≤•∑≈“Ù–ß
             AudioManager.instance.PlaySFX(1);
         }
         else if (If_great)
         {
             Game_Controller.Instance.Set_Score(10);
-            Game_Controller.Instance.Set_preference_Text("Great");
         }
         if (if_over || if_great || if_prefect)
         {

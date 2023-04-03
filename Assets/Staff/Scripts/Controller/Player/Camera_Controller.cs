@@ -79,16 +79,16 @@ public class Camera_Controller : MonoBehaviour
             {
                 main_staff.transform.DOMoveX(main_staff.transform.position.x + target_pos[1].x * index, change_time_horizontal);
             }
-            //纵向移动
-            else if(index == 0)
-            {
-                main_staff.transform.DOMoveY(target_pos[index].y, change_time);
-                main_staff.transform.DORotate(target_rotate[index], change_time);
-            }
-            else
-            {
-                main_staff.transform.DOMoveY(target_pos[index].y, change_time);
-            }
+            ////纵向移动
+            //else if(index == 0)
+            //{
+            //    main_staff.transform.DOMoveY(target_pos[index].y, change_time);
+            //    main_staff.transform.DORotate(target_rotate[index], change_time);
+            //}
+            //else
+            //{
+            //    main_staff.transform.DOMoveY(target_pos[index].y, change_time);
+            //}
         }
     }
 }
