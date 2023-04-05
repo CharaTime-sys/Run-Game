@@ -41,7 +41,7 @@ namespace SonicBloom.Koreo.Demos
             _buff.GetComponent<Buff_Block>().buff_time = (koreoEvent.EndSample - koreoEvent.StartSample) / 88200;
             //创造对应的物体
             Block_Controller.Instance.Create_Constant_Obj(_buff.transform.localPosition, (int)_buff.GetComponent<Buff_Block>().buff_time * 2,buff_Type);
-            _buff.GetComponent<Buff_Block>().buff_time += 1.9f;
+            _buff.GetComponent<Buff_Block>().buff_time += 1f;
             if_once = false;
         }
 

@@ -34,6 +34,7 @@ public class Normal_Curve : MonoBehaviour
         if (!is_add_once)
         {
             DynamicJoystick.Instance.set_Check_Line += Set_Pressed;
+            DynamicJoystick.Instance.disable_Check_Line += Disable_Pressed;
             is_add_once = true;
         }
     }
@@ -91,7 +92,12 @@ public class Normal_Curve : MonoBehaviour
         else
         {
             //当按下后又松开就判断失败
-            splineFollower.follow = false;
+            splineFollower.follow = true;
+            if (splineComputer.clipFrom >= 0.9f)
+            {
+                Game_Controller.Instance.Game_Start();
+                Destroy(gameObject);
+            }
         }
     }
 

@@ -16,7 +16,7 @@ public class Floor_Controller : MonoBehaviour
     [SerializeField] float floor_up_time;
     [Header("距离，x为下沉，y为上升")]
     [SerializeField] Vector2 floor_distance;
-    [SerializeField] RuntimeAnimatorController animator;
+    [SerializeField] GameObject monster;
     private void Start()
     {
         floor_onces = new bool[floor_parts.Count];//初始化地板检测
@@ -45,7 +45,6 @@ public class Floor_Controller : MonoBehaviour
                 //让地板沉下去
                 if (!floor_onces[floor_parts.IndexOf(item)])
                 {
-                    item.transform.DOLocalMoveY(item.transform.localPosition.y - floor_distance.x, floor_down_time);
                     //改变状态
                     floor_onces[floor_parts.IndexOf(item)] = true;
                     //增加地板坐标
@@ -60,7 +59,7 @@ public class Floor_Controller : MonoBehaviour
         //等待地板运动完
         yield return new WaitForSeconds(floor_down_time);
         //循环地板
-        item.transform.localPosition += new Vector3(0, floor_distance.x + floor_distance.y, 84f);
+        item.transform.localPosition += new Vector3(0, 0, 92f);
         //显示子物体
         foreach (Transform child in item.transform)
         {
@@ -68,23 +67,21 @@ public class Floor_Controller : MonoBehaviour
         }
         //改变状态
         floor_onces[floor_parts.IndexOf(item)] = false;
-        //从上面降下来
-        item.transform.DOLocalMoveY(item.transform.localPosition.y - floor_distance.y, floor_up_time);
         //StopAllCoroutines();
     }
 
     [ContextMenu("加标签")]
     public void Add_tag()
     {
-        foreach (var item in floor_parts)
+        foreach (GameObject item in floor_parts)
         {
-            Transform parent = item.transform;
-            int i = 0;
-            foreach (Transform child in parent)
+            Transform item_trans = item.transform;
+            foreach (Transform _transform in item_trans)
             {
-                child.transform.localScale *= 10;
-                child.GetComponent<BoxCollider>().center /= 10;
-                child.GetComponent<BoxCollider>().size /= 10;
+                if (_transform.childCount==2)
+                {
+
+                }
             }
         }
     }

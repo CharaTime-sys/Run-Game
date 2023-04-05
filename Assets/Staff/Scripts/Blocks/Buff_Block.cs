@@ -29,8 +29,13 @@ public class Buff_Block : Block
         };
     }
 
-    private void OnDrawGizmos()
+    public override void Set_Collider()
     {
-        Debug.DrawRay(transform.position, Vector3.up * 2F, Color.red);
+
+    }
+
+    public override void OnDrawGizmos()
+    {
+
     }
 }

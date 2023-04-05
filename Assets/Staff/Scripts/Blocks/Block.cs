@@ -35,7 +35,7 @@ public class Block : MonoBehaviour
         {
             touched = true;
         }
-        if (transform.position.z < 0)
+        if (transform.position.z < -5)
         {
             //deactivateAction.Invoke(this);
             Destroy(gameObject);
@@ -48,7 +48,7 @@ public class Block : MonoBehaviour
         {
             return;
         }
-        transform.Translate(Vector3.back * Game_Controller.Instance.speed * Time.deltaTime);
+        Set_Translate();
         Changing_Status();
         //障碍物是否超过人物
         if (transform.position.z < Game_Controller.Instance.ninja.transform.position.z)
@@ -58,6 +58,31 @@ public class Block : MonoBehaviour
                 Turn_Next();
             }
             if_over = true;
+            Set_Collider();
+        }
+    }
+
+    public virtual void Set_Collider()
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            transform.parent.GetChild(i).GetComponent<BoxCollider>().enabled = false;
+        }
+    }
+
+    private void Set_Translate()
+    {
+        if (transform.localEulerAngles.y == 90)
+        {
+            transform.Translate(new Vector3(1, 0, 0) * Game_Controller.Instance.speed * Time.deltaTime);
+        }
+        else if (transform.localEulerAngles.y == 180)
+        {
+            transform.Translate(new Vector3(0, 0, 1) * Game_Controller.Instance.speed * Time.deltaTime);
+        }
+        else
+        {
+            transform.Translate(new Vector3(0, 0, -1) * Game_Controller.Instance.speed * Time.deltaTime);
         }
     }
 
@@ -71,6 +96,10 @@ public class Block : MonoBehaviour
     /// </summary>
     public virtual void Test_Score(Dir_Type _dir_type)
     {
+        if (Mathf.Abs(Game_Controller.Instance.ninja.transform.position.x - transform.position.x) >0.3f)
+        {
+            return;
+        }
         if (if_over || if_great || if_prefect)
         {
             //切换判断的对象
@@ -97,7 +126,7 @@ public class Block : MonoBehaviour
             {
                 Do_Ani("return");
             }
-            if_end = true;
+            Set_Collider();
         }
     }
 
@@ -161,11 +190,37 @@ public class Block : MonoBehaviour
 
     protected virtual void Ray_Cast()
     {
-
+        RaycastHit hit;
+        Ray[] ray = {
+            new Ray(transform.position - new Vector3(0, -5, 8), Vector3.down * 15f),
+            new Ray(transform.position - new Vector3(0, -5, 4), Vector3.down * 15f),
+            new Ray(transform.position - new Vector3(0, -5, 12), Vector3.down * 15f),
+            };
+        Debug.Log(name);
+        foreach (Ray item in ray)
+        {
+            if (Physics.Raycast(item, out hit))
+            {
+                foreach (Transform _item in hit.transform.parent)
+                {
+                    if (_item.GetComponent<Base_block>()!=null)
+                    {
+                        _item.GetComponent<Base_block>().could_ani = true;
+                    }
+                }
+            }
+        }
     }
 
     public void SetDeactivateAction(System.Action<Block> deactivateAction)
     {
         this.deactivateAction = deactivateAction;
+    }
+
+    public virtual void OnDrawGizmos()
+    {
+        Debug.DrawRay(transform.position - new Vector3(0,-5,8), Vector3.down * 15f, Color.red);
+        Debug.DrawRay(transform.position - new Vector3(0,-5,4), Vector3.down * 15f, Color.red);
+        Debug.DrawRay(transform.position - new Vector3(0,-5,12), Vector3.down * 15f, Color.red);
     }
 }

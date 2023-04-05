@@ -141,4 +141,8 @@ public class Curve_Block : Block
     {
 
     }
+    protected override void Ray_Cast()
+    {
+
+    }
 }

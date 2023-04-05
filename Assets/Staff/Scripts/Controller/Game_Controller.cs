@@ -21,6 +21,8 @@ public class Game_Controller : MonoBehaviour
     public static Game_Controller Instance;
     [Header("物体开始的延迟")]
     public float staff_delay;
+    [Header("无尽模式间隔")]
+    public float level_delay;
     [Header("音乐开始的延迟")]
     public float music_delay;
     public bool start_game = false;
@@ -90,7 +92,9 @@ public class Game_Controller : MonoBehaviour
     //临时变量
     float offset_y;
 
-    [SerializeField] GameObject[] startups;
+    [SerializeField] GameObject startup;
+    [SerializeField] SonicBloom.Koreo.Demos.Create_Obj[] musics;
+    [SerializeField] SonicBloom.Koreo.Demos.Create_Buff[] music_buffs;
 
     private void Awake()
     {
@@ -110,11 +114,31 @@ public class Game_Controller : MonoBehaviour
 
     void Set_Staff()
     {
-        foreach (var item in startups)
+        startup.SetActive(true);
+        foreach (var item in musics)
         {
-            item.SetActive(true);
+            item.enabled = true;
+        }
+        foreach (var item in music_buffs)
+        {
+            item.enabled = true;
         }
         Invoke(nameof(Set_Audio), music_delay);
+        Invoke(nameof(Disable_Staff), startup.GetComponent<AudioSource>().clip.length);
+    }
+
+    public void Disable_Staff()
+    {
+        startup.SetActive(false);
+        foreach (SonicBloom.Koreo.Demos.Create_Obj item in musics)
+        {
+            item.enabled = false;
+        }
+        foreach (SonicBloom.Koreo.Demos.Create_Buff item in music_buffs)
+        {
+            item.enabled = false;
+        }
+        Invoke(nameof(Set_Staff), level_delay);
     }
 
     /// <summary>
@@ -275,6 +299,7 @@ public class Game_Controller : MonoBehaviour
             {
                 //取消玩家buff状态
                 ninja.Is_buffing = false;
+                ninja.Set_Buff_Status(false);
                 //落地
                 switch (Buff_Type)
                 {

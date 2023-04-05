@@ -312,6 +312,7 @@ public class Ninja : MonoBehaviour
                 return;
             }
             other.GetComponent<Block>().Set_loss();//…Ë÷√ ß∞‹
+            other.GetComponent<Block>().Set_Collider();//…Ë÷√ ß∞‹
             Set_Buff_Status(false);
             //ø€—™
             Game_Controller.Instance.Set_HP(other.gameObject.GetComponent<Block>().damage);

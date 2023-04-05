@@ -12,4 +12,11 @@ public class Monster_Block : Block
     {
         
     }
+    public override void OnDrawGizmos()
+    {
+    }
+    public override void Set_Collider()
+    {
+
+    }
 }

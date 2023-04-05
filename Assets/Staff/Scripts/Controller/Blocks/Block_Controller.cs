@@ -33,6 +33,7 @@ public class Block_Controller : MonoBehaviour
     public Vector3[] buff_down_pos;
     #endregion
 
+    [SerializeField] Transform colliders;
     //目前测试的障碍物
     public Block cur_block;
     public GameObject target_obj;
@@ -126,7 +127,7 @@ public class Block_Controller : MonoBehaviour
                 break;
         }
         //目标z轴
-        float target_z = block_pos.z + 5;
+        float target_z = block_pos.z + 10;
         for (int i = 0; i < nums; i++)
         {
             //在三个地方都生成
@@ -154,6 +155,20 @@ public class Block_Controller : MonoBehaviour
             GameObject block = Instantiate(block_extres, GameObject.Find("游戏必备/Blocks").transform);
             block.transform.localPosition = new Vector3(block_extre_pos[i],block_y[type],0);
             block.transform.localPosition += new Vector3(0, 0, target_obj.transform.localPosition.z);
+        }
+    }
+    #endregion
+
+    #region 生成碰撞体
+    public void Create_Collider(int _index)
+    {
+        for (int i = 0; i < colliders.childCount; i++)
+        {
+            colliders.GetChild(i).gameObject.SetActive(false);
+            if (i != _index)
+            {
+                colliders.GetChild(i).gameObject.SetActive(true);
+            }
         }
     }
     #endregion

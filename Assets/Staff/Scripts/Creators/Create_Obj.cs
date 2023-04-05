@@ -21,14 +21,15 @@ namespace SonicBloom.Koreo.Demos
         [Header("是否是手势")]
         public bool is_line;
         int down_previous = 0;
-        void Start()
+        void OnEnable()
         {
+            Debug.Log("启用");
             // Register for Koreography Events.  This sets up the callback.
             Koreographer.Instance.RegisterForEvents(eventID, AddImpulse);
         }
-
-        void OnDestroy()
+        void OnDisable()
         {
+            Debug.Log("禁用");
             // Sometimes the Koreographer Instance gets cleaned up before hand.
             //  No need to worry in that case.
             if (Koreographer.Instance != null)
@@ -90,7 +91,7 @@ namespace SonicBloom.Koreo.Demos
                     }
                     block = Block_Controller.Instance.Get_Block_Pos(_target_obj, new Vector3(temp_x, temp_y,0));
                     //temping not to create monster
-                    //Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.block_extres[0], Block_Controller.Instance.block_x_coords, _index,1);
+                    Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.block_extres[0], Block_Controller.Instance.block_x_coords, _index, 1);
                     break;
                 case 1:
                     obj_index = Random.Range(0, Block_Controller.Instance.downs.Length);
@@ -116,12 +117,13 @@ namespace SonicBloom.Koreo.Demos
                     }
                     block = Block_Controller.Instance.Get_Block_Pos(_target_obj, new Vector3(Block_Controller.Instance.block_x_coords[_index], temp_y, 0));
                     //temping not to create monster
-                    //Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.down_extres[0], Block_Controller.Instance.block_x_coords, _index,5);
+                    Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.down_extres[0], Block_Controller.Instance.block_x_coords, _index, 5);
                     break;
                 case 2:
+                    Block_Controller.Instance.Create_Constant_Obj(Block_Controller.Instance.block_extres[0], Block_Controller.Instance.block_x_coords, _index, 5);
                     _target_obj = Block_Controller.Instance.turns[Random.Range(0, Block_Controller.Instance.turns.Length - 1)];
                     //temping not to create monster
-                    //block = Block_Controller.Instance.Get_Block_Pos(_target_obj, Block_Controller.Instance.turn_pos);
+                    block = Block_Controller.Instance.Get_Block_Pos(_target_obj, Block_Controller.Instance.turn_pos);
                     break;
                 default:
                     break;

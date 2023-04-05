@@ -71,6 +71,7 @@ public class DynamicJoystick : Joystick
         Dir_Type dir_Type = Dir_Type.Up;
         background.gameObject.SetActive(false);
         touch_index--;//减少索引
+        disable_Check_Line?.Invoke();//手指松开判断
         //得到手势的方向，手指坐标不为空 检测在下面 手指坐标不为0
         if (Input.touches.Length != 0  && Game_Controller.Instance.finger_start_pos != new Vector2(-1000,1000))
         {
@@ -121,7 +122,6 @@ public class DynamicJoystick : Joystick
                 Block_Controller.Instance.cur_block.Test_Score(dir_Type);
             }
         }
-        disable_Check_Line?.Invoke();//手指松开判断
         base.OnPointerUp(eventData);
     }
 
