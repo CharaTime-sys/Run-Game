@@ -15,6 +15,9 @@ EditorBuildSettings:
     path: Assets/Staff/Scenes/Choose.unity
     guid: b1dd31c7a0d45bf4cb127607562ed630
   - enabled: 1
-    path: Assets/Staff/Scenes/Level_One.unity
+    path: Assets/Staff/Scenes/Difficult.unity
+    guid: e4cb54929812f1d43b78a510a0098fca
+  - enabled: 1
+    path: Assets/Staff/Scenes/Level_OneEntity.unity
     guid: 30909cef66a1a3b44af7da735de1a544
   m_configObjects: {}

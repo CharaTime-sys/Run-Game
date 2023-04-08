@@ -16,7 +16,7 @@ Shader "VacuumShaders/Curved World/Unlit"
 		  
 		//Albedo
 		[CurvedWorldLargeLabel] V_CW_Label_Albedo("Albedo", float) = 0	
-		_Color("  Color", color) = (1, 1, 1, 1)
+		_Color("Color", color) = (1, 1, 1, 1)
 		_MainTex ("  Map (RGB) RefStr (A)", 2D) = "white" {}
 		[CurvedWorldUVScroll] _V_CW_MainTex_Scroll("    ", vector) = (0, 0, 0, 0)
 		 

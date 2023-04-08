@@ -1,0 +1,125 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1 &6953638835927930945
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6953638835927930946}
+  - component: {fileID: 6953638835927930947}
+  m_Layer: 0
+  m_Name: Create_Helper 1
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6953638835927930946
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6953638835927930945}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_RootOrder: 0
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &6953638835927930947
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6953638835927930945}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f8d3dc4159f01ab4c965a85edb6ce7b1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  start_delay: 15
+  target_z:
+  - 153.4439
+  - 160.71861
+  - 166.58528
+  - 176.44113
+  - 182.77724
+  - 190.52113
+  - 197.09195
+  - 205.07056
+  - 211.40642
+  - 219.38528
+  - 226.42528
+  - 234.63861
+  - 240.50528
+  - 249.1878
+  - 255.5239
+  - 264.44113
+  - 271.24643
+  - 278.75586
+  - 284.3878
+  - 293.30527
+  - 331.32114
+  - 337.42252
+  - 346.33975
+  - 352.91055
+  - 377.08115
+  - 391.63055
+  - 401.25195
+  - 416.73975
+  - 430.81973
+  - 445.13446
+  - 459.21448
+  - 473.76392
+  - 488.31308
+  - 503.33197
+  - 517.8811
+  - 532.8998
+  - 546.51056
+  - 561.29443
+  - 576.0786
+  - 589.9239
+  - 607.05444
+  target_low_z:
+  - 152.27057
+  - 166.11584
+  - 181.36919
+  - 195.6839
+  - 212.11057
+  - 224.78252
+  - 240.27057
+  - 254.81975
+  - 270.5425
+  - 283.4492
+  - 298.2331
+  - 313.25195
+  - 327.09723
+  - 340.7078
+  - 351.73724
+  - 370.27585
+  - 386.4678
+  - 401.0172
+  - 416.73975
+  - 430.5853
+  - 446.0731
+  - 459.4492
+  - 473.99863
+  - 489.72113
+  - 502.8625
+  - 517.6464
+  - 532.8998
+  - 547.2145
+  - 559.18256
+  - 576.3131
+  - 592.0358
+  - 604.70776
+  tip: {fileID: 3352780667077190383, guid: 7b672910396a04d41845180da4a62c6d, type: 3}
+  tip_1: {fileID: 3352780667077190383, guid: d089606852f75f84fb75ebb542bb5b7d, type: 3}
+  _parent: {fileID: 0}

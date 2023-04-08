@@ -36,6 +36,7 @@ namespace SonicBloom.Koreo.Demos
             {
                 return;
             }
+            Create_Helper.Instance.target_z.Add(Create_Helper.Instance.start_delay * 11f + audio_source.time * 11f);
             GameObject _buff = Block_Controller.Instance.Get_Block_Pos(Block_Controller.Instance.buffs[(int)buff_Type], Block_Controller.Instance.buff_pos);
             _buff.GetComponent<Buff_Block>().buff_Type = buff_Type;
             _buff.GetComponent<Buff_Block>().buff_time = (koreoEvent.EndSample - koreoEvent.StartSample) / 88200;

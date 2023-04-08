@@ -10,11 +10,21 @@ public class UI_Controller : MonoBehaviour
     public Button second_button;
     public Button third_button;
 
+    public string name;
     public string[] names;
+    [Header("是否是选择难度")]
+    public bool if_difficult;
     private void Start()
     {
-        first_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(names[0]); });
-        second_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(names[1]); });
-        third_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(names[2]); });
+        if (!if_difficult)
+        {
+            first_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(name, 1); });
+            second_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(name, 2); });
+        }
+        else
+        {
+            first_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(1); });
+            second_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(2); });
+        }
     }
 }

@@ -23,8 +23,11 @@ public class Block : MonoBehaviour
     [SerializeField] Animator animator;
     //ŒØÕ–
     System.Action<Block> deactivateAction;
-    private void Start()
+
+    public int _index;
+    protected virtual void Start()
     {
+        Block_Controller.Instance.Add_Block_To_Current(GetComponent<Block>());
         Ray_Cast();
     }
     // Update is called once per frame
@@ -64,10 +67,7 @@ public class Block : MonoBehaviour
 
     public virtual void Set_Collider()
     {
-        for (int i = 0; i < 3; i++)
-        {
-            transform.parent.GetChild(i).GetComponent<BoxCollider>().enabled = false;
-        }
+        GetComponent<BoxCollider>().enabled = false;
     }
 
     private void Set_Translate()
@@ -96,7 +96,7 @@ public class Block : MonoBehaviour
     /// </summary>
     public virtual void Test_Score(Dir_Type _dir_type)
     {
-        if (Mathf.Abs(Game_Controller.Instance.ninja.transform.position.x - transform.position.x) >0.3f)
+        if (_index != Game_Controller.Instance.ninja.Dir_component)
         {
             return;
         }
@@ -113,12 +113,14 @@ public class Block : MonoBehaviour
         if (!if_over && if_prefect)
         {
             Game_Controller.Instance.Set_Score(20);
+            UI_Manager.Instance.Set_Status_UI("Prefect£°");
             //≤•∑≈“Ù–ß
             AudioManager.instance.PlaySFX(1);
         }
         else if (If_great)
         {
             Game_Controller.Instance.Set_Score(10);
+            UI_Manager.Instance.Set_Status_UI("Great£°");
         }
         if (if_over || if_great || if_prefect)
         {
@@ -196,7 +198,6 @@ public class Block : MonoBehaviour
             new Ray(transform.position - new Vector3(0, -5, 4), Vector3.down * 15f),
             new Ray(transform.position - new Vector3(0, -5, 12), Vector3.down * 15f),
             };
-        Debug.Log(name);
         foreach (Ray item in ray)
         {
             if (Physics.Raycast(item, out hit))

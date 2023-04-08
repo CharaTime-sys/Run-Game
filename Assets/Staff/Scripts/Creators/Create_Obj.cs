@@ -23,13 +23,11 @@ namespace SonicBloom.Koreo.Demos
         int down_previous = 0;
         void OnEnable()
         {
-            Debug.Log("启用");
             // Register for Koreography Events.  This sets up the callback.
             Koreographer.Instance.RegisterForEvents(eventID, AddImpulse);
         }
         void OnDisable()
         {
-            Debug.Log("禁用");
             // Sometimes the Koreographer Instance gets cleaned up before hand.
             //  No need to worry in that case.
             if (Koreographer.Instance != null)
@@ -128,6 +126,7 @@ namespace SonicBloom.Koreo.Demos
                 default:
                     break;
             }
+            block.GetComponent<Block>()._index = _index - 1;
             if (Block_Controller.Instance.If_once)
             {
                 Block_Controller.Instance.Add_Block_To_Current(block.GetComponent<Block>());

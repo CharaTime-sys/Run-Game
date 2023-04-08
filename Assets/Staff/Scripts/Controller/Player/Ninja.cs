@@ -56,7 +56,7 @@ public class Ninja : MonoBehaviour
     [Header("碰撞体体积")]
     [SerializeField] Vector2[] collider_size_and_pos_y;
     //血量和分数
-    int hp = 100;
+    int hp = 250;
     int score = 0;
     float _unmatched_time;//无敌时间计时器
     #endregion
@@ -76,6 +76,8 @@ public class Ninja : MonoBehaviour
             UI_Manager.Instance.Set_Score_UI();
         }
     }
+
+    public int Dir_component { get => dir_component;}
     #endregion
 
     private void Update()
@@ -155,10 +157,10 @@ public class Ninja : MonoBehaviour
     public void Move_Left_And_Right(int direction)
     {
         ////超过范围不能移动
-        if ((dir_component < 0 && direction < 0) || (dir_component > 0 && direction > 0) || is_moving)
-        {
-            return;
-        }
+        //if ((dir_component < 0 && direction < 0) || (dir_component > 0 && direction > 0) || is_moving)
+        //{
+        //    return;
+        //}
         dir_component += direction;
         //播放音效
         AudioManager.instance.PlaySFX(3);

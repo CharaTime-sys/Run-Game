@@ -2,6 +2,9 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
+using SonicBloom.Koreo;
+using SonicBloom.Koreo.Players;
+
 public enum Buff_Type
 {
     Jump,
@@ -32,6 +35,8 @@ public class Game_Controller : MonoBehaviour
     [Header("速度变量------------------------------------------")]
     [Header("障碍物移动速度")]
     public float speed;
+    [Header("障碍物移动加速度")]
+    public float add_speed;
     [Header("曲线移动速度")]
     public float curve_speed;
     #endregion
@@ -95,7 +100,7 @@ public class Game_Controller : MonoBehaviour
     [SerializeField] GameObject startup;
     [SerializeField] SonicBloom.Koreo.Demos.Create_Obj[] musics;
     [SerializeField] SonicBloom.Koreo.Demos.Create_Buff[] music_buffs;
-
+    [SerializeField] SimpleMusicPlayer simpleMusicPlayer;
     private void Awake()
     {
         Instance = this;
@@ -109,7 +114,6 @@ public class Game_Controller : MonoBehaviour
         ninja.GetComponent<Animator>().enabled = true;
         UI_Manager.Instance.Set_Tip(false, null);
     }
-
     #region 音乐相关
 
     void Set_Staff()
@@ -125,6 +129,14 @@ public class Game_Controller : MonoBehaviour
         }
         Invoke(nameof(Set_Audio), music_delay);
         Invoke(nameof(Disable_Staff), startup.GetComponent<AudioSource>().clip.length);
+        simpleMusicPlayer.Play();
+        Add_Floor_Speed();
+    }
+
+    void Add_Floor_Speed()
+    {
+        speed += add_speed;
+        Floor_Controller.Instance.Add_Speed();
     }
 
     public void Disable_Staff()
@@ -232,7 +244,7 @@ public class Game_Controller : MonoBehaviour
         {
             angle = 270f + Mathf.Atan(-test_vector.x / test_vector.y) * Mathf.Rad2Deg;
         }
-
+        //Create_Helper.Instance.Create_Obj(angle);
         //根据角度调用不同方法
         if (angle < 45 || angle > 315)
         {

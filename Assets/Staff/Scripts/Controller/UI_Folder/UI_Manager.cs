@@ -11,6 +11,7 @@ public class UI_Manager : MonoBehaviour
     public Image jump_buff_ui;
     public Image down_buff_ui;
     [SerializeField] Text hp_ui;
+    [SerializeField] Text status_ui;
     [SerializeField] Text tip_ui;
     [Header("这个不用管，会自动装上去")]
     [SerializeField] Text buff_ui;
@@ -70,6 +71,12 @@ public class UI_Manager : MonoBehaviour
     public void Set_Score_UI()
     {
         score_ui.text = "分数：" + Game_Controller.Instance.ninja.Score.ToString();
+    }
+
+    public void Set_Status_UI(string content)
+    {
+        status_ui.text = content;
+        status_ui.GetComponent<Animator>().Play("Status");
     }
 
     public void Set_Tip(bool enable,string content)

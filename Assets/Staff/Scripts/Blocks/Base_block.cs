@@ -18,18 +18,14 @@ public class Base_block : MonoBehaviour
 
     protected void Ray_Cast()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.up, out hit, 3))
+        if (transform.position.z <= Game_Controller.Instance.ninja.transform.position.z)
         {
-            if (hit.transform.GetComponent<Ninja>()!=null )
-            {
-                foreach (Transform item in transform.parent)
-                {
-                    item.GetComponent<Animator>().Play("return");
-                    item.GetComponent<Base_block>().could_ani = false;
-                }
-            }
-        };
+            //foreach (Transform item in transform.parent)
+            //{
+            //    item.GetComponent<Animator>().Play("return");
+            //    item.GetComponent<Base_block>().could_ani = false;
+            //}
+        }
     }
     private void OnTriggerEnter(Collider other)
     {

@@ -46,7 +46,10 @@ public class Normal_Curve : MonoBehaviour
         splineComputer.clipFrom = splineFollower.GetPercent();
         Renew_Curve();
     }
-
+    private void OnDestroy()
+    {
+        DynamicJoystick.Instance.set_Check_Line -= Set_Pressed;
+    }
     /// <summary>
     /// 更新曲线
     /// </summary>
@@ -106,6 +109,10 @@ public class Normal_Curve : MonoBehaviour
     /// </summary>
     void Disable_Pressed()
     {
+        if (touch_index == -1)
+        {
+            return;
+        }
         //如果松的是目前的手指的话
         if (Input.touches[DynamicJoystick.Instance.touch_index].position == Input.touches[touch_index].position)
         {

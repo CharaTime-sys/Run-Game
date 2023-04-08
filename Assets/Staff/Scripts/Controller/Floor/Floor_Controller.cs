@@ -5,11 +5,14 @@ using DG.Tweening;
 
 public class Floor_Controller : MonoBehaviour
 {
+    public static Floor_Controller Instance;
     [Header("地板组块")]
     [SerializeField] List<GameObject> floor_parts;
     [SerializeField] bool[] floor_onces;//地板只能移动一次
     [Header("移动速度")]
     [SerializeField] float floor_speed;
+    [Header("移动加速度")]
+    [SerializeField] float floor_add_speed;
     [Header("地板下沉和上升时间")]
     [SerializeField] float floor_down_time;
     [Header("地板下沉和上升时间")]
@@ -17,9 +20,17 @@ public class Floor_Controller : MonoBehaviour
     [Header("距离，x为下沉，y为上升")]
     [SerializeField] Vector2 floor_distance;
     [SerializeField] GameObject monster;
+    private void Awake()
+    {
+        Instance = this;
+    }
     private void Start()
     {
         floor_onces = new bool[floor_parts.Count];//初始化地板检测
+    }
+    public void Add_Speed()
+    {
+        floor_speed += floor_add_speed;
     }
     // Update is called once per frame
     void FixedUpdate()
@@ -28,29 +39,20 @@ public class Floor_Controller : MonoBehaviour
         {
             return;
         }
-        Floor_Move();
+        if (Create_Helper.Instance!=null)
+        {
+            Floor_Move();
+        }
     }
-
     /// <summary>
     /// 地板移动
     /// </summary>
     private void Floor_Move()
     {
-        foreach (var item in floor_parts)
+        Create_Helper.Instance.Move();
+        foreach (Transform item in transform)
         {
-            item.transform.localPosition -= new Vector3(0, 0, floor_speed * Time.deltaTime);
-            //回到原点
-            if (item.transform.localPosition.z < -24f)
-            {
-                //让地板沉下去
-                if (!floor_onces[floor_parts.IndexOf(item)])
-                {
-                    //改变状态
-                    floor_onces[floor_parts.IndexOf(item)] = true;
-                    //增加地板坐标
-                    StartCoroutine(Increase_Z(item));
-                }
-            }
+            item.localPosition -= new Vector3(0, 0, floor_speed * Time.deltaTime);
         }
     }
 
@@ -78,10 +80,7 @@ public class Floor_Controller : MonoBehaviour
             Transform item_trans = item.transform;
             foreach (Transform _transform in item_trans)
             {
-                if (_transform.childCount==2)
-                {
-
-                }
+                //_transform.GetComponent<MeshRenderer>().material = monster;
             }
         }
     }

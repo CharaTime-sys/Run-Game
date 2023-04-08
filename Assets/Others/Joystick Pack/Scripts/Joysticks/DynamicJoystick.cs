@@ -47,7 +47,7 @@ public class DynamicJoystick : Joystick
             //对每个位置进行循环
             foreach (var item in Input.touches)
             {
-                if (set_Check_Line.Invoke(touch_index))
+                if (set_Check_Line!=null && set_Check_Line.Invoke(touch_index))
                 {
                     Test_CheckLine = true;
                 }//设置每个手势的手指位置坐标
@@ -81,7 +81,8 @@ public class DynamicJoystick : Joystick
             Game_Controller.Instance.pressed = false;
             //移除原来的坐标
             Game_Controller.Instance.finger_start_pos = new Vector2(-1000, 1000);
-
+            Debug.Log("收拾判断");
+            Debug.Log(Test_CheckLine);
             if (Test_CheckLine || !Game_Controller.Instance.game_started)
             {
                 Test_CheckLine = false;

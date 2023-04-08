@@ -27,7 +27,11 @@ public class AudioManager : MonoBehaviour
         bgmSource.clip = clip;
         bgmSource.Play();
     }
-
+    [ContextMenu("“Ù¿÷ ±≥§")]
+    public void Debug_Music()
+    {
+        Debug.Log(audioClips[4].length);
+    }
     //Õ£÷π±≥æ∞“Ù¿÷
     public void StopBGM()
     {
