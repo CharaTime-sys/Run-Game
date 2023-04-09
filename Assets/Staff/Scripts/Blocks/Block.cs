@@ -27,7 +27,6 @@ public class Block : MonoBehaviour
     public int _index;
     protected virtual void Start()
     {
-        Block_Controller.Instance.Add_Block_To_Current(GetComponent<Block>());
         Ray_Cast();
     }
     // Update is called once per frame
@@ -56,10 +55,6 @@ public class Block : MonoBehaviour
         //障碍物是否超过人物
         if (transform.position.z < Game_Controller.Instance.ninja.transform.position.z)
         {
-            if (Block_Controller.Instance.cur_block == gameObject.GetComponent<Block>())
-            {
-                Turn_Next();
-            }
             if_over = true;
             Set_Collider();
         }
@@ -94,20 +89,19 @@ public class Block : MonoBehaviour
     /// <summary>
     /// 测试分数
     /// </summary>
-    public virtual void Test_Score(Dir_Type _dir_type)
+    public virtual bool Test_Score(Dir_Type _dir_type,Vector2 finger_pos)
     {
         if (_index != Game_Controller.Instance.ninja.Dir_component)
         {
-            return;
-        }
-        if (if_over || if_great || if_prefect)
-        {
-            //切换判断的对象
-            Turn_Next();
+            return false;
         }
         if (dir_Type !=_dir_type)
         {
-            return;
+            return false;
+        }
+        if (if_loss)
+        {
+            return false;
         }
         //设置不同得分标准
         if (!if_over && if_prefect)
@@ -130,6 +124,7 @@ public class Block : MonoBehaviour
             }
             Set_Collider();
         }
+        return false;
     }
 
     /// <summary>
@@ -142,18 +137,6 @@ public class Block : MonoBehaviour
             return;
         }
         animator.Play(name);
-    }
-
-    public void Turn_Next()
-    {
-        if ((transform.GetSiblingIndex() + 1 == transform.parent.childCount) || (GetComponent<Normal_Block>() != null&& transform.GetSiblingIndex() + 1 == transform.parent.childCount))
-        {
-            Block_Controller.Instance.Set_Once();
-        }
-        else
-        {
-            Block_Controller.Instance.cur_block = transform.parent.GetChild(transform.GetSiblingIndex() + 1).GetComponent<Block>();
-        }
     }
 
     /// <summary>
@@ -184,30 +167,29 @@ public class Block : MonoBehaviour
                 Do_Ani("start");
             }
         }
-        if (other.tag == "Ground")
-        {
-            other.gameObject.SetActive(false);
-        }
     }
 
     protected virtual void Ray_Cast()
     {
         RaycastHit hit;
         Ray[] ray = {
-            new Ray(transform.position - new Vector3(0, -5, 8), Vector3.down * 15f),
-            new Ray(transform.position - new Vector3(0, -5, 4), Vector3.down * 15f),
-            new Ray(transform.position - new Vector3(0, -5, 12), Vector3.down * 15f),
+            new Ray(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(0, 0, 8), Vector3.down * 5f),
+            new Ray(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(0, 0, 4), Vector3.down * 5f),
+            new Ray(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(0, 0, 12), Vector3.down * 5f),
+            new Ray(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(3, 0, 8), Vector3.down * 5f),
+            new Ray(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(3, 0, 4), Vector3.down * 5f),
+            new Ray(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(3, 0, 12), Vector3.down * 5f),
+            new Ray(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(-3,0, 8), Vector3.down * 5f),
+            new Ray(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(-3,0, 4), Vector3.down * 5f),
+            new Ray(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(-3,0, 12), Vector3.down * 5f),
             };
         foreach (Ray item in ray)
         {
             if (Physics.Raycast(item, out hit))
             {
-                foreach (Transform _item in hit.transform.parent)
+                if (hit.transform.GetComponent<Base_block>() != null)
                 {
-                    if (_item.GetComponent<Base_block>()!=null)
-                    {
-                        _item.GetComponent<Base_block>().could_ani = true;
-                    }
+                    hit.transform.GetComponent<Base_block>().could_ani = true;
                 }
             }
         }
@@ -220,8 +202,14 @@ public class Block : MonoBehaviour
 
     public virtual void OnDrawGizmos()
     {
-        Debug.DrawRay(transform.position - new Vector3(0,-5,8), Vector3.down * 15f, Color.red);
-        Debug.DrawRay(transform.position - new Vector3(0,-5,4), Vector3.down * 15f, Color.red);
-        Debug.DrawRay(transform.position - new Vector3(0,-5,12), Vector3.down * 15f, Color.red);
+        Debug.DrawRay(new Vector3(3.2f, -5.68f,transform.position.z) - new Vector3(0,0,8), Vector3.down * 5f, Color.red);
+        Debug.DrawRay(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(0,0,4), Vector3.down * 5f, Color.red);
+        Debug.DrawRay(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(0,0,12), Vector3.down * 5f, Color.red);
+        Debug.DrawRay(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(3, 0, 8), Vector3.down * 5f, Color.red);
+        Debug.DrawRay(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(3, -0, 4), Vector3.down * 5f, Color.red);
+        Debug.DrawRay(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(3, -0, 12), Vector3.down * 5f, Color.red);
+        Debug.DrawRay(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(-3, -0, 8), Vector3.down * 5f, Color.red);
+        Debug.DrawRay(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(-3, -0, 4), Vector3.down * 5f, Color.red);
+        Debug.DrawRay(new Vector3(3.2f, -5.68f, transform.position.z) - new Vector3(-3, -0, 12), Vector3.down * 5f, Color.red);
     }
 }

@@ -127,10 +127,6 @@ namespace SonicBloom.Koreo.Demos
                     break;
             }
             block.GetComponent<Block>()._index = _index - 1;
-            if (Block_Controller.Instance.If_once)
-            {
-                Block_Controller.Instance.Add_Block_To_Current(block.GetComponent<Block>());
-            }
         }
     }
 }

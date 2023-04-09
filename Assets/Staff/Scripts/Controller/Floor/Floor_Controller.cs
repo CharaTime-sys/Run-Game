@@ -19,7 +19,8 @@ public class Floor_Controller : MonoBehaviour
     [SerializeField] float floor_up_time;
     [Header("距离，x为下沉，y为上升")]
     [SerializeField] Vector2 floor_distance;
-    [SerializeField] GameObject monster;
+    [SerializeField] Material monster;
+    [SerializeField] Mesh mesh;
     private void Awake()
     {
         Instance = this;
@@ -80,7 +81,10 @@ public class Floor_Controller : MonoBehaviour
             Transform item_trans = item.transform;
             foreach (Transform _transform in item_trans)
             {
-                //_transform.GetComponent<MeshRenderer>().material = monster;
+                if (_transform.position.y !=-1.25f)
+                {
+                _transform.transform.localPosition = new Vector3(_transform.transform.localPosition.x, -1.25f, _transform.localPosition.z);
+                }
             }
         }
     }

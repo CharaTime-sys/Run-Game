@@ -232,6 +232,7 @@ public class Game_Controller : MonoBehaviour
     {
         //得到具体的角度，顺时针
         float angle = Mathf.Atan(test_vector.y/test_vector.x) * Mathf.Rad2Deg;
+        //Create_Helper.Instance.Create_Obj(angle);
         if (test_vector.x<0f && test_vector.y>0f)
         {
             angle = 90f+Mathf.Atan(-test_vector.x / test_vector.y) * Mathf.Rad2Deg;
@@ -248,25 +249,44 @@ public class Game_Controller : MonoBehaviour
         //根据角度调用不同方法
         if (angle < 45 || angle > 315)
         {
-            ninja.Move_Left_And_Right(1);
             return Dir_Type.Right;
         }
         else if (angle >135 && angle < 225)
         {
-            ninja.Move_Left_And_Right(-1);
             return Dir_Type.Left;
         }
         else if (angle > 45 && angle < 135)
         {
-            ninja.Jump(true);
             return Dir_Type.Up;
         }
         else if (angle > 225 && angle < 315)
         {
-            ninja.Down(true);
             return Dir_Type.Down;
         }
         return Dir_Type.Up;
+    }
+
+    public void Change_Character(Dir_Type dir_Type)
+    {
+        switch (dir_Type)
+        {
+            case Dir_Type.None:
+                break;
+            case Dir_Type.Left:
+                ninja.Move_Left_And_Right(-1);
+                break;
+            case Dir_Type.Right:
+                ninja.Move_Left_And_Right(1);
+                break;
+            case Dir_Type.Up:
+                ninja.Jump(true);
+                break;
+            case Dir_Type.Down:
+                ninja.Down(true);
+                break;
+            default:
+                break;
+        }
     }
 
     /// <summary>

@@ -72,6 +72,8 @@ public class DynamicJoystick : Joystick
         background.gameObject.SetActive(false);
         touch_index--;//减少索引
         disable_Check_Line?.Invoke();//手指松开判断
+        //是否是手势
+        bool if_monster = false;
         //得到手势的方向，手指坐标不为空 检测在下面 手指坐标不为0
         if (Input.touches.Length != 0  && Game_Controller.Instance.finger_start_pos != new Vector2(-1000,1000))
         {
@@ -81,17 +83,10 @@ public class DynamicJoystick : Joystick
             Game_Controller.Instance.pressed = false;
             //移除原来的坐标
             Game_Controller.Instance.finger_start_pos = new Vector2(-1000, 1000);
-            Debug.Log("收拾判断");
-            Debug.Log(Test_CheckLine);
             if (Test_CheckLine || !Game_Controller.Instance.game_started)
             {
                 Test_CheckLine = false;
                 return;
-            }
-            //防止有bug
-            if (!Game_Controller.Instance.is_jump_after)
-            {
-                dir_Type = Game_Controller.Instance.Test_Direction();
             }
             if (Game_Controller.Instance.ninja.Is_buffing)
             {
@@ -115,13 +110,29 @@ public class DynamicJoystick : Joystick
                         break;
                 }
             }
+            //防止有bug
+            if (!Game_Controller.Instance.is_jump_after)
+            {
+                dir_Type = Game_Controller.Instance.Test_Direction();
+            }
+            //进行评分
+            if (!Game_Controller.Instance.ninja.Is_buffing)
+            {
+                foreach (Transform item in Block_Controller.Instance.block_parent.transform)
+                {
+                    if (item.GetComponent<Block>().Test_Score(dir_Type, Input.touches[touch_index].position- Game_Controller.Instance.test_vector))
+                    {
+                        if_monster = true;
+                        break;
+                    }
+                }
+            }
+            if (!if_monster && !Game_Controller.Instance.is_jump_after)
+            {
+                Game_Controller.Instance.Change_Character(dir_Type);
+            }
             //重置长按跳跃的状态
             Game_Controller.Instance.is_jump_after = false;
-            //进行评分
-            if (Block_Controller.Instance.cur_block != null && !Game_Controller.Instance.ninja.Is_buffing)
-            {
-                Block_Controller.Instance.cur_block.Test_Score(dir_Type);
-            }
         }
         base.OnPointerUp(eventData);
     }

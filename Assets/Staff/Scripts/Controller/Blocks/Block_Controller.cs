@@ -35,7 +35,7 @@ public class Block_Controller : MonoBehaviour
 
     [SerializeField] Transform colliders;
     //目前测试的障碍物
-    public Block cur_block;
+    public GameObject block_parent;
     public GameObject target_obj;
     bool if_once = true;//开始只有一次加入
     //属性
@@ -44,23 +44,6 @@ public class Block_Controller : MonoBehaviour
     private void Awake()
     {
         Instance = this;
-    }
-
-    /// <summary>
-    /// 第一次加入方块
-    /// </summary>
-    public void Add_Block_To_Current(Block block)
-    {
-        cur_block = block;
-        if_once = false;
-    }
-
-    /// <summary>
-    /// 重置第一次
-    /// </summary>
-    public void Set_Once()
-    {
-        if_once = true;
     }
 
     #region 生成障碍物
