@@ -267,7 +267,6 @@ public class Game_Controller : MonoBehaviour
         {
             angle = 270f + Mathf.Atan(-test_vector.x / test_vector.y) * Mathf.Rad2Deg;
         }
-        //Create_Helper.Instance.Create_Obj(angle);
         //根据角度调用不同方法
         if (angle < 45 || angle > 315)
         {
@@ -350,18 +349,19 @@ public class Game_Controller : MonoBehaviour
                 }
             }
             //当手指到达了之后，时间消失或者手指放开或者距离过大
-            if ((is_reached && (buff_time < 0f || buff_distance >= buff_max_distance)) || !is_pressing)
+            if ((is_reached && (buff_time <= 0f || buff_distance >= buff_max_distance)) || !is_pressing)
             {
                 Return_NonBuff();
             }
         }
         //当玩家没有buff时，防止时间一直减少
-        if (ninja.Is_buffing&&buff_time >=0f)
+        if (ninja.Is_buffing&&buff_time >0f)
         {
             buff_time -= Time.deltaTime;
         }
-        if (buff_time<0f)
+        if (buff_time<=0f)
         {
+            buff_time = 0f;
             ninja.Set_Buff_Status(false);
         }
     }

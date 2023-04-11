@@ -18,6 +18,7 @@ public class Block : MonoBehaviour
     protected bool touched;
     public bool If_great { get => if_great;}
     [SerializeField] Dir_Type dir_Type;
+    bool hit_once;
     #endregion
     //×é¼þ
     [SerializeField] Animator animator;
@@ -63,7 +64,7 @@ public class Block : MonoBehaviour
 
     void Set_Buff_Hit()
     {
-        if (GetComponent<Monster_Block>()!=null)
+        if (GetComponent<Monster_Block>()!=null || hit_once || GetComponent<Buff_Block>()!=null)
         {
             return;
         }
@@ -77,6 +78,7 @@ public class Block : MonoBehaviour
                 AudioManager.instance.PlaySFX(1);
                 Do_Ani("return");
                 Set_Collider();
+                hit_once = true;
             }
         }
     }
