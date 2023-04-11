@@ -182,12 +182,15 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0d38fc596466899439eb3a9c08d4c68e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: -10
+  damage: -30
   if_great: 0
   if_prefect: 0
+  if_end: 0
   if_over: 0
   dir_Type: 3
   animator: {fileID: 2169827642664994744}
+  _index: 0
+  once: 1
 --- !u!65 &3987081865469358329
 BoxCollider:
   m_ObjectHideFlags: 0

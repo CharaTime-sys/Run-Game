@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using SonicBloom.Koreo;
 using SonicBloom.Koreo.Players;
@@ -51,13 +52,15 @@ public class Game_Controller : MonoBehaviour
     #region 状态变量
     [Header("手指状态（不用管）------------------------------------------")]
     //是否正在按下
-    bool is_pressing;
+    public bool is_pressing;
+    public bool is_buffing;
     //判断是否是长按后的跳跃，防止手指放开的时候跳跃
     public bool is_jump_after;
     //是否到达了ui点
     public bool is_reached;
     //按下状态
     public bool pressed;
+    public bool pressed_once;
     public bool game_started;
     #endregion
 
@@ -82,6 +85,7 @@ public class Game_Controller : MonoBehaviour
     [Header("手势变量(不用管)------------------------------------------")]
     //手指按下和抬起的坐标
     public Vector2 finger_start_pos;
+    public int buff_index = -1;
     public Vector2 test_vector;//手势方向
     #endregion
 
@@ -101,9 +105,13 @@ public class Game_Controller : MonoBehaviour
     [SerializeField] SonicBloom.Koreo.Demos.Create_Obj[] musics;
     [SerializeField] SonicBloom.Koreo.Demos.Create_Buff[] music_buffs;
     [SerializeField] SimpleMusicPlayer simpleMusicPlayer;
+    [SerializeField] GameObject over_panel;
+    [SerializeField] Button over_btn;
     private void Awake()
     {
         Instance = this;
+        over_btn.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level("Start"); });
+        over_panel.GetComponent<Button>().onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(); });
     }
 
     public void Game_Start()
@@ -113,6 +121,13 @@ public class Game_Controller : MonoBehaviour
         Invoke(nameof(Set_Staff), staff_delay);
         ninja.GetComponent<Animator>().enabled = true;
         UI_Manager.Instance.Set_Tip(false, null);
+    }
+    public void Game_End()
+    {
+        game_started = false;
+        AudioManager.instance.StopBGM();
+        AudioManager.instance.StopSFX();
+        over_panel.SetActive(true);
     }
     #region 音乐相关
 
@@ -150,7 +165,10 @@ public class Game_Controller : MonoBehaviour
         {
             item.enabled = false;
         }
-        Invoke(nameof(Set_Staff), level_delay);
+        //if (Level_Controller.Instance.Get_Difficult("Entity"))
+        //{
+        //    Invoke(nameof(Set_Staff), level_delay);
+        //}
     }
 
     /// <summary>
@@ -199,13 +217,17 @@ public class Game_Controller : MonoBehaviour
         if (is_pressing)
         {
             //得到手指位置
-            if (Input.touches.Length!=0)
+            if (Input.touches.Length!=0 && buff_index!=-1)
             {
-                press_pos = Input.touches[Input.touches.Length - 1].position;
+                press_pos = Input.touches[buff_index].position;
             }
             Test_target_UI();
             //得到手指和buffui的距离
             buff_distance = Vector3.Distance(press_pos, target_pos);
+        }
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            Game_Start();
         }
         Buff_Pressed();
     }
@@ -302,7 +324,7 @@ public class Game_Controller : MonoBehaviour
     /// </summary>
     void Buff_Pressed()
     {
-        if (pressed)
+        if (pressed_once)
         {
             //如果正在按下并且手指的距离在buffui的范围内则能腾空
             if (is_pressing && buff_distance <= buff_max_distance)
@@ -324,44 +346,58 @@ public class Game_Controller : MonoBehaviour
                     }
                     //到达了标识点
                     is_reached = true;
+                    is_buffing = true;
                 }
             }
             //当手指到达了之后，时间消失或者手指放开或者距离过大
             if ((is_reached && (buff_time < 0f || buff_distance >= buff_max_distance)) || !is_pressing)
             {
-                //取消玩家buff状态
-                ninja.Is_buffing = false;
-                ninja.Set_Buff_Status(false);
-                //落地
-                switch (Buff_Type)
-                {
-                    //只有当玩家确实按到了按钮才会返回跳跃，不然就是普通的跳跃
-                    case Buff_Type.Jump:
-                        if (is_reached)
-                        {
-                            ninja.Resume_Jump();
-                        }
-                        UI_Manager.Instance.Set_Jump_UI(false);
-                        break;
-                    case Buff_Type.Down:
-                        if (is_reached)
-                        {
-                            ninja.Resume_Down();
-                        }
-                        UI_Manager.Instance.Set_Down_UI(false);
-                        break;
-                }
-                //取消到达ui状态
-                is_reached = false;
-                //设置长按跳跃状态
-                is_jump_after = true;
-            }
-            //当玩家没有buff时，防止时间一直减少
-            if (ninja.Is_buffing)
-            {
-                buff_time -= Time.deltaTime;
+                Return_NonBuff();
             }
         }
+        //当玩家没有buff时，防止时间一直减少
+        if (ninja.Is_buffing&&buff_time >=0f)
+        {
+            buff_time -= Time.deltaTime;
+        }
+        if (buff_time<0f)
+        {
+            ninja.Set_Buff_Status(false);
+        }
+    }
+
+    private void Return_NonBuff()
+    {
+        //取消玩家buff状态
+        ninja.Is_buffing = false;
+        is_buffing = false;
+        ninja.Set_Buff_Status(false);
+        buff_time = 0f;
+        //落地
+        switch (Buff_Type)
+        {
+            //只有当玩家确实按到了按钮才会返回跳跃，不然就是普通的跳跃
+            case Buff_Type.Jump:
+                if (is_reached)
+                {
+                    ninja.Resume_Jump();
+                }
+                break;
+            case Buff_Type.Down:
+                if (is_reached)
+                {
+                    ninja.Resume_Down();
+                }
+                break;
+        }
+        //取消到达ui状态
+        is_reached = false;
+        //设置长按跳跃状态
+        if (is_pressing)
+        {
+            is_jump_after = true;
+        }
+        pressed_once = false;
     }
 
     /// <summary>

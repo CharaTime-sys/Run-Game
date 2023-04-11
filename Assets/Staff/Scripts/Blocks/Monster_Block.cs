@@ -95,9 +95,9 @@ public class Monster_Block : Block
     public override bool Test_Score(Dir_Type _dir_type,Vector2 finger_pos)
     {
         bool enable = false;
-        Debug.Log(finger_pos);
         if (finger_pos.x > corner_num[0] && finger_pos.x < corner_num[1]&& finger_pos.y > corner_num[2] && finger_pos.y < corner_num[3])
         {
+            Debug.Log("手指在里面");
             if (_dir_type == dir_type)
             {
                 Game_Controller.Instance.Set_Score(20);

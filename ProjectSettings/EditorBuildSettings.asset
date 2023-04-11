@@ -18,6 +18,12 @@ EditorBuildSettings:
     path: Assets/Staff/Scenes/Difficult.unity
     guid: e4cb54929812f1d43b78a510a0098fca
   - enabled: 1
+    path: Assets/Staff/Scenes/Level_OneNormal.unity
+    guid: 49eb55f22f8e17545b9bd69dbe97ede9
+  - enabled: 1
     path: Assets/Staff/Scenes/Level_OneEntity.unity
     guid: 30909cef66a1a3b44af7da735de1a544
+  - enabled: 1
+    path: Assets/Staff/Scenes/Level_TwoNormal.unity
+    guid: d90d0c1443355d5429e0dc33ac2d8edc
   m_configObjects: {}

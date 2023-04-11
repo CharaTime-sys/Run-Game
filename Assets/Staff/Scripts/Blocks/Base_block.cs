@@ -18,8 +18,9 @@ public class Base_block : MonoBehaviour
 
     protected void Ray_Cast()
     {
-        if (transform.position.z <= Game_Controller.Instance.ninja.transform.position.z)
+        if (transform.position.z <= Game_Controller.Instance.ninja.transform.position.z-5f)
         {
+            Destroy(gameObject);
             //foreach (Transform item in transform.parent)
             //{
             //    item.GetComponent<Animator>().Play("return");

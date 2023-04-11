@@ -18,7 +18,11 @@ public class Create_Helper : MonoBehaviour
 
     public void Move()
     {
-        //_parent.transform.Translate(new Vector3(0, 0, -11f) * Time.deltaTime);
+        if (_parent==null)
+        {
+            return;
+        }
+        _parent.transform.Translate(new Vector3(0, 0, -11f) * Time.deltaTime);
     }
 
     [ContextMenu("¼Ó±ê¼Ç")]

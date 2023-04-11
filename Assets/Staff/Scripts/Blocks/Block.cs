@@ -5,7 +5,7 @@ using DG.Tweening;
 
 public class Block : MonoBehaviour
 {
-    public int damage = -10;
+    public int damage = -30;
 
     protected bool is_switched;
 
@@ -57,6 +57,27 @@ public class Block : MonoBehaviour
         {
             if_over = true;
             Set_Collider();
+        }
+        Set_Buff_Hit();
+    }
+
+    void Set_Buff_Hit()
+    {
+        if (GetComponent<Monster_Block>()!=null)
+        {
+            return;
+        }
+        if (Game_Controller.Instance.is_buffing)
+        {
+            if (if_prefect || if_over)
+            {
+                Game_Controller.Instance.Set_Score(20);
+                UI_Manager.Instance.Set_Status_UI("Prefect！");
+                //播放音效
+                AudioManager.instance.PlaySFX(1);
+                Do_Ani("return");
+                Set_Collider();
+            }
         }
     }
 
@@ -161,6 +182,10 @@ public class Block : MonoBehaviour
                 //设置得分状态
                 if_great = false;
                 if_prefect = true;
+                if (Game_Controller.Instance.is_buffing)
+                {
+                    Test_Score(dir_Type,Vector2.zero);
+                }
             }
             else if (other.name.StartsWith("3"))
             {

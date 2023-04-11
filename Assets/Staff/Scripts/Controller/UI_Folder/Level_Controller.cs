@@ -22,7 +22,15 @@ public class Level_Controller : Global_Instance<Level_Controller>
         {
             return;
         }
-        StartCoroutine(Load_Level_Async(level_name));
+        SceneManager.LoadScene(level_name);
+    }
+    public void Load_Level()
+    {
+        if (!could_press)
+        {
+            return;
+        }
+        StartCoroutine(Load_Level_Async(SceneManager.GetActiveScene().name));
     }
     public void Load_Level(string level_name,int level_index)
     {
@@ -31,7 +39,7 @@ public class Level_Controller : Global_Instance<Level_Controller>
             return;
         }
         this.level_index = level_index;
-        StartCoroutine(Load_Level_Async(level_name));
+        SceneManager.LoadScene(level_name);
     }
     public void Load_Level(int level_choose)
     {
@@ -66,6 +74,23 @@ public class Level_Controller : Global_Instance<Level_Controller>
                 break;
         }
         StartCoroutine(Load_Level_Async(name));
+    }
+
+    /// <summary>
+    /// 得到目前的模式
+    /// </summary>
+    /// <param name="name"></param>
+    /// <returns></returns>
+    public bool Get_Difficult(string name)
+    {
+        if (SceneManager.GetActiveScene().name.Contains(name))
+        {
+            return true;
+        }
+        else
+        {
+            return false;
+        }
     }
 
     IEnumerator Load_Level_Async(string level_name)

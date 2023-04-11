@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 3831762356101481413}
   - component: {fileID: 3650060788675765288}
   - component: {fileID: 7773476928542948151}
-  - component: {fileID: 6969229497572804949}
   - component: {fileID: 4041653192555984084}
+  - component: {fileID: 2149195181890376231}
   m_Layer: 0
   m_Name: Down 1
   m_TagString: Untagged
@@ -73,19 +73,6 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 0
   m_CollisionDetection: 0
---- !u!65 &6969229497572804949
-BoxCollider:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4496553008369555839}
-  m_Material: {fileID: 0}
-  m_IsTrigger: 1
-  m_Enabled: 1
-  serializedVersion: 2
-  m_Size: {x: 1.5325273, y: 4.0189257, z: 13.089876}
-  m_Center: {x: 0.08358508, y: -0.057603836, z: -1.2780304}
 --- !u!114 &4041653192555984084
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -98,13 +85,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 35252d71f3dfa0b409f256aba618f7d4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  damage: -10
+  damage: -30
   if_great: 0
   if_prefect: 0
   if_end: 0
   if_over: 0
   dir_Type: 4
   animator: {fileID: 3650060788675765288}
+  _index: 0
+--- !u!65 &2149195181890376231
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4496553008369555839}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 1
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 1.68, y: 1.45, z: 2.3}
+  m_Center: {x: 0, y: 2.65, z: -5.81}
 --- !u!1 &7410104570844707218
 GameObject:
   m_ObjectHideFlags: 0
@@ -118,7 +119,7 @@ GameObject:
   - component: {fileID: 1546541257860022773}
   m_Layer: 0
   m_Name: pCube8
-  m_TagString: Untagged
+  m_TagString: Block
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0

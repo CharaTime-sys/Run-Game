@@ -41,6 +41,7 @@ public class Ninja : MonoBehaviour
     //跳跃、移动和下滑状态
     public bool is_jumping;
     public bool is_downing;
+    public bool is_returning;
     [SerializeField] bool is_moving;
     //是否无敌
     bool is_unmathcing;
@@ -53,6 +54,8 @@ public class Ninja : MonoBehaviour
     [SerializeField] SkinnedMeshRenderer player_render;
     [SerializeField] float move_y;
     Tweener tw;
+    [Header("射线偏移")]
+    public float offset_z;
     [Header("碰撞体体积")]
     [SerializeField] Vector2[] collider_size_and_pos_y;
     //血量和分数
@@ -68,6 +71,7 @@ public class Ninja : MonoBehaviour
             if (hp<=0)
             {
                 hp = 0;
+                //Before_Game_End();
             }
         } }
     public int Score { get => score;set
@@ -115,6 +119,7 @@ public class Ninja : MonoBehaviour
             }
         }
         Set_Unmatching();
+        Ray_cast();
     }
 
     /// <summary>
@@ -157,10 +162,10 @@ public class Ninja : MonoBehaviour
     public void Move_Left_And_Right(int direction)
     {
         ////超过范围不能移动
-        //if ((dir_component < 0 && direction < 0) || (dir_component > 0 && direction > 0) || is_moving)
-        //{
-        //    return;
-        //}
+        if ((dir_component < 0 && direction < 0) || (dir_component > 0 && direction > 0) || is_moving)
+        {
+            return;
+        }
         dir_component += direction;
         //播放音效
         AudioManager.instance.PlaySFX(3);
@@ -207,6 +212,7 @@ public class Ninja : MonoBehaviour
         {
             Invoke(nameof(Resume_Jump), resume_time);
         }
+        is_returning = false;
     }
 
     /// <summary>
@@ -237,6 +243,7 @@ public class Ninja : MonoBehaviour
         {
             Invoke(nameof(Resume_Down), down_resume_time);
         }
+        is_returning = false;
     }
 
     private void Set_Collider(int index)
@@ -269,6 +276,8 @@ public class Ninja : MonoBehaviour
         Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(true, 2);
         tw = transform.DOMove(start_pos, time.x);
         is_jumping = false;
+        is_returning = true;
+        Invoke(nameof(Set_Returning), time.x);
     }
 
     /// <summary>
@@ -285,6 +294,14 @@ public class Ninja : MonoBehaviour
         //设置镜头转换
         Camera.main.GetComponent<Camera_Controller>().Change_Camera_Status(true, 0);
         is_downing = false;
+        is_returning = true;
+        Invoke(nameof(Set_Returning), time.y);
+        Game_Controller.Instance.is_reached = false;
+    }
+
+    void Set_Returning()
+    {
+        is_returning = false;
     }
     #endregion
 
@@ -299,14 +316,39 @@ public class Ninja : MonoBehaviour
         {
             UI_Manager.Instance.Set_Jump_UI(false);
             UI_Manager.Instance.Set_Down_UI(false);
-            StopAllCoroutines();
         }
     }
 
+    public void Ray_cast()
+    {
+        Ray ray = new Ray(transform.position-new Vector3(0,0,offset_z), Vector3.down);
+        Ray ray_forward = new Ray(transform.position+new Vector3(0,0,offset_z), Vector3.down);
+        if (!Physics.Raycast(ray,2f,LayerMask.GetMask("Ground"))&& !Physics.Raycast(ray_forward, 2f, LayerMask.GetMask("Ground"))
+            &&!is_jumping && !is_downing && !is_returning)
+        {
+            //Before_Game_End();
+        }
+    }
+
+    private void Before_Game_End()
+    {
+        transform.DOLocalMoveY(transform.localPosition.y - 7f, 0.2f);
+        Invoke(nameof(Game_End), 0.2f);
+    }
+
+    public void Game_End()
+    {
+        Game_Controller.Instance.Game_End();
+    }
+    private void OnDrawGizmos()
+    {
+        Debug.DrawRay(transform.position - new Vector3(0, 0, offset_z), Vector3.down * 2f, Color.red);
+        Debug.DrawRay(transform.position + new Vector3(0, 0, offset_z), Vector3.down * 2f, Color.red);
+    }
     private void OnTriggerEnter(Collider other)
     {
         //如果碰到了障碍物则扣血
-        if (other.tag == "Block" && !other.GetComponent<Block>().if_end)
+        if (other.tag == "Block")
         {
             //Game_Controller.Instance.cur_block.Turn_Next();
             if (is_unmathcing || other.GetComponent<Block>().If_great)

@@ -44,6 +44,7 @@ public class DynamicJoystick : Joystick
         //让手指的位置加入gamecontroller进入判定
         if (Input.touches.Length != 0)
         {
+            int index = 0;
             //对每个位置进行循环
             foreach (var item in Input.touches)
             {
@@ -54,9 +55,18 @@ public class DynamicJoystick : Joystick
                 //加入手指的开始坐标
                 Game_Controller.Instance.finger_start_pos = Input.touches[touch_index].position;
                 Game_Controller.Instance.pressed = true;
+                if (Game_Controller.Instance.ninja.Is_buffing)
+                {
+                    if (Game_Controller.Instance.buff_index==-1)
+                    {
+                        Game_Controller.Instance.buff_index = index;
+                    }
+                    Game_Controller.Instance.pressed_once = true;
+                }
                 Game_Controller.Instance.Press_Checked(true);
                 //设置按下状态
                 Game_Controller.Instance.Check_Down_And_Jump();
+                index++;
             }
         }
         touch_index++;//增加索引
@@ -68,6 +78,7 @@ public class DynamicJoystick : Joystick
     /// <param name="eventData"></param>
     public override void OnPointerUp(PointerEventData eventData)
     {
+        base.OnPointerUp(eventData);
         Dir_Type dir_Type = Dir_Type.Up;
         background.gameObject.SetActive(false);
         touch_index--;//减少索引
@@ -75,12 +86,16 @@ public class DynamicJoystick : Joystick
         //是否是手势
         bool if_monster = false;
         //得到手势的方向，手指坐标不为空 检测在下面 手指坐标不为0
-        if (Input.touches.Length != 0  && Game_Controller.Instance.finger_start_pos != new Vector2(-1000,1000))
+        if (Input.touches.Length != 0)
         {
             Game_Controller.Instance.test_vector = Input.touches[touch_index].position - Game_Controller.Instance.finger_start_pos;
             //取消按下状态
-            Game_Controller.Instance.Press_Checked(false);
-            Game_Controller.Instance.pressed = false;
+            if (!Game_Controller.Instance.is_buffing || touch_index == Game_Controller.Instance.buff_index)
+            {
+                Game_Controller.Instance.Press_Checked(false);
+                Game_Controller.Instance.pressed = false;
+                Game_Controller.Instance.buff_index = -1;//设置buff索引
+            }
             //移除原来的坐标
             Game_Controller.Instance.finger_start_pos = new Vector2(-1000, 1000);
             if (Test_CheckLine || !Game_Controller.Instance.game_started)
@@ -88,53 +103,25 @@ public class DynamicJoystick : Joystick
                 Test_CheckLine = false;
                 return;
             }
-            if (Game_Controller.Instance.ninja.Is_buffing)
-            {
-                switch (Game_Controller.Instance.Buff_Type)
-                {
-                    case Buff_Type.Jump:
-                        UI_Manager.Instance.Set_Jump_UI(false);
-                        if (Game_Controller.Instance.is_reached)
-                        {
-                            Game_Controller.Instance.ninja.Resume_Jump();
-                        }
-                        break;
-                    case Buff_Type.Down:
-                        UI_Manager.Instance.Set_Down_UI(false);
-                        if (Game_Controller.Instance.is_reached)
-                        {
-                            Game_Controller.Instance.ninja.Resume_Down();
-                        }
-                        break;
-                    default:
-                        break;
-                }
-            }
+
             //防止有bug
-            if (!Game_Controller.Instance.is_jump_after)
-            {
-                dir_Type = Game_Controller.Instance.Test_Direction();
-            }
+            dir_Type = Game_Controller.Instance.Test_Direction();
             //进行评分
-            if (!Game_Controller.Instance.ninja.Is_buffing)
+            foreach (Transform item in Block_Controller.Instance.block_parent.transform)
             {
-                foreach (Transform item in Block_Controller.Instance.block_parent.transform)
+                if (item.GetComponent<Block>().Test_Score(dir_Type, Input.touches[touch_index].position - Game_Controller.Instance.test_vector))
                 {
-                    if (item.GetComponent<Block>().Test_Score(dir_Type, Input.touches[touch_index].position- Game_Controller.Instance.test_vector))
-                    {
-                        if_monster = true;
-                        break;
-                    }
+                    if_monster = true;
+                    break;
                 }
             }
-            if (!if_monster && !Game_Controller.Instance.is_jump_after)
+            if (!if_monster && !Game_Controller.Instance.is_jump_after && !Game_Controller.Instance.is_buffing)
             {
                 Game_Controller.Instance.Change_Character(dir_Type);
             }
             //重置长按跳跃的状态
             Game_Controller.Instance.is_jump_after = false;
         }
-        base.OnPointerUp(eventData);
     }
 
     protected override void HandleInput(float magnitude, Vector2 normalised, Vector2 radius, Camera cam)
