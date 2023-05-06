@@ -127,8 +127,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1113944178}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 0.9000003, y: 10.000001, z: 3.5000012}
+  m_LocalPosition: {x: -0, y: -0.057, z: 0.045}
+  m_LocalScale: {x: 1.2607204, y: 14.008001, z: 6.4913096}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 2042422583}
@@ -201,7 +201,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &1356646066
 RectTransform:
   m_ObjectHideFlags: 0
@@ -287,8 +287,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2042422582}
   m_LocalRotation: {x: -0, y: -0.7071068, z: -0, w: 0.7071068}
-  m_LocalPosition: {x: 0, y: 4.63, z: 0}
-  m_LocalScale: {x: 3.636, y: 3.636, z: 3.636}
+  m_LocalPosition: {x: 0, y: 4.1998, z: 0}
+  m_LocalScale: {x: 3.636, y: 2.7757225, z: 3.636}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 1113944179}
@@ -373,6 +373,7 @@ GameObject:
   - component: {fileID: 6384446817108452694}
   - component: {fileID: 7514652526237930511}
   - component: {fileID: 4510252989927258741}
+  - component: {fileID: 4852776238642850310}
   m_Layer: 0
   m_Name: Monster 2
   m_TagString: Block
@@ -389,7 +390,7 @@ Transform:
   m_GameObject: {fileID: 6302423076023329191}
   m_LocalRotation: {x: 0, y: 1, z: 0, w: 0}
   m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_LocalScale: {x: 0.60224, y: 0.60224, z: 0.60224}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 2042422583}
@@ -424,7 +425,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 5561349426305759274, guid: 95d5eff98379d1940935e68a2550f16d, type: 3}
+  - {fileID: -3986318459272635327, guid: c88dde76490099d49b0f06520f69ad43, type: 3}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0
@@ -464,13 +465,13 @@ MonoBehaviour:
   if_end: 0
   if_over: 0
   dir_Type: 0
-  animator: {fileID: 0}
+  animator: {fileID: 4852776238642850310}
   _index: 0
   dir_type: 0
   arrow: {fileID: 1113944178}
   circle: {fileID: 1356646065}
   raidus: 0
-  indexs: 
+  indexs: 0300000004000000
   corners:
   - {x: 0, y: 0, z: 0}
   - {x: 0, y: 0, z: 0}
@@ -511,3 +512,23 @@ Rigidbody:
   m_Interpolate: 0
   m_Constraints: 126
   m_CollisionDetection: 0
+--- !u!95 &4852776238642850310
+Animator:
+  serializedVersion: 4
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6302423076023329191}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: e337d6e10660e9444a905892628b8ca8, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 1
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorControllerStateOnDisable: 0

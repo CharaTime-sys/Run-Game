@@ -32,6 +32,31 @@ public class Level_Controller : Global_Instance<Level_Controller>
         }
         StartCoroutine(Load_Level_Async(SceneManager.GetActiveScene().name));
     }
+    public void Load_Level_Next()
+    {
+        if (!could_press)
+        {
+            return;
+        }
+        string next_name = "";
+        switch (SceneManager.GetActiveScene().name)
+        {
+            case "Level_OneNormal":
+                next_name += "Level_TwoNormal";
+                break;
+            case "Level_OneEntity":
+                next_name += "Level_TwoEntity";
+                break;
+            default:
+                break;
+        }
+        if (next_name == "")
+        {
+            Return_To_Choose(0);
+            return;
+        }
+        StartCoroutine(Load_Level_Async(next_name));
+    }
     public void Load_Level(string level_name,int level_index)
     {
         if (!could_press)
@@ -40,6 +65,10 @@ public class Level_Controller : Global_Instance<Level_Controller>
         }
         this.level_index = level_index;
         SceneManager.LoadScene(level_name);
+    }
+    public void Return_To_Choose(int level)
+    {
+        SceneManager.LoadScene(level);
     }
     public void Load_Level(int level_choose)
     {

@@ -98,8 +98,12 @@ public class DynamicJoystick : Joystick
             }
             //移除原来的坐标
             Game_Controller.Instance.finger_start_pos = new Vector2(-1000, 1000);
-            if (Test_CheckLine || !Game_Controller.Instance.game_started)
+            if (Test_CheckLine || !Game_Controller.Instance.game_started || !Game_Controller.Instance.game_started_gesture)
             {
+                if (!Game_Controller.Instance.game_started_gesture)
+                {
+                    Game_Controller.Instance.game_started_gesture = true;
+                }
                 Test_CheckLine = false;
                 return;
             }

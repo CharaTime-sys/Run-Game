@@ -47,10 +47,11 @@ public class Block : MonoBehaviour
 
     protected virtual void Update()
     {
-        if (!Game_Controller.Instance.game_started)
+        if(!Game_Controller.Instance.game_started)
         {
             return;
         }
+        Discriminat_Statue();
         Set_Translate();
         Changing_Status();
         //障碍物是否超过人物
@@ -59,6 +60,7 @@ public class Block : MonoBehaviour
             if_over = true;
             Set_Collider();
         }
+        //每帧都进行判断，只有当进入碰撞检测范围的时候才会有得分判断
         Set_Buff_Hit();
     }
 
@@ -72,10 +74,7 @@ public class Block : MonoBehaviour
         {
             if (if_prefect || if_over)
             {
-                Game_Controller.Instance.Set_Score(20);
-                UI_Manager.Instance.Set_Status_UI("Prefect！");
-                //播放音效
-                AudioManager.instance.PlaySFX(1);
+                Game_Controller.Instance.Set_Score_Staff(20);
                 Do_Ani("return");
                 Set_Collider();
                 hit_once = true;
@@ -129,15 +128,11 @@ public class Block : MonoBehaviour
         //设置不同得分标准
         if (!if_over && if_prefect)
         {
-            Game_Controller.Instance.Set_Score(20);
-            UI_Manager.Instance.Set_Status_UI("Prefect！");
-            //播放音效
-            AudioManager.instance.PlaySFX(1);
+            Game_Controller.Instance.Set_Score_Staff(20, "Prefect！");
         }
         else if (If_great)
         {
-            Game_Controller.Instance.Set_Score(10);
-            UI_Manager.Instance.Set_Status_UI("Great！");
+            Game_Controller.Instance.Set_Score_Staff(20, "Great！",false);
         }
         if (if_over || if_great || if_prefect)
         {
@@ -172,26 +167,13 @@ public class Block : MonoBehaviour
 
     public virtual void OnTriggerEnter(Collider other)
     {
-        if (other.tag == "Effect")
+        //设置障碍物的赛道，防止玩家在不同的赛道，但是却有分数
+        if (other.tag == "Border")
         {
-            if (other.name.StartsWith("1"))
+            _index = -1;
+            if (other.name.EndsWith("2"))
             {
-                //设置得分状态
-                if_great = true;
-            }
-            else if (other.name.StartsWith("0"))
-            {
-                //设置得分状态
-                if_great = false;
-                if_prefect = true;
-                if (Game_Controller.Instance.is_buffing)
-                {
-                    Test_Score(dir_Type,Vector2.zero);
-                }
-            }
-            else if (other.name.StartsWith("3"))
-            {
-                Do_Ani("start");
+                _index = 1;
             }
         }
     }
@@ -238,5 +220,28 @@ public class Block : MonoBehaviour
         Debug.DrawRay(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(-3, -0, 8), Vector3.down * 5f, Color.red);
         Debug.DrawRay(new Vector3(3.2f, -5.68f,transform.position.z)- new Vector3(-3, -0, 4), Vector3.down * 5f, Color.red);
         Debug.DrawRay(new Vector3(3.2f, -5.68f, transform.position.z) - new Vector3(-3, -0, 12), Vector3.down * 5f, Color.red);
+    }
+
+    public void Discriminat_Statue()
+    {
+        float line_distance = Mathf.Abs(transform.position.z - Block_Data.Instance.discriminant_line.position.z);
+        if (line_distance <=Block_Data.Instance.min_and_max_distance.x)//完美判定
+        {
+            if_great = false;
+            if_prefect = true;
+            if (Game_Controller.Instance.is_buffing)
+            {
+                Test_Score(dir_Type, Vector2.zero);
+            }
+            Debug.Log("完美！");
+        }
+        else if (line_distance <= Block_Data.Instance.min_and_max_distance.y)//great判定
+        {
+            if_great = true;
+        }
+        else if (line_distance <= Block_Data.Instance.min_and_max_distance.z)//动画判定
+        {
+            Do_Ani("start");//开始动画
+        }
     }
 }

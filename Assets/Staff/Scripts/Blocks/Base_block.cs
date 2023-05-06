@@ -18,14 +18,20 @@ public class Base_block : MonoBehaviour
 
     protected void Ray_Cast()
     {
-        if (transform.position.z <= Game_Controller.Instance.ninja.transform.position.z-5f)
+        if (transform.position.z <= Game_Controller.Instance.ninja.transform.position.z-7f)
         {
-            Destroy(gameObject);
-            //foreach (Transform item in transform.parent)
-            //{
-            //    item.GetComponent<Animator>().Play("return");
-            //    item.GetComponent<Base_block>().could_ani = false;
-            //}
+            if (!Floor_Controller.Instance.is_entity)
+            {
+                Destroy(gameObject);
+            }
+            else
+            {
+                foreach (Transform item in transform.parent)
+                {
+                    item.GetComponent<Animator>().Play("return");
+                    item.GetComponent<Base_block>().could_ani = false;
+                }
+            }
         }
     }
     private void OnTriggerEnter(Collider other)

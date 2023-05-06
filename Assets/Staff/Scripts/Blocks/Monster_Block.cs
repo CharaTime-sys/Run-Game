@@ -100,10 +100,7 @@ public class Monster_Block : Block
             Debug.Log("手指在里面");
             if (_dir_type == dir_type)
             {
-                Game_Controller.Instance.Set_Score(20);
-                UI_Manager.Instance.Set_Status_UI("Prefect！");
-                //播放音效
-                AudioManager.instance.PlaySFX(1);
+                Game_Controller.Instance.Set_Score_Staff();
                 index++;
             }
             enable = true;

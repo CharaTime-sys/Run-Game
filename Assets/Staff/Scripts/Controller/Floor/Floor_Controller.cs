@@ -19,30 +19,43 @@ public class Floor_Controller : MonoBehaviour
     [SerializeField] float floor_up_time;
     [Header("距离，x为下沉，y为上升")]
     [SerializeField] Vector2 floor_distance;
-    [SerializeField] Material monster;
-    [SerializeField] Mesh mesh;
+    [SerializeField] GameObject target_block;
+    public Material material;
+    public Mesh mesh;
+    public bool is_entity;
+
+    #region 结束变量
+    [SerializeField] float end_speed;
+    public bool end_start;
+    #endregion
     private void Awake()
     {
         Instance = this;
     }
     private void Start()
     {
+        end_speed = floor_speed / 3;
         floor_onces = new bool[floor_parts.Count];//初始化地板检测
     }
     public void Add_Speed()
     {
+        end_speed = floor_speed / 3;
         floor_speed += floor_add_speed;
     }
-    // Update is called once per frame
-    void FixedUpdate()
+    private void Update()
     {
         if (!Game_Controller.Instance.game_started)
         {
             return;
         }
-        if (Create_Helper.Instance!=null)
+        if (Create_Helper.Instance != null)
         {
             Floor_Move();
+        }
+        //如果游戏失败则开始减速
+        if (end_start)
+        {
+            Decrease_Speed();
         }
     }
     /// <summary>
@@ -54,7 +67,31 @@ public class Floor_Controller : MonoBehaviour
         foreach (Transform item in transform)
         {
             item.localPosition -= new Vector3(0, 0, floor_speed * Time.deltaTime);
+            if (item.position.z < -5f)
+            {
+                if (is_entity)
+                {
+                    StartCoroutine(Increase_Z(item.gameObject));
+                }
+            }
         }
+    }
+
+    public void Decrease_Speed()
+    {
+        floor_speed -= Time.deltaTime * end_speed;
+        Game_Controller.Instance.speed -= Time.deltaTime * end_speed;
+        if (floor_speed <= 0f)
+        {
+            end_start = false;
+            Game_Controller.Instance.speed = 0f;
+            Invoke(nameof(Game_End), 2f);
+        }
+    }
+
+    public void Game_End()
+    {
+        Game_Controller.Instance.Set_End();
     }
 
     private IEnumerator Increase_Z(GameObject item)
@@ -62,7 +99,7 @@ public class Floor_Controller : MonoBehaviour
         //等待地板运动完
         yield return new WaitForSeconds(floor_down_time);
         //循环地板
-        item.transform.localPosition += new Vector3(0, 0, 92f);
+        item.transform.localPosition += new Vector3(0, 0, 88f);
         //显示子物体
         foreach (Transform child in item.transform)
         {
@@ -70,22 +107,68 @@ public class Floor_Controller : MonoBehaviour
         }
         //改变状态
         floor_onces[floor_parts.IndexOf(item)] = false;
-        //StopAllCoroutines();
+        StopAllCoroutines();
     }
 
     [ContextMenu("加标签")]
     public void Add_tag()
     {
-        foreach (GameObject item in floor_parts)
+        foreach (Transform item in transform)
         {
-            Transform item_trans = item.transform;
-            foreach (Transform _transform in item_trans)
+            foreach (Transform _item in item)
             {
-                if (_transform.position.y !=-1.25f)
+                if (_item.GetComponent<MeshRenderer>() != null)
                 {
-                _transform.transform.localPosition = new Vector3(_transform.transform.localPosition.x, -1.25f, _transform.localPosition.z);
+                    _item.GetComponent<MeshRenderer>().material = material;
+                    //_item.GetComponent<MeshFilter>().mesh = mesh;
+                    //_item.GetComponent<BoxCollider>().size = new Vector3(0.2f, 0.2f, 0.2f);
+                    //_item.GetComponent<BoxCollider>().center = Vector3.zero;
+                    //_item.localScale = new Vector3(20, 20, 20);
+                    //_item.localPosition = new Vector3(_item.localPosition.x, -3f, _item.localPosition.z);
+                    //_item.GetChild(0).localScale = new Vector3(0.6f, 0.6f, 0.6f);
+                    //if (_item.childCount !=0)
+                    //{
+                    //    _item.GetChild(0).localPosition = new Vector3(0f, 0.0941f, -0.0437f);
+                    //}
+                    //if (_item.childCount == 2)
+                    //{
+                    //    _item.GetChild(1).localScale = new Vector3(0.03f, 0.03f, 0.03f);
+                    //    _item.GetChild(1).localPosition = new Vector3(0f, 0.2f, 0f);
+                    //}
                 }
             }
         }
+        //foreach (Transform item in transform)
+        //{
+        //    if (item.name.Contains("jump_sec"))
+        //    {
+        //        item.GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = monster;
+        //        item.GetChild(1).GetChild(0).GetChild(0).GetChild(0).GetComponent<MeshRenderer>().material = monster;
+        //        item.GetChild(2).GetChild(0).GetComponent<MeshRenderer>().material = monster_1;
+        //    }
+        //if (item.name.Contains("Buff"))
+        //{
+        //    item.GetChild(0).GetComponent<MeshRenderer>().material = monster;
+        //}
+        //if (item.name.Contains("Down 1") || item.name.Contains("Jump"))
+        //{
+        //    item.GetChild(0).GetComponent<MeshRenderer>().material = monster;
+        //    item.GetChild(1).GetComponent<MeshRenderer>().material = monster_1;
+        //}
+        //if (item.name.Contains("Monster 2"))
+        //{
+        //    item.GetComponent<MeshRenderer>().material = monster_3;
+        //    item.GetChild(0).GetComponent<MeshRenderer>().material = monster_4;
+        //}
+        //if (item.name.Contains("Monster 1"))
+        //{
+        //    item.GetComponent<MeshRenderer>().material = monster_2;
+        //    item.GetChild(0).GetComponent<MeshRenderer>().material = monster_4;
+        //}
+        //if (item.name.Contains("ground"))
+        //{
+        //    item.GetComponent<MeshRenderer>().material = monster;
+        //    item.GetChild(0).GetComponent<MeshRenderer>().material = monster_1;
+        //}
     }
 }

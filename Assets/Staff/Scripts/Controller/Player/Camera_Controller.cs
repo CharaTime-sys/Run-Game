@@ -91,4 +91,9 @@ public class Camera_Controller : MonoBehaviour
             //}
         }
     }
+    [ContextMenu("¸Ä±äÉãÏñ»ú")]
+    public void Change_Camera()
+    {
+        Camera.main.backgroundColor = new Color32(255, 162, 116,255);
+    }
 }

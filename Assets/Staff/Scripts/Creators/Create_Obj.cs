@@ -12,7 +12,7 @@ namespace SonicBloom.Koreo.Demos
         [EventID]
         public string eventID;
         public AudioSource audio_source;
-        [Header("0代表跳跃障碍，1代表下滑障碍，2代表转向障碍，手势就不用管索引")]
+        [Header("0代表跳跃障碍，1代表下滑障碍，2代表转向障碍，3代表气泡，手势就不用管索引")]
         public int index;
         [Header("转向的索引集合(哪个不需要产生)")]
         public int[] indexs;
@@ -123,10 +123,13 @@ namespace SonicBloom.Koreo.Demos
                     //temping not to create monster
                     block = Block_Controller.Instance.Get_Block_Pos(_target_obj, Block_Controller.Instance.turn_pos);
                     break;
+                case 3://代表是气泡
+                    Bubble_Controller.Instance.Create_Bubble();
+                    break;
                 default:
                     break;
             }
-            block.GetComponent<Block>()._index = _index - 1;
+            //block.GetComponent<Block>()._index = _index - 1;//不知道干嘛的，现在不用了
         }
     }
 }

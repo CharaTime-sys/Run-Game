@@ -15,6 +15,7 @@ public class Block_Controller : MonoBehaviour
     public GameObject[] turns;
     public GameObject[] buffs;
     public GameObject[] buff_blocks;
+    public GameObject[] buff_down_blocks;
     #endregion
 
     #region Î»ÖÃ²ÎÊý
@@ -103,7 +104,7 @@ public class Block_Controller : MonoBehaviour
                 target_pos = Block_Controller.Instance.buff_jump_pos;
                 break;
             case Buff_Type.Down:
-                target_obj = Block_Controller.Instance.buff_blocks[0];
+                target_obj = Block_Controller.Instance.buff_down_blocks[0];
                 target_pos = Block_Controller.Instance.buff_down_pos;
                 break;
             default:

@@ -34,4 +34,11 @@ public class UI_Controller : MonoBehaviour
             second_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(2); });
         }
     }
+    private void Update()
+    {
+        if (Input.GetKeyDown(KeyCode.Q))
+        {
+            GetComponent<Animator>().Play("start");
+        }
+    }
 }

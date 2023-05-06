@@ -47,6 +47,7 @@ public class Game_Controller : MonoBehaviour
     [SerializeField] DynamicJoystick joystick;
     [Header("人物")]
     public Ninja ninja;
+    public GameObject normal_curve;
     #endregion
 
     #region 状态变量
@@ -62,6 +63,7 @@ public class Game_Controller : MonoBehaviour
     public bool pressed;
     public bool pressed_once;
     public bool game_started;
+    public bool game_started_gesture = false;//开始的手势变量
     #endregion
 
     #region 时间变量
@@ -71,6 +73,7 @@ public class Game_Controller : MonoBehaviour
     public float prefect_time;
     [Header("失败时间")]
     public float loss_time;
+    [SerializeField] float pause_time;
     #endregion
 
     [Header("悬空时间")]
@@ -100,34 +103,146 @@ public class Game_Controller : MonoBehaviour
 
     //临时变量
     float offset_y;
+    bool end_once;
+    public bool if_pause = false;
 
     [SerializeField] GameObject startup;
     [SerializeField] SonicBloom.Koreo.Demos.Create_Obj[] musics;
     [SerializeField] SonicBloom.Koreo.Demos.Create_Buff[] music_buffs;
     [SerializeField] SimpleMusicPlayer simpleMusicPlayer;
+    #region 画布相关
     [SerializeField] GameObject over_panel;
     [SerializeField] Button over_btn;
+    [SerializeField] Button[] score_btns;
+    [SerializeField] GameObject score_panel;
+    [SerializeField] GameObject load_slider;
+    #endregion
     private void Awake()
     {
         Instance = this;
+        Set_Over_Canvas();
+        Set_Score_Canvas();
+    }
+
+    private void Set_Over_Canvas()
+    {
         over_btn.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level("Start"); });
         over_panel.GetComponent<Button>().onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(); });
+    }
+    private void Set_Score_Canvas()
+    {
+        score_btns[0].onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(); });
+        score_btns[1].onClick.AddListener(delegate { Level_Controller.Instance.Load_Level_Next(); });
+        score_btns[2].onClick.AddListener(delegate { Level_Controller.Instance.Return_To_Choose(0); });
     }
 
     public void Game_Start()
     {
         game_started = true;
-        AudioManager.instance.PlaySFX(4);
+        AudioManager.instance.Playstart();
+        if (load_slider!=null)
+        {
+            load_slider.SetActive(true);
+        }
         Invoke(nameof(Set_Staff), staff_delay);
         ninja.GetComponent<Animator>().enabled = true;
         UI_Manager.Instance.Set_Tip(false, null);
     }
     public void Game_End()
     {
-        game_started = false;
+        if (end_once)
+        {
+            return;
+        }
         AudioManager.instance.StopBGM();
         AudioManager.instance.StopSFX();
-        over_panel.SetActive(true);
+        AudioManager.instance.StopEvent();
+        Floor_Controller.Instance.end_start = true;
+        end_once = true;
+        CancelInvoke();
+    }
+    /// <summary>
+    /// 暂停游戏
+    /// </summary>
+    public void Pause_Game()
+    {
+        if (normal_curve != null)
+        {
+            return;
+        }
+        if (!if_pause)
+        {
+            AudioManager.instance.PauseBGM();
+            AudioManager.instance.PauseSFX();
+            AudioManager.instance.Pausestart();
+            AudioManager.instance.PauseEvent();
+            UI_Manager.Instance.Set_Pause_Panel(true);
+            game_started = false;
+            ninja.GetComponent<Animator>().speed = 0;
+            CancelInvoke();
+            if_pause = !if_pause;
+        }
+        else
+        {
+            UI_Manager.Instance.Set_Pause_Panel(false);
+            if (!UI_Manager.Instance.countdown_text.gameObject.active)
+            {
+                UI_Manager.Instance.Set_Count_Down();
+            }
+        }
+    }
+
+    public void Set_Pause_Bool()
+    {
+        if_pause = !if_pause;
+    }
+
+    public void Pause_Start()
+    {
+        if (pause_time < staff_delay)
+        {
+            Invoke(nameof(Set_Staff), staff_delay - pause_time);
+            AudioManager.instance.Playstart();
+        }
+        UI_Manager.Instance.Set_Pause_Panel(false);
+        ninja.GetComponent<Animator>().speed = 1;
+        game_started = true;
+        AudioManager.instance.PlayBGM();
+        AudioManager.instance.PlayEvent();
+    }
+
+    public void Game_Win()
+    {
+        Score_Controller.Instance.Set_Max_Score(ninja.Score);
+        Score_Controller.Instance.if_start_add = true;
+        AudioManager.instance.StopBGM();
+        AudioManager.instance.StopSFX();
+        game_started = false;
+        if (score_panel!=null)
+        {
+            score_panel.SetActive(true);
+        }
+        UI_Manager.Instance.Set_Main_UI();
+        CancelInvoke();
+    }
+    public void Set_End()
+    {
+        game_started = false;
+        UI_Manager.Instance.Set_Main_UI();
+        if (Level_Controller.Instance!=null && Level_Controller.Instance.Get_Difficult("Entity"))
+        {
+            Score_Controller.Instance.Set_Max_Score(ninja.Score);
+            Score_Controller.Instance.if_start_add = true;
+            if (score_panel != null)
+            {
+                score_panel.SetActive(true);
+            }
+            CancelInvoke();
+        }
+        else
+        {
+            over_panel.SetActive(true);
+        }
     }
     #region 音乐相关
 
@@ -143,7 +258,7 @@ public class Game_Controller : MonoBehaviour
             item.enabled = true;
         }
         Invoke(nameof(Set_Audio), music_delay);
-        Invoke(nameof(Disable_Staff), startup.GetComponent<AudioSource>().clip.length);
+        Invoke(nameof(Disable_Staff), music_delay+startup.GetComponent<AudioSource>().clip.length);
         simpleMusicPlayer.Play();
         Add_Floor_Speed();
     }
@@ -165,10 +280,10 @@ public class Game_Controller : MonoBehaviour
         {
             item.enabled = false;
         }
-        //if (Level_Controller.Instance.Get_Difficult("Entity"))
-        //{
-        //    Invoke(nameof(Set_Staff), level_delay);
-        //}
+        if (Level_Controller.Instance!=null && Level_Controller.Instance.Get_Difficult("Entity"))
+        {
+            Invoke(nameof(Set_Staff), level_delay);
+        }
     }
 
     /// <summary>
@@ -189,7 +304,6 @@ public class Game_Controller : MonoBehaviour
     public void Set_HP(int hp)
     {
         ninja.Hp += hp;
-        UI_Manager.Instance.Set_Hp_UI();
     }
 
     /// <summary>
@@ -230,6 +344,11 @@ public class Game_Controller : MonoBehaviour
             Game_Start();
         }
         Buff_Pressed();
+        //暂停时间设置
+        if (pause_time < staff_delay && game_started)
+        {
+            pause_time += Time.deltaTime;
+        }
     }
 
     /// <summary>
@@ -422,4 +541,14 @@ public class Game_Controller : MonoBehaviour
         }
     }
 
+    public void Set_Score_Staff(int score = 20,string status_content = "Prefect！", bool if_play = true, int clip_index = 1)
+    {
+        Set_Score(score);
+        UI_Manager.Instance.Set_Status_UI(status_content);
+        //播放音效
+        if (if_play)
+        {
+            AudioManager.instance.PlaySFX(clip_index);
+        }
+    }
 }

@@ -8,28 +8,28 @@ public class Ninja : MonoBehaviour
     #region 时间变量
     [Header("时间变量------------------------------------------")]
     [Header("动作恢复时间")]
-    public Vector2 time;
+    public Vector2 time = new Vector2(0.2f,0.2f);
     [Header("恢复时间")]
-    public float resume_time;
+    public float resume_time = 0.5f;
     [Header("下滑恢复时间")]
-    public float down_resume_time;
+    public float down_resume_time = 0.5f;
     [Header("左右移动的时间")]
-    [SerializeField] float move_time;
+    [SerializeField] float move_time = 0.1f;
     [Header("无敌时间")]
-    [SerializeField] float unmatched_time;
+    [SerializeField] float unmatched_time = 2f;
     [Header("闪烁频率")]
-    [SerializeField] float unmatched_frequency;
+    [SerializeField] float unmatched_frequency = 0.3f;
     [Header("BUFF加分间隔时间")]
-    [SerializeField] float buff_delta_time = 0.3f;
-    [SerializeField] float buff_delta_timer = 0.3f;
+    [SerializeField] float buff_delta_time = 0.1f;
+    [SerializeField] float buff_delta_timer = 0.1f;
     #endregion
 
     #region 距离变量
     [Header("距离变量------------------------------------------")]
     [Header("跳跃和下蹲幅度,x为跳跃幅度，y为下滑幅度")]
-    [SerializeField] Vector2 range;
+    [SerializeField] Vector2 range = new Vector2(6,0.6f);
     [Header("左右移动的距离")]
-    [SerializeField] float move_distance;
+    [SerializeField] float move_distance = 5;
     #endregion
 
     #region 状态相关
@@ -50,17 +50,22 @@ public class Ninja : MonoBehaviour
     #region 私有变量
     [Header("角色动画")]
     [SerializeField] Animator chara;
-    [SerializeField] Vector3 start_pos;
-    [SerializeField] SkinnedMeshRenderer player_render;
-    [SerializeField] float move_y;
+    [SerializeField] Vector3 start_pos = new Vector3(3.387681f, -5.86f,0);
+    [SerializeField] SkinnedMeshRenderer[] player_render;
+    [SerializeField] float move_y = 0.8f;
     Tweener tw;
     [Header("射线偏移")]
-    public float offset_z;
+    public float offset_z = 2.28f;
+    public float offset_y = 2.28f;
     [Header("碰撞体体积")]
     [SerializeField] Vector2[] collider_size_and_pos_y;
     //血量和分数
-    int hp = 250;
-    int score = 0;
+    [SerializeField] int hp = 250;
+    int max_hp = 250;
+    float score = 0;
+    [Header("分数增长速度")]
+    [SerializeField]
+    float score_speed = 5;
     float _unmatched_time;//无敌时间计时器
     #endregion
 
@@ -68,13 +73,20 @@ public class Ninja : MonoBehaviour
     public bool Is_buffing { get => is_buffing; set => is_buffing = value; }
     public int Hp { get => hp; set {
             hp = value;
+            UI_Manager.Instance.Set_Hp_UI();
             if (hp<=0)
             {
                 hp = 0;
-                //Before_Game_End();
+                _Game_End();
             }
         } }
-    public int Score { get => score;set
+
+    private static void _Game_End()
+    {
+        Game_Controller.Instance.Game_End();
+    }
+
+    public float Score { get => score;set
         {
             score = value;
             UI_Manager.Instance.Set_Score_UI();
@@ -82,6 +94,7 @@ public class Ninja : MonoBehaviour
     }
 
     public int Dir_component { get => dir_component;}
+    public int Max_hp { get => max_hp;}
     #endregion
 
     private void Update()
@@ -90,6 +103,7 @@ public class Ninja : MonoBehaviour
         {
             return;
         }
+        Score += score_speed * Time.deltaTime;
         if (Is_buffing &&(is_downing || is_jumping))
         {
             if (buff_delta_timer <= 0f)
@@ -139,7 +153,10 @@ public class Ninja : MonoBehaviour
             {
                 is_unmathcing = false;//退出无敌状态
                 StopAllCoroutines();
-                player_render.enabled = true;
+                foreach (var item in player_render)
+                {
+                    item.enabled = true;
+                }
             }
         }
     }
@@ -151,7 +168,10 @@ public class Ninja : MonoBehaviour
     IEnumerator Player_Hurted()
     {
         yield return new WaitForSeconds(unmatched_frequency);
-        player_render.enabled = !player_render.enabled;
+        foreach (var item in player_render)
+        {
+            item.enabled = !item.enabled;
+        }
     }
 
     #region 玩家动作相关
@@ -249,7 +269,7 @@ public class Ninja : MonoBehaviour
     private void Set_Collider(int index)
     {
         GetComponent<BoxCollider>().center = new Vector3(0, collider_size_and_pos_y[index].x, 0);
-        GetComponent<BoxCollider>().size = new Vector3(0.5f, collider_size_and_pos_y[index].y, 0.5f);
+        GetComponent<BoxCollider>().size = new Vector3(1.92f, collider_size_and_pos_y[index].y, 2.9f);
     }
 
     /// <summary>
@@ -321,36 +341,54 @@ public class Ninja : MonoBehaviour
 
     public void Ray_cast()
     {
-        Ray ray = new Ray(transform.position-new Vector3(0,0,offset_z), Vector3.down);
-        Ray ray_forward = new Ray(transform.position+new Vector3(0,0,offset_z), Vector3.down);
-        if (!Physics.Raycast(ray,2f,LayerMask.GetMask("Ground"))&& !Physics.Raycast(ray_forward, 2f, LayerMask.GetMask("Ground"))
-            &&!is_jumping && !is_downing && !is_returning)
+        Ray ray = new Ray(transform.position-new Vector3(0,offset_y, offset_z), Vector3.down);
+        Ray ray_cur = new Ray(transform.position-new Vector3(0,offset_y, 0), Vector3.down);
+        Ray ray_forward = new Ray(transform.position+new Vector3(0, -offset_y, offset_z), Vector3.down);
+        if (!Physics.Raycast(ray,2f,LayerMask.GetMask("Ground"))&& !Physics.Raycast(ray_forward, 2f, LayerMask.GetMask("Ground")) && !Physics.Raycast(ray_cur, 2f, LayerMask.GetMask("Ground"))
+            && !is_jumping && !is_downing && !is_returning && !is_moving)
         {
-            //Before_Game_End();
+            Debug.Log("掉下去了");
+            Before_Game_End();
         }
     }
 
     private void Before_Game_End()
     {
+        is_jumping = true;
+        is_downing = true;
+        is_moving = true;
         transform.DOLocalMoveY(transform.localPosition.y - 7f, 0.2f);
         Invoke(nameof(Game_End), 0.2f);
     }
 
     public void Game_End()
     {
+        gameObject.SetActive(false);
         Game_Controller.Instance.Game_End();
     }
     private void OnDrawGizmos()
     {
-        Debug.DrawRay(transform.position - new Vector3(0, 0, offset_z), Vector3.down * 2f, Color.red);
-        Debug.DrawRay(transform.position + new Vector3(0, 0, offset_z), Vector3.down * 2f, Color.red);
+        Debug.DrawRay(transform.position - new Vector3(0, offset_y, offset_z), Vector3.down * 2f, Color.red);
+        Debug.DrawRay(transform.position - new Vector3(0, offset_y, 0), Vector3.down * 2f, Color.red);
+        Debug.DrawRay(transform.position + new Vector3(0, -offset_y, offset_z), Vector3.down * 2f, Color.red);
+    }
+    /// <summary>
+    /// 游戏胜利
+    /// </summary>
+    void Game_Win()
+    {
+        Game_Controller.Instance.Game_Win();
     }
     private void OnTriggerEnter(Collider other)
     {
         //如果碰到了障碍物则扣血
         if (other.tag == "Block")
         {
-            //Game_Controller.Instance.cur_block.Turn_Next();
+            if (other.name.Contains("win"))
+            {
+                Invoke(nameof(Game_Win), 5f);
+                return;
+            }
             if (is_unmathcing || other.GetComponent<Block>().If_great)
             {
                 return;
@@ -369,5 +407,12 @@ public class Ninja : MonoBehaviour
         {
             transform.DOLocalMoveY(transform.localPosition.y + move_y, 0.5f);
         }
+    }
+
+    [ContextMenu("改变角色")]
+    public void Change_Character()
+    {
+        start_pos = new Vector3(3.3848f, -7.62f, -2.7974f);
+        transform.localPosition = start_pos;
     }
 }

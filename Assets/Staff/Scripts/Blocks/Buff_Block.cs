@@ -15,18 +15,18 @@ public class Buff_Block : Block
 
     protected override void Ray_Cast()
     {
-        RaycastHit hit;
-        if (Physics.Raycast(transform.position, Vector3.up, out hit, 2))
-        {
-            //当射线检测到忍者时
-            if (hit.transform.GetComponent<Ninja>()!=null)
-            {
-                Game_Controller.Instance.Set_buff_time_And_type(buff_time, buff_Type);
-                Game_Controller.Instance.ninja.Set_Buff_Status(true);
-                return;
-            }
-            //hit.transform.gameObject.SetActive(false);
-        };
+        //RaycastHit hit;
+        //if (Physics.Raycast(transform.position, Vector3.up, out hit, 2))
+        //{
+        //    //当射线检测到忍者时
+        //    if (hit.transform.GetComponent<Ninja>()!=null)
+        //    {
+        //        Game_Controller.Instance.Set_buff_time_And_type(buff_time, buff_Type);
+        //        Game_Controller.Instance.ninja.Set_Buff_Status(true);
+        //        return;
+        //    }
+        //    //hit.transform.gameObject.SetActive(false);
+        //};
     }
 
     public override void Set_Collider()
@@ -37,5 +37,15 @@ public class Buff_Block : Block
     public override void OnDrawGizmos()
     {
 
+    }
+    private void OnTriggerEnter(Collider other)
+    {
+        base.OnTriggerEnter(other);
+        if (other.GetComponent<Ninja>() != null)
+        {
+            Game_Controller.Instance.Set_buff_time_And_type(buff_time, buff_Type);
+            Game_Controller.Instance.ninja.Set_Buff_Status(true);
+            return;
+        }
     }
 }

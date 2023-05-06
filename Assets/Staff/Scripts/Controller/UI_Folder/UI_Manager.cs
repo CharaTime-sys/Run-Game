@@ -7,11 +7,15 @@ public class UI_Manager : MonoBehaviour
 {
     public static UI_Manager Instance;
     #region UI相关
-    [SerializeField] Text grade_text;
     public Image jump_buff_ui;
     public Image down_buff_ui;
-    [SerializeField] Text hp_ui;
-    [SerializeField] Text status_ui;
+    [SerializeField] Slider hp_slider;
+    [SerializeField] GameObject status_ui;
+    [SerializeField] GameObject game_ui;
+    [SerializeField] GameObject pause_panel;
+    [SerializeField] Slider slider_ui;
+    public Text countdown_text;
+    int countdown = 3;
     [SerializeField] Text tip_ui;
     [Header("这个不用管，会自动装上去")]
     [SerializeField] Text buff_ui;
@@ -65,17 +69,26 @@ public class UI_Manager : MonoBehaviour
 
     public void Set_Hp_UI()
     {
-        hp_ui.text = "血量：" + Game_Controller.Instance.ninja.Hp.ToString();
+        hp_slider.value = Game_Controller.Instance.ninja.Hp;
     }
 
     public void Set_Score_UI()
     {
-        score_ui.text = "分数：" + Game_Controller.Instance.ninja.Score.ToString();
+        score_ui.text =((int)Game_Controller.Instance.ninja.Score).ToString();
+    }
+
+    public void Set_Slider(float cur,float full)
+    {
+        if (slider_ui==null)
+        {
+            return;
+        }
+        slider_ui.value = cur / full;
     }
 
     public void Set_Status_UI(string content)
     {
-        status_ui.text = content;
+        status_ui.gameObject.SetActive(true);
         status_ui.GetComponent<Animator>().Play("Status");
     }
 
@@ -83,5 +96,36 @@ public class UI_Manager : MonoBehaviour
     {
         tip_ui.text = content;
         tip_ui.gameObject.SetActive(enable);
+    }
+
+    public void Set_Count_Down()
+    {
+        countdown_text.gameObject.SetActive(true);
+        countdown_text.text = countdown.ToString();
+        countdown--;
+        if (countdown == 0)
+        {
+            Invoke(nameof(Set_CountDown_UI), 1f);
+            return;
+        }
+        Invoke(nameof(Set_Count_Down), 1f);
+    }
+
+    public void Set_CountDown_UI()
+    {
+        countdown = 3;
+        countdown_text.gameObject.SetActive(false);
+        Game_Controller.Instance.Pause_Start();
+        Game_Controller.Instance.Set_Pause_Bool();
+    }
+
+    public void Set_Main_UI()
+    {
+        game_ui.SetActive(false);
+    }
+
+    public void Set_Pause_Panel(bool enable)
+    {
+        pause_panel.SetActive(enable);
     }
 }

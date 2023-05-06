@@ -26,4 +26,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Staff/Scenes/Level_TwoNormal.unity
     guid: d90d0c1443355d5429e0dc33ac2d8edc
+  - enabled: 1
+    path: Assets/Staff/Scenes/Level_TwoEntity.unity
+    guid: 24ddee10adb6bd345b4c2ad2ad972e3b
   m_configObjects: {}
