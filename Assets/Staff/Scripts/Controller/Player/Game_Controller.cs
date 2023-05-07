@@ -140,6 +140,7 @@ public class Game_Controller : MonoBehaviour
     {
         game_started = true;
         AudioManager.instance.Playstart();
+        AudioManager.instance.eventSource.gameObject.SetActive(true);
         if (load_slider!=null)
         {
             load_slider.SetActive(true);
@@ -176,6 +177,7 @@ public class Game_Controller : MonoBehaviour
             AudioManager.instance.PauseSFX();
             AudioManager.instance.Pausestart();
             AudioManager.instance.PauseEvent();
+            Bubble_Controller.Instance.Pause_Invoke_Bubbles();
             UI_Manager.Instance.Set_Pause_Panel(true);
             game_started = false;
             ninja.GetComponent<Animator>().speed = 0;
@@ -209,6 +211,7 @@ public class Game_Controller : MonoBehaviour
         game_started = true;
         AudioManager.instance.PlayBGM();
         AudioManager.instance.PlayEvent();
+        Bubble_Controller.Instance.Start_Bubbles();
     }
 
     public void Game_Win()

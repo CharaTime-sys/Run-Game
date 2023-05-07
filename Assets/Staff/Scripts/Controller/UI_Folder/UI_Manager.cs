@@ -14,7 +14,7 @@ public class UI_Manager : MonoBehaviour
     [SerializeField] GameObject game_ui;
     [SerializeField] GameObject pause_panel;
     [SerializeField] Slider slider_ui;
-    public Text countdown_text;
+    public Image countdown_text;
     int countdown = 3;
     [SerializeField] Text tip_ui;
     [Header("这个不用管，会自动装上去")]
@@ -101,7 +101,7 @@ public class UI_Manager : MonoBehaviour
     public void Set_Count_Down()
     {
         countdown_text.gameObject.SetActive(true);
-        countdown_text.text = countdown.ToString();
+        countdown_text.transform.GetChild(0).GetComponent<Text>().text = countdown.ToString();
         countdown--;
         if (countdown == 0)
         {

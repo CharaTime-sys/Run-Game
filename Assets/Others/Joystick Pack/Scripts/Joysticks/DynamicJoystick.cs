@@ -44,6 +44,20 @@ public class DynamicJoystick : Joystick
         //让手指的位置加入gamecontroller进入判定
         if (Input.touches.Length != 0)
         {
+            foreach (var touch in Input.touches)
+            {
+                Ray ray = Camera.main.ScreenPointToRay(touch.position);
+
+                // 用射线检测是否与粒子发生碰撞
+                RaycastHit hit;
+                if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Finger")))
+                {
+                    if (hit.collider.gameObject.name.Contains("Smoke"))
+                    {
+                        return;
+                    }
+                }
+            }
             int index = 0;
             //对每个位置进行循环
             foreach (var item in Input.touches)
@@ -78,6 +92,20 @@ public class DynamicJoystick : Joystick
     /// <param name="eventData"></param>
     public override void OnPointerUp(PointerEventData eventData)
     {
+        foreach (var touch in Input.touches)
+        {
+            Ray ray = Camera.main.ScreenPointToRay(touch.position);
+
+            // 用射线检测是否与粒子发生碰撞
+            RaycastHit hit;
+            if (Physics.Raycast(ray, out hit, 100f, LayerMask.GetMask("Finger")))
+            {
+                if (hit.collider.gameObject.name.Contains("Smoke"))
+                {
+                    return;
+                }
+            }
+        }
         base.OnPointerUp(eventData);
         Dir_Type dir_Type = Dir_Type.Up;
         background.gameObject.SetActive(false);

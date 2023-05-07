@@ -16,6 +16,7 @@ namespace SonicBloom.Koreo.Demos
         public int index;
         [Header("转向的索引集合(哪个不需要产生)")]
         public int[] indexs;
+        public Koreographer koreographer;
         //目前的索引
         int cur_index = 0;
         [Header("是否是手势")]
@@ -24,15 +25,15 @@ namespace SonicBloom.Koreo.Demos
         void OnEnable()
         {
             // Register for Koreography Events.  This sets up the callback.
-            Koreographer.Instance.RegisterForEvents(eventID, AddImpulse);
+            koreographer.RegisterForEvents(eventID, AddImpulse);
         }
         void OnDisable()
         {
             // Sometimes the Koreographer Instance gets cleaned up before hand.
             //  No need to worry in that case.
-            if (Koreographer.Instance != null)
+            if (koreographer != null)
             {
-                Koreographer.Instance.UnregisterForAllEvents(this);
+                koreographer.UnregisterForAllEvents(this);
             }
         }
 
@@ -125,6 +126,10 @@ namespace SonicBloom.Koreo.Demos
                     break;
                 case 3://代表是气泡
                     Bubble_Controller.Instance.Create_Bubble();
+                    break;
+                case 4://代表是气泡
+                    Smoke_Controller.Instance.Create_Bubble();
+                    Debug.Log("创造烟雾气体");
                     break;
                 default:
                     break;
