@@ -115,16 +115,32 @@ public class Block : MonoBehaviour
     {
         if (_index != Game_Controller.Instance.ninja.Dir_component)
         {
+            Debug.Log("检测失败");
+            Debug.Log(Game_Controller.Instance.ninja.Dir_component);
             return false;
         }
-        if (dir_Type !=_dir_type)
+        //对向左向右进行判断，因为左右都可以成功
+        if (!(dir_Type == Dir_Type.Left || dir_Type == Dir_Type.Right))
         {
-            return false;
+            if (dir_Type != _dir_type)
+            {
+                return false;
+            }
+        }
+        else
+        {
+            if (!(_dir_type != Dir_Type.Left || _dir_type != Dir_Type.Right))
+            {
+                Debug.Log(_dir_type);
+                Debug.Log("检测失败");
+                return false;
+            }
         }
         if (if_loss)
         {
             return false;
         }
+        Debug.Log("可以进行检测！");
         //设置不同得分标准
         if (!if_over && if_prefect)
         {

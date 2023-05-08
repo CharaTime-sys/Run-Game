@@ -9,6 +9,7 @@ public class UI_Controller : MonoBehaviour
     public Button first_button;
     public Button second_button;
     public Button third_button;
+    public Button third_level_button;
 
     public string name;
     public string[] names;
@@ -21,6 +22,7 @@ public class UI_Controller : MonoBehaviour
         {
             first_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(name, 1); });
             second_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(name, 2); });
+            third_level_button.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level(name, 3); });
         }
         else if (if_start)
         {

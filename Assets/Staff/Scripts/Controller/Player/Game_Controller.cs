@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 using SonicBloom.Koreo;
@@ -117,13 +118,15 @@ public class Game_Controller : MonoBehaviour
     [SerializeField] GameObject score_panel;
     [SerializeField] GameObject load_slider;
     #endregion
+    private void OnApplicationFocus(bool focus)
+    {
+    }
     private void Awake()
     {
         Instance = this;
         Set_Over_Canvas();
         Set_Score_Canvas();
     }
-
     private void Set_Over_Canvas()
     {
         over_btn.onClick.AddListener(delegate { Level_Controller.Instance.Load_Level("Start"); });
@@ -140,7 +143,6 @@ public class Game_Controller : MonoBehaviour
     {
         game_started = true;
         AudioManager.instance.Playstart();
-        AudioManager.instance.eventSource.gameObject.SetActive(true);
         if (load_slider!=null)
         {
             load_slider.SetActive(true);
@@ -262,6 +264,7 @@ public class Game_Controller : MonoBehaviour
         }
         Invoke(nameof(Set_Audio), music_delay);
         Invoke(nameof(Disable_Staff), music_delay+startup.GetComponent<AudioSource>().clip.length);
+        AudioManager.instance.eventSource.gameObject.SetActive(true);
         simpleMusicPlayer.Play();
         Add_Floor_Speed();
     }
@@ -331,6 +334,15 @@ public class Game_Controller : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
+        //if (SceneManager.GetActiveScene().name.Contains("Three"))
+        //{
+        //    Debug.Log("第三关是横屏");
+        //}
+        //else
+        //{
+        //    Debug.Log("其他是竖屏");
+        //    Screen.orientation = ScreenOrientation.Portrait;
+        //}
         if (is_pressing)
         {
             //得到手指位置
@@ -374,9 +386,9 @@ public class Game_Controller : MonoBehaviour
 
     public Dir_Type Test_Direction()
     {
+        bool level_three = Camera.main.name.Contains("Three");
         //得到具体的角度，顺时针
         float angle = Mathf.Atan(test_vector.y/test_vector.x) * Mathf.Rad2Deg;
-        //Create_Helper.Instance.Create_Obj(angle);
         if (test_vector.x<0f && test_vector.y>0f)
         {
             angle = 90f+Mathf.Atan(-test_vector.x / test_vector.y) * Mathf.Rad2Deg;
@@ -389,21 +401,37 @@ public class Game_Controller : MonoBehaviour
         {
             angle = 270f + Mathf.Atan(-test_vector.x / test_vector.y) * Mathf.Rad2Deg;
         }
-        //根据角度调用不同方法
+        //根据角度调用不同方法,加入侧面的判断
         if (angle < 45 || angle > 315)
         {
+            if (level_three)
+            {
+                return Dir_Type.None;
+            }
             return Dir_Type.Right;
         }
         else if (angle >135 && angle < 225)
         {
+            if (level_three)
+            {
+                return Dir_Type.Down;
+            }
             return Dir_Type.Left;
         }
         else if (angle > 45 && angle < 135)
         {
+            if (level_three)
+            {
+                return Dir_Type.Left;
+            }
             return Dir_Type.Up;
         }
         else if (angle > 225 && angle < 315)
         {
+            if (level_three)
+            {
+                return Dir_Type.Right;
+            }
             return Dir_Type.Down;
         }
         return Dir_Type.Up;

@@ -23,6 +23,7 @@ public class Level_Controller : Global_Instance<Level_Controller>
             return;
         }
         SceneManager.LoadScene(level_name);
+        Change_Screen(level_name);
     }
     public void Load_Level()
     {
@@ -53,8 +54,10 @@ public class Level_Controller : Global_Instance<Level_Controller>
         if (next_name == "")
         {
             Return_To_Choose(0);
+            Change_Screen("1");
             return;
         }
+            Change_Screen(next_name);
         StartCoroutine(Load_Level_Async(next_name));
     }
     public void Load_Level(string level_name,int level_index)
@@ -69,6 +72,7 @@ public class Level_Controller : Global_Instance<Level_Controller>
     public void Return_To_Choose(int level)
     {
         SceneManager.LoadScene(level);
+        Change_Screen("1");
     }
     public void Load_Level(int level_choose)
     {
@@ -102,6 +106,7 @@ public class Level_Controller : Global_Instance<Level_Controller>
             default:
                 break;
         }
+        Change_Screen(name);
         StartCoroutine(Load_Level_Async(name));
     }
 
@@ -156,6 +161,30 @@ public class Level_Controller : Global_Instance<Level_Controller>
     public void Exit_Game()
     {
         Application.Quit();
+    }
+
+    public void Change_Screen(string _name)
+    {
+        if (_name.Contains("Three"))
+        {
+            Screen.orientation = ScreenOrientation.LandscapeLeft;
+            Screen.orientation = ScreenOrientation.AutoRotation;
+            Screen.autorotateToLandscapeLeft = true;
+            Screen.autorotateToLandscapeRight = true;
+            Screen.autorotateToPortrait = false;
+            Screen.autorotateToPortraitUpsideDown = false;
+            Debug.Log("«–ªªµΩ∫·∆¡");
+        }
+        else
+        {
+            Screen.orientation = ScreenOrientation.Portrait;
+            Screen.orientation = ScreenOrientation.AutoRotation;
+            Screen.autorotateToLandscapeLeft = false;
+            Screen.autorotateToLandscapeRight = false;
+            Screen.autorotateToPortrait = true;
+            Screen.autorotateToPortraitUpsideDown = true;
+            Debug.Log("«–ªªµΩ ˙∆¡");
+        }
     }
     #endregion
 }

@@ -347,8 +347,7 @@ public class Ninja : MonoBehaviour
         if (!Physics.Raycast(ray,2f,LayerMask.GetMask("Ground"))&& !Physics.Raycast(ray_forward, 2f, LayerMask.GetMask("Ground")) && !Physics.Raycast(ray_cur, 2f, LayerMask.GetMask("Ground"))
             && !is_jumping && !is_downing && !is_returning && !is_moving)
         {
-            Debug.Log("╣Тобх╔ак");
-            Before_Game_End();
+            //Before_Game_End();
         }
     }
 

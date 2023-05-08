@@ -55,6 +55,11 @@ public class Normal_Curve : MonoBehaviour
     /// </summary>
     protected virtual void Renew_Curve()
     {
+        if (Input.GetKeyDown(KeyCode.W))
+        {
+            Game_Controller.Instance.Game_Start();
+            Destroy(gameObject);
+        }
         //还未按下时不进行判断
         if (!is_once)
         {

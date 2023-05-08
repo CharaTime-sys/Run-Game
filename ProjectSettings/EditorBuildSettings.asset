@@ -19,7 +19,7 @@ EditorBuildSettings:
     guid: e4cb54929812f1d43b78a510a0098fca
   - enabled: 1
     path: Assets/Staff/Scenes/Level_OneNormal.unity
-    guid: 49eb55f22f8e17545b9bd69dbe97ede9
+    guid: 7abd5ca625f65744c8a07627ee757c7a
   - enabled: 1
     path: Assets/Staff/Scenes/Level_OneEntity.unity
     guid: 30909cef66a1a3b44af7da735de1a544
@@ -29,4 +29,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Staff/Scenes/Level_TwoEntity.unity
     guid: 24ddee10adb6bd345b4c2ad2ad972e3b
+  - enabled: 1
+    path: Assets/Staff/Scenes/Level_ThreeNormal.unity
+    guid: 49eb55f22f8e17545b9bd69dbe97ede9
   m_configObjects: {}

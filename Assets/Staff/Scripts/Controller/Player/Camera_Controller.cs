@@ -35,7 +35,6 @@ public class Camera_Controller : MonoBehaviour
     void Start()
     {
         main_camera = Camera.main;
-        //Set_Camera_Type();
         offset = new Vector2(Mathf.Abs(transform.position.x - target_pos[0].x), Mathf.Abs(transform.position.y - target_pos[1].y));
     }
 
@@ -77,6 +76,11 @@ public class Camera_Controller : MonoBehaviour
             //横向移动
             if (index == 1 || index == -1)
             {
+                if (name.Contains("Three"))
+                {
+                    Game_Controller.Instance.ninja.transform.DOMoveX(Game_Controller.Instance.ninja.transform.position.x - target_pos[1].x * index, change_time_horizontal);
+                    return;
+                }
                 main_staff.transform.DOMoveX(main_staff.transform.position.x + target_pos[1].x * index, change_time_horizontal);
             }
             ////纵向移动
