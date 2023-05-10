@@ -20,7 +20,13 @@ public class Floor_Controller : MonoBehaviour
     [Header("距离，x为下沉，y为上升")]
     [SerializeField] Vector2 floor_distance;
     [SerializeField] GameObject target_block;
+    [Header("整体修改地板")]
     public Material material;
+    public Material material_light;
+    public Material material_cover;
+    public Material material_up;
+    public GameObject up_thing;
+    public GameObject cover_thing;
     public Mesh mesh;
     public bool is_entity;
 
@@ -119,7 +125,24 @@ public class Floor_Controller : MonoBehaviour
             {
                 if (_item.GetComponent<MeshRenderer>() != null)
                 {
-                    _item.GetComponent<MeshRenderer>().material = material;
+                    _item.GetComponent<MeshRenderer>().material = material;//找到了地板物体
+                    //GameObject up = Instantiate(up_thing, _item.transform);
+                    //GameObject up = Instantiate(cover_thing, _item.transform);
+                    //DestroyImmediate(_item.GetChild(_item.childCount - 1).gameObject);
+                    _item.transform.GetChild(0).GetComponent<MeshRenderer>().material = material_light;
+                    _item.transform.GetChild(_item.transform.childCount-1).GetComponent<MeshRenderer>().material = material_cover;
+                    _item.transform.GetChild(0).localPosition = new Vector3(0,0.199f,-0.1f);
+
+                    foreach (Transform __item in _item.transform)
+                    {
+                        if (__item.name.Contains("调"))
+                        {
+                            __item.GetComponent<MeshRenderer>().material = material_up;
+                        }
+                    }
+
+
+
                     //_item.GetComponent<MeshFilter>().mesh = mesh;
                     //_item.GetComponent<BoxCollider>().size = new Vector3(0.2f, 0.2f, 0.2f);
                     //_item.GetComponent<BoxCollider>().center = Vector3.zero;

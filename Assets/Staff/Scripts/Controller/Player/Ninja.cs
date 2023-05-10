@@ -218,7 +218,6 @@ public class Ninja : MonoBehaviour
         Set_Collider(2);
         is_jumping = true;//设置跳跃状态
         is_downing = false;
-        chara.Play("Jump");//播放动画
         CancelInvoke();
         //停止上一次的动作
         tw.Pause();
@@ -230,7 +229,12 @@ public class Ninja : MonoBehaviour
         //如果腾空，则不需要调用
         if (if_resumed)
         {
+            chara.Play("Jump");//播放动画
             Invoke(nameof(Resume_Jump), resume_time);
+        }
+        else
+        {
+            chara.Play("long jump");//播放动画
         }
         is_returning = false;
     }

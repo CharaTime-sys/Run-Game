@@ -240,8 +240,12 @@ public class Block : MonoBehaviour
 
     public void Discriminat_Statue()
     {
-        float line_distance = Mathf.Abs(transform.position.z - Block_Data.Instance.discriminant_line.position.z);
-        if (line_distance <=Block_Data.Instance.min_and_max_distance.x)//完美判定
+        float line_distance = transform.position.z - Block_Data.Instance.discriminant_line.position.z;
+        if (line_distance < -1f)
+        {
+            if_over = true;
+        }
+        else if (line_distance <=Block_Data.Instance.min_and_max_distance.x)//完美判定
         {
             if_great = false;
             if_prefect = true;
