@@ -75,7 +75,7 @@ MonoBehaviour:
   dir_Type: 3
   animator: {fileID: 8182362239798326701}
   _index: 0
-  buff_time: 1.5
+  buff_time: 1.2
   buff_Type: 0
 --- !u!65 &1646273833
 BoxCollider:
@@ -152,7 +152,7 @@ MeshRenderer:
   m_RenderingLayerMask: 1
   m_RendererPriority: 0
   m_Materials:
-  - {fileID: 1108147716743453759, guid: 041e3ea7963defc4ba3af2dc1e89efe5, type: 3}
+  - {fileID: 2100000, guid: 829c336042ce2774a94346047abb1b25, type: 2}
   m_StaticBatchInfo:
     firstSubMesh: 0
     subMeshCount: 0

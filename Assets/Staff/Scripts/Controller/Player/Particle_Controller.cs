@@ -13,11 +13,19 @@ public class Particle_Controller : MonoBehaviour
     }
     public void Set_Particle_Color(ParticleSystem particleSystem,Color color)
     {
+        if (particleSystem==null)
+        {
+            return;
+        }
         particleSystem.startColor = color;
     }
 
     public void Set_Particle_visual(ParticleSystem particleSystem,bool enable)
     {
+        if (particleSystem == null)
+        {
+            return;
+        }
         particleSystem.gameObject.SetActive(enable);
     }
 }
